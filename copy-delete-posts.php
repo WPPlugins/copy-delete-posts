@@ -3,7 +3,7 @@
  * Plugin Name: Copy & Delete Posts
  * Plugin URI: https://copy-delete-posts.com
  * Description: The best solution to easily make duplicates of your posts & pages, and delete them in one go.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Copy Delete Posts
  * Author URI: https://copy-delete-posts.com
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) exit;
  * @since 1.0.0
  */
 	 // Plugin constants
-	 define('CDP_VERSION', '1.0.0');
+	 define('CDP_VERSION', '1.0.1');
 	 define('CDP_WP_VERSION', get_bloginfo('version'));
 	 define('CDP_SCRIPT_DEBUG', false);
 	 $cdp_plug_url = plugins_url('', __FILE__);
@@ -384,13 +384,10 @@ if (!defined('ABSPATH')) exit;
 		$post_id = false;
 		if (isset($post->ID)) $post_id = $post->ID;
 
-		// $wp_path = preg_replace('/wp-content.*$/','',__DIR__);
-		// $wp_path = preg_replace('/wp-content(?!.*wp-content).*/','',__DIR__);
-		// require_once($wp_path . 'wp-admin/includes/screen.php');
-
 		$screen = ((function_exists('get_current_screen'))?get_current_screen():false);
 		$profiles = get_option('_cdp_profiles');
 
+		echo '<meta name="cdp-version" content="' . CDP_VERSION . '" />';
 		if (cdp_check_permissions(wp_get_current_user()) == false) return;
 		if (is_single() || is_page()) {
 			cdp_vars($cdp_plug_url, $post_id);
@@ -650,13 +647,13 @@ if (!defined('ABSPATH')) exit;
 		$areWePro = false;
 
 		// Load premium content if the plugin is here
-		if (is_dir($premium_dir) && is_plugin_active($premium_plugin)) {
+		if (is_dir($premium_dir) && ((function_exists('is_plugin_active') && is_plugin_active($premium_plugin)) || (!function_exists('is_plugin_active')))) {
 
 			// Include cool features
-			if ($include) require_once($pplugin_path);
+			if ($include && file_exists($pplugin_path)) require_once($pplugin_path);
 
 			// Is premium function
-			$areWePro = true;
+			if (file_exists($pplugin_path)) $areWePro = true;
 
 		}
 

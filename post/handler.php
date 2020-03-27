@@ -199,7 +199,7 @@
     $swap    = isset($_POST['data']['swap'])    ? sanitize_text_field($_POST['data']['swap'])    : false;
     $profile = isset($_POST['data']['profile']) ? sanitize_text_field($_POST['data']['profile']) : 'default';
     $origin  = isset($_POST['origin'])          ? sanitize_text_field($_POST['origin'])          : false;
-    $custom  = isset($_POST['data']['custom'])  ? sanitize_text_field($_POST['data']['custom'])  : false;
+    $custom  = isset($_POST['data']['custom'])  ? cdp_sanitize_array($_POST['data']['custom'])  : false;
 
     // Load default options for selected profile
     $defaults = get_option('_cdp_profiles')[$profile];
@@ -828,12 +828,11 @@
 
       $inGroup = ceil(intval($thc) / 30);
 
-      for ($i=0, $k=4; $i < sizeof($ids); $i = $i + $inGroup, $k++)
+      for ($i=0, $k=2; $i < sizeof($ids); $i = $i + $inGroup, $k++)
         $cdp_cron[$token]['tasks']["-$k"] = false;
 
       update_option('_cdp_crons', $cdp_cron);
-
-      for ($i=0, $k=4; $i < sizeof($ids); $i = $i + $inGroup, $k++) {
+      for ($i=0, $k=2; $i < sizeof($ids); $i = $i + $inGroup, $k++) {
         $tg = array(); $tt = array('tsk' => "-".$k, 'token' => $token);
 
         for ($j=$i; $j < ($i + $inGroup); $j++) if (isset($ids[$j])) array_push($tg, $ids[$j]);

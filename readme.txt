@@ -1,9 +1,9 @@
 === Copy Delete Posts ===
-Contributors: CopyDeletePosts, copydelete
+Contributors: CopyDeletePosts
 Tags: Copy posts, Delete posts, Copy pages, Delete pages, Duplicate pages
 Requires at least: 4.9
 Tested up to: 5.3.2
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv3
 Requires PHP: 7.0
 
@@ -83,6 +83,12 @@ It should fix the issue :)
 1. This is the description for the first screenshot
 
 == Changelog ==
+
+= 1.0.1 =
+* Improved deletion process above 800 posts
+* Fixed sorting issues
+* Fixed specified copies options (via tooltip)
+* Fixed tooltip (flashing) issues on smaller screens  
 
 = 1.0.0 =
 * Initial release
