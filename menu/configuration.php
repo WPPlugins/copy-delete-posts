@@ -124,7 +124,7 @@ function cdp_configuration() {
             <div class="cdp-showcase-3 cdp-left">
               <div class="cdp-font-title cdp-f-s-22 cdp-f-w-bold cdp-center">Admin bar</div>
               <div class="cfg-img-sc-3 cdp-intro-image cdp-intro-img-3" alt="adminbar">
-                <img src="<?php echo $cdp_plug_url; ?>/assets/imgs/intro_3.jpg" class="cdp-no-vis cfg-img-sc-3" alt="adminbar">
+                <img src="<?php echo $cdp_plug_url; ?>/assets/imgs/intro_3.gif" class="cdp-no-vis cfg-img-sc-3 cfg-img-sc-3-special" alt="adminbar">
               </div>
             </div>
           </div>
@@ -174,7 +174,9 @@ function cdp_configuration() {
           </div>
         </div>
       </div>
-      <div class="cdp-collapsibles" style="padding-top: 5px;">
+      <div class="cdp-collapsibles" style="padding-top: 5px; padding-bottom: 35vh;">
+
+        <!-- SETTINGS PROFILE SECTION -->
         <div class="cdp-collapsible" data-cdp-group="mains">
           <div class="cdp-collapsible-title">
             <div class="cdp-cf">
@@ -353,7 +355,9 @@ function cdp_configuration() {
             </div>
           </div>
         </div>
-      </div>
+        </div>
+
+        <!-- OTHER SETTINGS PROFILE SECTION -->
         <div class="cdp-collapsible" data-cdp-group="mains">
           <div class="cdp-collapsible-title cdp-name-section-cnx">
             <div class="cdp-cf">
@@ -444,6 +448,7 @@ function cdp_configuration() {
         </div>
         </div>
 
+        <!-- GLOBAL SECTION -->
         <div class="cdp-collapsible" data-cdp-group="mains">
           <div class="cdp-collapsible-title">
             <div class="cdp-cf">
@@ -475,12 +480,12 @@ function cdp_configuration() {
                 <p class="cdp-f-s-18 cdp-f-w-light">However, if you want it as a <b class="cdp-f-w-bold">default setting option</b>, then please select it below: </p>
               </div>
               <div class="cdp-con-cen">
-                <span class="cdp-tooltip-premium" data-top="-5" style="padding: 20px 0">
+                <div class="cdp-tooltip-premium" style="width: 663px; margin: 0 auto; height: 60px;" data-top="-10">
                   <select class="cdp-other-options cdp-select cdp-select-centered cdp-sel-separat cdp-select-large cdp-c-x-a-v" name="post_converter">
                     <option value="1"<?php echo ($post_converter == '1' || $post_converter == false)?' selected':''; ?>>Copies will be the same type as the original</option>
                     <option value="2"<?php echo ($post_converter == '2')?' selected':''; ?>>ALWAYS change the type when copied (posts will become pages, pages will become posts)</option>
                   </select>
-                </span>
+                </div>
               </div>
               <div class=""><h2><b class="cdp-f-s-18 cdp-f-w-bold">User level permissions</b></h2></div>
               <div class="cdp-f-s-18 cdp-p-15-25 cdp-f-w-light">Which user role(s) should be able to copy & delete? <i style="color: gray">– The role also must have access to the dashboard.</i></div>
@@ -537,7 +542,6 @@ function cdp_configuration() {
         </div>
 
         <!-- DELETE SECTION -->
-
         <div class="cdp-collapsible" data-cdp-group="mains">
           <div class="cdp-collapsible-title">
             <div class="cdp-cf">
@@ -559,12 +563,38 @@ function cdp_configuration() {
                 <div class="cdp-left cdp-tab-element cdp-tooltip-premium" data-top="-4" data-box="cdp-tabox-automatic" data-disabled="true">
                   <span class="cdp-relative">Automatic Cleanup <span class="cdp-premium-icon cdp-big-icon"></span></span>
                 </div>
-                <div class="cdp-left cdp-tab-element cdp-tooltip-premium" data-top="-4" data-box="cdp-tabox-redirects" data-disabled="true">
+                <div class="cdp-left cdp-tab-element" data-box="cdp-tabox-redirects">
                   <span class="cdp-relative">Redirection <span class="cdp-premium-icon cdp-big-icon"></span></span>
                 </div>
               </div>
               <div class="cdp-cont-d-box-tabed" id="cdp-tabox-redirects">
-                TEST TEST 3
+                <?php if ($areWePro && function_exists('cdpp_automated_redirects')) { ?>
+                <?php cdpp_automated_redirects($cdp_plug_url); ?>
+                <?php } else { ?>
+                <div class="cdp-con-cen">
+                  <div class="cdp-center cdp-padding" style="padding-top: 50px; padding-bottom: 30px;">
+                    <img src="<?php echo $cdp_plug_url; ?>/assets/imgs/redirections.png" alt="">
+                  </div>
+                  <div class="cdp-lh-24 cdp-black-all" style="max-width: 82%; margin: 0 auto;">
+                    <div class="cdp-f-s-19 cdp-f-w-regular cdp-padding">
+                      As part of the <span class="cdp-green">premium plugin</span> you can enable redirects, so that the URLs of your deleted posts/pages automatically take visitors to the version which you decided to keep.
+                    </div>
+                    <div class="cdp-f-s-19 cdp-f-w-regular cdp-padding">
+                      This isn’t just good for your visitors, but also for SEO: the “link juice” from your old (deleted) articles will be forwarded to the versions you keep, helping you to rank higher in search engines.
+                    </div>
+                    <div class="cdp-f-s-19 cdp-f-w-regular cdp-padding">
+                      And: you can also use this feature for any other redirections you may need
+                      (not only redirects from deleted posts/pages)!
+                    </div>
+                  </div>
+                  <br />
+                  <div class="cdp-center cdp-padding-15-h" style="padding-bottom: 60px;">
+                    <a href="https://sellcodes.com/CylMIdJD" target="_blank">
+                      <button class="cdp-button cdp-f-s-21 cdp-f-w-medium" style="width: 465px; height: 70px; border-radius: 35px;">Go premium now</button>
+                    </a>
+                  </div>
+                </div>
+                <?php } ?>
               </div>
               <div class="cdp-cont-d-box-tabed" id="cdp-tabox-automatic">
                 TEST TEST 2
@@ -693,7 +723,7 @@ function cdp_configuration() {
                     <table id="cdp-d-table" class="cdp-delete-table">
                       <thead>
                         <tr class="cdp-f-s-19 cdp-f-w-medium">
-                          <th><input type="checkbox" class="cdp-d-checkbox-all"/></th>
+                          <th><label><input type="checkbox" class="cdp-d-checkbox-all"/></label></th>
                           <th>Title</th>
                           <th>Slug/URL</th>
                           <th>Type</th>
@@ -833,13 +863,16 @@ function cdp_configuration() {
 
           </div>
         </div>
+
       </div>
+
+      <!-- SUPPORTS – FOR FUTURE – ONLY CONCEPT -->
       <div class="cdp-supports cdp-hide">
         <div class="cdp-cf">
           <a href="#" target="_blank">
             <div class="cdp-left cdp-third cdp-support-box cdp-animated cdp-support-animated cdp-ignore">
               <div class="cdp-support-header">
-                <img class="cdp-support-img" src="https://via.placeholder.com/50" alt="">
+                <img class="cdp-support-img" src="" alt="">
                 <div class="cdp-support-title"><b>Issues? Ask us in the Support Forum!</b></div>
               </div>
               <div class="cdp-support-desc">Your first port of call. We’ll try to respond quickly!</div>
@@ -848,7 +881,7 @@ function cdp_configuration() {
           <a href="#" target="_blank">
             <div class="cdp-left cdp-third cdp-support-box cdp-animated cdp-support-animated cdp-ignore">
               <div class="cdp-support-header">
-                <img class="cdp-support-img" src="https://via.placeholder.com/50" alt="">
+                <img class="cdp-support-img" src="" alt="">
                 <div class="cdp-support-title"><b>Get the Premium Plugin</b></div>
               </div>
               <div class="cdp-support-desc">…which many fancy features and hands-on support.</div>
@@ -857,10 +890,10 @@ function cdp_configuration() {
           <div class="cdp-left cdp-third cdp-support-box cdp-show-projects cdp-pointer">
             <div class="cdp-center cdp-f20"><b>Check out our other projects</b></div>
             <div class="cdp-center">
-              <div class="cdp-inline cdp-fourth"><img class="cdp-support-img" src="https://via.placeholder.com/50" alt=""></div>
-              <div class="cdp-inline cdp-fourth"><img class="cdp-support-img" src="https://via.placeholder.com/50" alt=""></div>
-              <div class="cdp-inline cdp-fourth"><img class="cdp-support-img" src="https://via.placeholder.com/50" alt=""></div>
-              <div class="cdp-inline cdp-fourth"><img class="cdp-support-img" src="https://via.placeholder.com/50" alt=""></div>
+              <div class="cdp-inline cdp-fourth"><img class="cdp-support-img" src="" alt=""></div>
+              <div class="cdp-inline cdp-fourth"><img class="cdp-support-img" src="" alt=""></div>
+              <div class="cdp-inline cdp-fourth"><img class="cdp-support-img" src="" alt=""></div>
+              <div class="cdp-inline cdp-fourth"><img class="cdp-support-img" src="" alt=""></div>
             </div>
           </div>
         </div>
@@ -875,7 +908,7 @@ function cdp_configuration() {
         <div class="cdp-cf">
           <a href="#" target="_blank">
             <div class="cdp-left cdp-fourth cdp-ignore cdp-animated cdp-project-box cdp-center">
-              <img src="https://via.placeholder.com/170" alt="">
+              <img src="" alt="">
               <h3>Backup & Migration</h3>
               <div>The best Backup plugin for WordPress!</div>
             </div>
@@ -883,27 +916,28 @@ function cdp_configuration() {
 
           <a href="#" target="_blank">
             <div class="cdp-left cdp-fourth cdp-ignore cdp-animated cdp-project-box cdp-center">
-              <img src="https://via.placeholder.com/170" alt="">
+              <img src="" alt="">
               <h3>Ultimatelysocial</h3>
               <div>The best Social Media plugin for WordPress!</div>
             </div>
           </a>
           <a href="#" target="_blank">
             <div class="cdp-left cdp-fourth cdp-ignore cdp-animated cdp-project-box cdp-center">
-              <img src="https://via.placeholder.com/170" alt="">
+              <img src="" alt="">
               <h3>follow.it</h3>
               <div>Get more traffic for your website & follow the news!</div>
             </div>
           </a>
           <a href="#" target="_blank">
             <div class="cdp-left cdp-fourth cdp-animated cdp-project-box cdp-center">
-              <img src="https://via.placeholder.com/170" alt="">
+              <img src="" alt="">
               <h3>MyPopUps</h3>
               <div>Create the best pop-ups for highest conversion!</div>
             </div>
           </a>
         </div>
       </div>
+
     </div>
   </div>
 

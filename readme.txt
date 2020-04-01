@@ -3,7 +3,7 @@ Contributors: CopyDeletePosts
 Tags: Copy posts, Delete posts, Copy pages, Delete pages, Duplicate pages
 Requires at least: 4.9
 Tested up to: 5.3.2
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv3
 Requires PHP: 7.0
 
@@ -80,15 +80,27 @@ It should fix the issue :)
 
 
 == Screenshots ==
-1. This is the description for the first screenshot
+1. Plugin settings page
+2. Copy preset settings
+3. Customizable naming system
+4. Global settings & permission system
+5. Manual clean up
+6. Quick-copy tooltip
+7. Tooltip individual copy
+8. Copy from Gutenberg editor
 
 == Changelog ==
+
+= 1.0.2 =
+* Added new cool GIF inside the intro
+* Added photos to the screenshots library
+* Removed unnecessary stuff in code
 
 = 1.0.1 =
 * Improved deletion process above 800 posts
 * Fixed sorting issues
 * Fixed specified copies options (via tooltip)
-* Fixed tooltip (flashing) issues on smaller screens  
+* Fixed tooltip (flashing) issues on smaller screens
 
 = 1.0.0 =
 * Initial release
