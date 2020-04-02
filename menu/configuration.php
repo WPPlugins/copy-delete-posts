@@ -47,6 +47,12 @@ function cdp_configuration() {
   $globals = get_option('_cdp_globals');
   $roles = get_editable_roles();
 
+  $isCoolInstalled = '';
+  if (get_option('_cdp_cool_installation', false)) {
+    delete_option('_cdp_cool_installation');
+    $isCoolInstalled = ' cdp_is_cool_installed';
+  }
+
   $names_format = false;
   $after_copy = false;
   $post_converter = false;
@@ -89,7 +95,7 @@ function cdp_configuration() {
     #wpfooter {display: none;}
   </style>
   <?php if ($areWePro && function_exists('cdpp_profile_manager_html')) cdpp_profile_manager_html(); ?>
-  <div class="cdp-preloader-c">
+  <div class="cdp-preloader-c<?php echo $isCoolInstalled ?>">
     <div class="cdp-center">Loading...</div>
     <div class="cdp-preloader"></div>
   </div>
