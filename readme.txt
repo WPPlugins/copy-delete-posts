@@ -3,7 +3,7 @@ Contributors: CopyDeletePosts
 Tags: Copy posts, Delete posts, Copy pages, Delete pages, Duplicate pages
 Requires at least: 4.9
 Tested up to: 5.4
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv3
 Requires PHP: 7.0
 
@@ -90,6 +90,14 @@ It should fix the issue :)
 8. Copy from Gutenberg editor
 
 == Changelog ==
+
+= 1.0.4 =
+* This is Hotfix
+* Fixed issue during activation which shows "Header Error"
+
+= 1.0.3 =
+* Tested with new version of WordPress
+* Fixed visual issue with deletion process
 
 = 1.0.2 =
 * Added new cool GIF inside the intro
