@@ -3,7 +3,7 @@
  * Plugin Name: Copy & Delete Posts
  * Plugin URI: https://copy-delete-posts.com
  * Description: The best solution to easily make duplicates of your posts & pages, and delete them in one go.
- * Version: 1.0.4
+ * Version: 1.0.5
  * Author: Copy Delete Posts
  * Author URI: https://copy-delete-posts.com/
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) exit;
  */
 
 	 // Plugin constants
-	 define('CDP_VERSION', '1.0.4');
+	 define('CDP_VERSION', '1.0.5');
 	 define('CDP_WP_VERSION', get_bloginfo('version'));
 	 define('CDP_SCRIPT_DEBUG', false);
 	 $cdp_plug_url = plugins_url('', __FILE__);
@@ -37,6 +37,7 @@ if (!defined('ABSPATH')) exit;
 		}
 
 	}
+
 /** –– **/
 
 /** –– **\
@@ -497,12 +498,11 @@ if (!defined('ABSPATH')) exit;
 				if ($i == ($size - 1)) $last = $otsk;
 			}
 
-			if ($last == $tsk || $falsed == false || $cdp_cron[$tok]['tasks'][$last] != false) {
+			if ($tsk == '-0' || $last == $tsk || $falsed == false || $cdp_cron[$tok]['tasks'][$last] != false) {
+				error_log('spotting as done');
 				$cdp_cron[$tok]['done'] = current_time('timestamp');
 				$cdp_cron[$tok]['shown'] = false;
 			}
-
-			update_option('_cdp_crons', $cdp_cron);
 
 	});
 /** –– **/

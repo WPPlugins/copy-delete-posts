@@ -63,6 +63,10 @@
           else if ($_POST['f'] == 'give_me_current_tasks') cdp_just_get_tasks();
           else if ($_POST['f'] == 'debug_function') cdp_debug_function();
           else if ($_POST['f'] == 'delete_success_img') delete_option('_cdp_show_copy');
+          else if ($_POST['f'] == 'save_redi_state' && $areWePro) cdpp_save_redi_state();
+          else if ($_POST['f'] == 'save_redirections' && $areWePro) cdpp_save_redirections();
+          else if ($_POST['f'] == 'delete_redirect' && $areWePro) cdpp_delete_redirection();
+          else if ($_POST['f'] == 'switch_redirects' && $areWePro) cdpp_switch_redirects();
           else echo 'error';
 
         } else echo 'error';
@@ -912,6 +916,9 @@
  * @return object of success message — WARNING: ALWAYS
  */
   function cdp_set_noti_as_seen() {
+    if (wp_doing_ajax()) return;
+    if (wp_doing_cron()) return;
+
     $token = ((isset($_POST['noti_token']))?sanitize_text_field($_POST['noti_token']):false);
     $cdp_cron = get_option('_cdp_crons', array());
     $cdp_cron[$token]['shown'] = true;

@@ -89,9 +89,8 @@ function cdp_configuration() {
   ?>
 
   <style>
-    body {overflow: hidden}
-    #wpcontent { padding-left: 2px !important; }
-    #wpbody {overflow-y: scroll; overflow-x: auto; max-height: 100vh; min-height: calc(100vh - 32px);}
+    #wpcontent {padding-left: 2px !important;}
+    #wpbody {overflow-y: scroll;overflow-x: auto;max-height: calc(100vh - 32px);min-height: calc(100vh - 32px);}
     #wpfooter {display: none;}
   </style>
   <?php if ($areWePro && function_exists('cdpp_profile_manager_html')) cdpp_profile_manager_html(); ?>
