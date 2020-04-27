@@ -18,7 +18,8 @@ if (!defined('ABSPATH')) exit;
 function cdp_modal($screen = '', $profiles = array()) {
   if (!function_exists('is_plugin_active')) require_once(ABSPATH.'wp-admin/includes/plugin.php');
 
-  $isYoast = false; $isUSM = false;
+  $isYoast = false; $isUSM = false; $isWoo = false;
+  if (is_plugin_active('woocommerce/woocommerce.php')) $isWoo = true;
   if (is_plugin_active('wordpress-seo/wp-seo.php') || is_plugin_active('wordpress-seo-premium/wp-seo-premium.php')) $isYoast = true;
   if (
     is_plugin_active('Ultimate-Premium-Plugin/usm_premium_icons.php') ||
@@ -46,7 +47,7 @@ function cdp_modal($screen = '', $profiles = array()) {
         <div class="cdp-right" style="width: calc(100% - 200px) !important; text-align: right !important;">
           <div class="cdp-cf cdp-inline" style="line-height: 40px">
             <div class="cdp-left cdp-f-s-16">Use as basis settings</div>
-            <?php $preSelProf = get_option('_cdp_preselections')[get_current_user_id()]; ?>
+            <?php $gepres = get_option('_cdp_preselections'); if (array_key_exists(get_current_user_id(), $gepres)) $preSelProf = $gepres[get_current_user_id()]; else $preSelProf = 0; ?>
             <select class="cdp-left cdp-modal-select cdp-ow-border cdp-input-dynamic cdp-modal-input-profiles-r cdp-select cdp-m-l-9-d" name="tooltip-which-profile-second">
               <option value="custom"<?php echo (array_key_exists($preSelProf, $profiles) && !$profiles[$preSelProf])?' selected':''?> disabled>–– Select ––</option>
               <option value="clear">Clean slate</option>
@@ -157,24 +158,32 @@ function cdp_modal($screen = '', $profiles = array()) {
             <span>Link categories</span>
           </label>
         </div>
-        <?php if ($isYoast || $isUSM): ?>
+        <?php if ($isYoast || $isUSM || $isWoo): ?>
           <div class="cdp-modal-checkboxes cdp-checkboxes cdp-modal-checkboxes-three">
             <label class="cdp-relative"><span class="cdp-premium-icon" style="margin-left: 0"></span><b style="padding-left: 21px;" class="cdp-f-s-15 cdp-f-w-medium">Plugin options:</b></label>
-            <?php if ($isUSM): ?>
-              <label>
-                <span class="cdp-tooltip-premium" style="padding: 22px 0;">
-                  <input class="cdp-input-dynamic" type="checkbox" name="usmplugin">
-                  <span>USM Settings</span>
-                </span>
-              </label>
+            <?php if ($isWoo): ?>
+            <label class="cdp-woo">
+              <div class="cdp-inline cdp-tooltip-premium-spc">
+                <input class="cdp-input-dynamic" type="checkbox" name="woo">
+                <span>Woo Settings</span>
+              </div>
+            </label>
             <?php endif; ?>
             <?php if ($isYoast): ?>
-              <label class="cdp-yoast">
-                <span class="cdp-tooltip-premium" style="padding: 22px 0;">
-                  <input class="cdp-input-dynamic" type="checkbox" name="yoast">
-                  <span>Yoast SEO Settings</span>
-                </span>
-              </label>
+            <label class="cdp-yoast">
+              <div class="cdp-inline cdp-tooltip-premium-spc">
+                <input class="cdp-input-dynamic" type="checkbox" name="yoast">
+                <span>Yoast Settings</span>
+              </div>
+            </label>
+            <?php endif; ?>
+            <?php if ($isUSM): ?>
+            <label>
+              <div class="cdp-inline cdp-tooltip-premium-spc">
+                <input class="cdp-input-dynamic" type="checkbox" name="usmplugin">
+                <span>USM Settings</span>
+              </div>
+            </label>
             <?php endif; ?>
           </div>
         <?php endif; ?>

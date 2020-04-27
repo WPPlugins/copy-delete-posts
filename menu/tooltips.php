@@ -17,7 +17,8 @@ if (!defined('ABSPATH')) exit;
  */
 function cdp_tooltip_content($profiles = array()) {
 
-  $isYoast = false; $isUSM = false;
+  $isYoast = false; $isUSM = false; $isWoo = false;
+  if (is_plugin_active('woocommerce/woocommerce.php')) $isWoo = true;
   if (is_plugin_active('wordpress-seo/wp-seo.php') || is_plugin_active('wordpress-seo-premium/wp-seo-premium.php')) $isYoast = true;
   if (
     is_plugin_active('Ultimate-Premium-Plugin/usm_premium_icons.php') ||
@@ -47,7 +48,7 @@ function cdp_tooltip_content($profiles = array()) {
             <div class="cdp-cf" style="line-height: 32px; margin-top: 13px; margin-bottom: 12px;">
 
               <div class="cdp-left">
-                <input class="cdp-input-border cdp-input-dynamic cdp-number-field-styled cdp-modal-input-times-tooltip" style="width: 44px !important; padding: 0 1px;" value="1" placeholder="1" min="1" max="10000" type="number" name="tooltip-times-first">
+                <input class="cdp-input-border cdp-input-dynamic cdp-number-field-styled cdp-modal-input-times-tooltip" style="width: 42px !important; padding: 0 1px;" value="1" placeholder="1" min="1" max="10000" type="number" name="tooltip-times-first">
               </div>
 
               <div class="cdp-left">&nbsp;time(s)</div>
@@ -69,7 +70,7 @@ function cdp_tooltip_content($profiles = array()) {
 
               <div class="cdp-left" style="line-height: 10px;">
                 <select class="cdp-input-dynamic cdp-select cdp-tooltip-select cdp-sel-separat cdp-m-l-9-d cdp-sizes-profile-tooltip" name="tooltip-which-profile-first">
-                  <?php $preSelProf = get_option('_cdp_preselections')[get_current_user_id()]; ?>
+                  <?php $gepres = get_option('_cdp_preselections', array()); if (array_key_exists(get_current_user_id(), $gepres)) $preSelProf = $gepres[get_current_user_id()]; else $preSelProf = 0; ?>
                   <option value="custom"<?php echo (array_key_exists($preSelProf, $profiles) && !$profiles[$preSelProf])?' selected':''?> disabled>–– Select ––</option>
                   <?php
                   if ($profiles != false && $areWePro) {
@@ -109,7 +110,6 @@ function cdp_tooltip_content($profiles = array()) {
         <div class="cdp-right" style="width: calc(100% - 200px); text-align: right;">
           <div class="cdp-cf cdp-inline" style="line-height: 40px">
             <div class="cdp-left cdp-f-s-16">Use as basis settings</div>
-            <?php $preSelProf = get_option('_cdp_preselections')[get_current_user_id()]; ?>
             <select class="cdp-left cdp-modal-select cdp-ow-border cdp-input-dynamic cdp-modal-input-profiles-r cdp-select cdp-m-l-9-d" name="tooltip-which-profile-second">
               <option value="custom" selected disabled>–– Select ––</option>
               <option value="clear">Clean slate</option>
@@ -219,14 +219,14 @@ function cdp_tooltip_content($profiles = array()) {
           <span>Link cats</span>
         </label>
       </div>
-      <?php if ($isYoast || $isUSM): ?>
+      <?php if ($isYoast || $isUSM || $isWoo): ?>
       <div class="cdp-modal-checkboxes cdp-modal-checkboxes-three">
         <label class="cdp-relative"><span class="cdp-premium-icon" style="margin-left: 0"></span><b style="padding-left: 21px;" class="cdp-f-s-15 cdp-f-w-medium">Plugin options:</b></label>
-        <?php if ($isUSM): ?>
-        <label>
+        <?php if ($isWoo): ?>
+        <label class="cdp-woo">
           <div class="cdp-inline cdp-tooltip-premium-spc">
-            <input class="cdp-input-dynamic" type="checkbox" name="usmplugin">
-            <span>USM Settings</span>
+            <input class="cdp-input-dynamic" type="checkbox" name="woo">
+            <span>Woo Settings</span>
           </div>
         </label>
         <?php endif; ?>
@@ -234,7 +234,15 @@ function cdp_tooltip_content($profiles = array()) {
         <label class="cdp-yoast">
           <div class="cdp-inline cdp-tooltip-premium-spc">
             <input class="cdp-input-dynamic" type="checkbox" name="yoast">
-            <span>Yoast SEO Settings</span>
+            <span>Yoast Settings</span>
+          </div>
+        </label>
+        <?php endif; ?>
+        <?php if ($isUSM): ?>
+        <label>
+          <div class="cdp-inline cdp-tooltip-premium-spc">
+            <input class="cdp-input-dynamic" type="checkbox" name="usmplugin">
+            <span>USM Settings</span>
           </div>
         </label>
         <?php endif; ?>

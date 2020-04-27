@@ -13,9 +13,11 @@
  * @since 1.0.0
  */
   add_action('wp_ajax_cdp_action_handling', function () {
-
     if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
       if (isset($_POST['token']) && $_POST['token'] == 'cdp' && isset($_POST['f']) && is_admin()) {
+
+        // Expand execution time
+        if (intval(ini_get('max_execution_time')) < 7200) set_time_limit(0);
 
         // Get WP-Plugin path
         $premium_plugin = 'copy-delete-posts-premium/copy-delete-posts-premium.php';
@@ -61,12 +63,16 @@
           else if ($_POST['f'] == 'try_to_hide_the_tasks') cdp_just_hide_task();
           else if ($_POST['f'] == 'try_to_kill_the_tasks') cdp_just_kill_task();
           else if ($_POST['f'] == 'give_me_current_tasks') cdp_just_get_tasks();
+          else if ($_POST['f'] == 'review_dismiss') cdp_review();
           else if ($_POST['f'] == 'debug_function') cdp_debug_function();
           else if ($_POST['f'] == 'delete_success_img') delete_option('_cdp_show_copy');
           else if ($_POST['f'] == 'save_redi_state' && $areWePro) cdpp_save_redi_state();
+          else if ($_POST['f'] == 'multi_redi_importer' && $areWePro) cdpp_redis_importer();
           else if ($_POST['f'] == 'save_redirections' && $areWePro) cdpp_save_redirections();
           else if ($_POST['f'] == 'delete_redirect' && $areWePro) cdpp_delete_redirection();
           else if ($_POST['f'] == 'switch_redirects' && $areWePro) cdpp_switch_redirects();
+          else if ($_POST['f'] == 'get_authors' && $areWePro) cdpp_get_authors();
+          else if ($_POST['f'] == 'i_love_squirrels' && $areWePro) cdpp_squirrel();
           else echo 'error';
 
         } else echo 'error';
@@ -76,6 +82,35 @@
 
     wp_die();
   });
+/** –– **/
+
+/** –– **\
+ * This function will be fired when user don't want to see intro – never again.
+ * @since 1.0.6
+ */
+  function cdp_review() {
+
+    // Option
+    $method = sanitize_text_field($_POST['decision']);
+
+    // Get user id and array from db
+    $user_id = get_current_user_id();
+    $already = get_option('_cdp_review', false);
+
+    // Create if not exists
+    if ($already == false) $already = array('installed' => time(), 'users' => array());
+
+    // Set dismiss
+    $already['users'][$user_id] = array();
+    $already['users'][$user_id]['dismiss'] = (($method == 'remind')?time():true);
+
+    // Add option to datbase if not exit.
+    $opt = update_option('_cdp_review', $already);
+
+    // Return success
+    echo json_encode(array('status' => 'success'));
+
+  }
 /** –– **/
 
 /** –– **\
@@ -159,6 +194,7 @@
     $already[$profile] = $options;
     $already[$profile]['usmplugin'] = 'false';
     $already[$profile]['yoast'] = 'false';
+    $already[$profile]['woo'] = 'false';
     if ($areWePro) $already[$profile] = cdpp_filter_premium_opts($already, $options, $profile);
 
     if (!isset($already[$profile]['names']['display']) || (strlen(trim($already[$profile]['names']['display'])) <= 0))
@@ -315,13 +351,15 @@
         // Conditions
         $a = ($areWePro && function_exists('cdpp_check_yoast'))?cdpp_check_yoast($settings, $meta):false;
         $b = ($areWePro && function_exists('cdpp_check_usm'))?cdpp_check_usm($settings, $meta):false;
-        $c = ($settings['f_image'] && $meta == '_thumbnail_id')?true:false;
-        $d = (mb_substr($meta, 0, 4) == '_wp_')?true:false;
-        $e = ($meta == '_thumbnail_id' && $settings['f_image'])?true:false;
-        $f = ($meta == '_cdp_origin')?true:false;
+        $c = ($areWePro && function_exists('cdpp_check_woo'))?cdpp_check_woo($settings, $meta, $id):false;
+        $d = ($settings['f_image'] && $meta == '_thumbnail_id')?true:false;
+        $e = (mb_substr($meta, 0, 4) == '_wp_')?true:false;
+        $f = ($meta == '_thumbnail_id' && $settings['f_image'])?true:false;
+        $g = ($meta == '_cdp_origin')?true:false;
+        $h = (mb_substr($meta, 0, 11) == '_elementor_')?true:false;
 
         // If any of above condition is true pass the meta tag
-        if ($a || $b || $c || $d || $e || $f) {
+        if ($a || $b || $c || $d || $e || $f || $g || $h) {
 
           // Prepare data and insert filtered to results
           foreach ($vals as $val)
@@ -390,10 +428,14 @@
 
       // Get Counter value
       $prefix = (($site != -1)?$wpdb->get_blog_prefix($site):$wpdb->get_blog_prefix());
-      $counter = $wpdb->get_results("SELECT COUNT(post_id) AS 'Counter' FROM {$prefix}postmeta WHERE meta_key = '_cdp_origin' AND meta_value = {$id}", ARRAY_A)[0]['Counter'];
+      $newestId = $wpdb->get_results("SELECT post_id FROM {$prefix}postmeta WHERE meta_key = '_cdp_origin' AND meta_value = {$id} ORDER BY post_id DESC LIMIT 1", ARRAY_A);
+      $newestId = ((array_key_exists(0, $newestId))?(intval($newestId[0]['post_id'])):false);
+      if (isset($newestId) && $newestId != false && $newestId > 0)
+      $counter = $wpdb->get_results("SELECT meta_value AS 'Counter' FROM {$prefix}postmeta WHERE meta_key = '_cdp_counter' AND post_id = {$newestId} ORDER BY post_id DESC", ARRAY_A)[0]['Counter'];
+      else $counter = 1;
 
       $base_title = $data['post_title'];
-      $counter = intval($counter) + 2;
+      $counter = intval($counter) + 1;
 
       // Handle multisite for premium
       if ($areWePro && function_exists('cdpp_handle_multisite'))
@@ -787,10 +829,14 @@
     $output['pages'] = get_posts($args);
     $output['custom'] = array();
 
-    $post_types = get_post_types(array( 'public' => true, '_builtin' => false ));
+    $post_types = get_post_types(array('public' => true, '_builtin' => false));
 
     if (sizeof($post_types) > 0)
-      $output['custom'] = get_posts(array('post_type' => $post_types, 'numberposts' => -1));
+      $output['custom'] = get_posts(array(
+        'post_type' => $post_types,
+        'numberposts' => -1,
+        'post_status' => 'publish,private,draft,future,pending,inherit,sticky'
+      ));
 
     $output['meta'] = array();
     foreach ($output['posts'] as $k => $p) $output['meta'][$p->ID] = get_post_meta($p->ID);
@@ -811,6 +857,8 @@
     $thc        = sanitize_text_field($_POST['thc']); // throttling count if enabeld
     $thrs       = sanitize_text_field($_POST['thrs']) == 'true' ? true : false; // trash or not?
     $redi       = sanitize_text_field($_POST['redi']) == 'true' ? true : false; // redirect if enabled
+    $auit       = sanitize_text_field($_POST['auit']) == 'true' ? true : false; // auit if enabled
+    $auitd      = ((isset($_POST['auitd']))?cdp_sanitize_array($_POST['auitd']):false); // auitd if auit enabled
 
     $prepared_ids = array(); $inGroup = 0;
     $curr = current_time('timestamp'); $token = uniqid($curr, true);
@@ -823,7 +871,9 @@
       'done' => false,
       'shown' => false,
       'f' => 'delete',
-      'handler' => 'cdp_cron_delete'
+      'handler' => 'cdp_cron_delete',
+      'auit' => $auit,
+      'auitd' => $auitd
     );
     $cdp_cron[$token]['tasks'] = array();
     $cdp_cron[$token]['args'] = array();
@@ -916,7 +966,6 @@
  * @return object of success message — WARNING: ALWAYS
  */
   function cdp_set_noti_as_seen() {
-    if (wp_doing_ajax()) return;
     if (wp_doing_cron()) return;
 
     $token = ((isset($_POST['noti_token']))?sanitize_text_field($_POST['noti_token']):false);
@@ -996,10 +1045,13 @@
  */
   function cdp_debug_function() {
 
+    // $taxonomies = get_taxonomies();
+    // $terms = get_terms();
+    $post = get_post(9574)->to_array();
+
     $things_to_debug = array(
-
+      '$post' => $post
     );
-
     var_export($things_to_debug);
 
   }

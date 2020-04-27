@@ -77,7 +77,8 @@ function cdp_configuration() {
     $content = ' style="display: none; opacity: 0;"';
   }
 
-  $isYoast = false; $isUSM = false;
+  $isYoast = false; $isUSM = false; $isWoo = false;
+  if (is_plugin_active('woocommerce/woocommerce.php')) $isWoo = true;
   if (is_plugin_active('wordpress-seo/wp-seo.php') || is_plugin_active('wordpress-seo-premium/wp-seo-premium.php')) $isYoast = true;
   if (
     is_plugin_active('Ultimate-Premium-Plugin/usm_premium_icons.php') ||
@@ -94,6 +95,7 @@ function cdp_configuration() {
     #wpfooter {display: none;}
   </style>
   <?php if ($areWePro && function_exists('cdpp_profile_manager_html')) cdpp_profile_manager_html(); ?>
+  <?php if ($areWePro && function_exists('cdpp_delete_redi_modal')) cdpp_delete_redi_modal(); ?>
   <div class="cdp-preloader-c<?php echo $isCoolInstalled ?>">
     <div class="cdp-center">Loading...</div>
     <div class="cdp-preloader"></div>
@@ -312,6 +314,23 @@ function cdp_configuration() {
                     <td>…be without private taxonomy.</td>
                   </tr>
 
+                  <tr<?php echo (!$isWoo)?' style="display: none;"':'' ?>>
+                    <td class="cdp-tooltip-premium">
+                      <label>
+                        <div class="cdp-cf">
+                          <div class="cdp-left">
+                            <input <?php echo (array_key_exists('woo', $defaults) && $defaults['woo']=='true' && $areWePro == true)?'checked ':''; ?>class="cdp-data-set" data-cdp-opt="woo" type="checkbox" />
+                          </div>
+                          <div class="cdp-left cdp-relative" style="width: calc(100% - 45px)">
+                            <span>WooCommerce Settings<span class="cdp-premium-icon cdp-big-icon" style="top: calc(50% + 2px) !important;"></span> </span>
+                          </div>
+                        </div>
+                      </label>
+                    </td>
+                    <td>…the same settings from the <a href="https://wordpress.org/plugins/woocommerce/" target="_blank"><span class="cdp-green">WooCommerce plugin</span></a> as the original.</td>
+                    <td>…get empty settings.</td>
+                  </tr>
+
                   <tr<?php echo (!$isUSM)?' style="display: none;"':'' ?>>
                     <td class="cdp-tooltip-premium">
                       <label>
@@ -501,8 +520,8 @@ function cdp_configuration() {
                 if (isset($globals)) $isSaved = true;
                 foreach ($roles as $role => $value) {
                   $checked = '';
-                  $role = ucwords($role);
-                  $rn = preg_replace('/[^a-z]/', '', strtolower($role));
+                  $rn = sanitize_text_field($role);
+                  $role = sanitize_text_field($value['name']);
                   $d = ($role == 'Administrator')?' disabled checked="checked"':'';
 
                   if ($isSaved && $role != 'Administrator')
@@ -565,7 +584,7 @@ function cdp_configuration() {
                 <div class="cdp-left cdp-tab-element cdp-tab-active" data-box="cdp-tabox-manual">
                   <span>Manual Cleanup</span>
                 </div>
-                <div class="cdp-left cdp-tab-element cdp-tooltip-premium" data-top="-4" data-box="cdp-tabox-automatic" data-disabled="true">
+                <div class="cdp-left cdp-tab-element cdp-tooltip-premium cdpp-not-yet" data-top="-4" data-box="cdp-tabox-automatic" data-disabled="true">
                   <span class="cdp-relative">Automatic Cleanup <span class="cdp-premium-icon cdp-big-icon"></span></span>
                 </div>
                 <div class="cdp-left cdp-tab-element" data-box="cdp-tabox-redirects">
@@ -684,9 +703,10 @@ function cdp_configuration() {
                   </div>
                   <div class="cdp-relative cdp-f-s-19">
                     <span class="cdp-tooltip-premium" data-top="0">
-                      <b>More filters (optional)</b>: Only list them (as candidate for deletion) if they […] <span class="cdp-premium-icon cdp-big-icon"></span>
+                      <b>More filters (optional)</b>: Only list them (as candidate for deletion) if they<span id="cdpp-switch-mf"> […]</span> <span class="cdp-premium-icon cdp-big-icon"></span>
                     </span>
                   </div>
+                  <?php if ($areWePro && function_exists('cdpp_more_filters')) cdpp_more_filters(); ?>
                   <br />
                   <div class="cdp-center cdp-p-30-h">
                     <button class="cdp-button cdp-delete-btn cdp-d-search cdp-rl-round cdp-f-w-bold" type="button" name="button">Scan for duplicates now!<br /><small class="cdp-sm-d cdp-f-s-17 cdp-f-w-medium">(at this point nothing gets deleted)</small></button>
@@ -747,7 +767,6 @@ function cdp_configuration() {
                   </div>
 
                   <!-- BELOW DELETION TABLE -->
-
                   <div class="cdp-d-pad-sp">
                     <div class="cdp-cf cdp-not-yet-search" style="display: none;">
                       <div class="cdp-d-sel-all-con cdp-left cdp-f-w-light cdp-f-s-17">
@@ -788,8 +807,8 @@ function cdp_configuration() {
                                 <td class="cdp-vtop-pad">Automatic redirection</td>
                                 <td>
                                   <div class="cdp-relative">
-                                    <span class="cdp-tooltip-premium-dc" style="padding: 25px 0;">
-                                      <select class="cdp-p-redirections cdp-select cdp-ow-border cdp-dis-en-opt" disabled name="cdp-redirections">
+                                    <span class="cdp-tooltip-premium" style="padding: 25px 0;">
+                                      <select class="cdp-p-redirections cdp-select cdp-ow-border cdp-dis-en-opt" name="cdp-redirections">
                                         <option value="0">Disabled</option>
                                         <option value="1">Enabled</option>
                                       </select>
@@ -869,6 +888,8 @@ function cdp_configuration() {
           </div>
         </div>
 
+        <?php if (function_exists('cdpp_license_status')) cdpp_license_status(); ?>
+        <?php if (function_exists('cdpp_license')) cdpp_license(); ?>
       </div>
 
       <!-- SUPPORTS – FOR FUTURE – ONLY CONCEPT -->
@@ -942,6 +963,7 @@ function cdp_configuration() {
           </a>
         </div>
       </div>
+
 
     </div>
   </div>

@@ -1,13 +1,13 @@
-=== Copy Delete Posts ===
+=== Copy Post ===
 Contributors: CopyDeletePosts, copydelete
-Tags: Copy posts, Copy pages, Duplicate posts, Duplicate pages, Clone posts, Clone pages, Delete posts, Delete pages, Duplicate post, Duplicator, copy post, copy page
+Tags: Copy post, Copy page, Duplicate posts, Duplicate pages, Clone posts, Clone pages, Delete posts, Delete pages, Duplicate post, Duplicator, Copy posts, Copy pages
 Requires at least: 4.9
-Tested up to: 5.4
-Stable tag: 1.0.5
+Tested up to: 5.4.1
+Stable tag: 1.0.6
 License: GPLv3
 Requires PHP: 7.0
 
-Duplicate posts and delete posts
+Copy post copy posts
 
 == Description ==
 
@@ -30,7 +30,7 @@ You can also load-test your server by duplicate posts by a factor of 1,000, and 
 
 For all you visual people out there:
 
-[youtube https://youtu.be/lX8UbDy62Do]
+[youtube https://youtu.be/1KXLuKhNCR4]
 
 After installation you'll see a new copy post link which, on mouse-over, shows you a tooltip (see screenshot) which allows you to copy posts or copy pages with different options:
 
@@ -147,6 +147,14 @@ Copy Delete Posts WordPress plugin doesn’t store any site visitor information 
 8. Copy from Gutenberg editor
 
 == Changelog ==
+
+= 1.0.6 =
+* [Premium] WooCommerce integration
+* [Premium] Advanced Filters for deletion process
+* WooCommerce edit-screen copy fix
+* Modal overlay display on front-end fix
+* Improved custom posts detection
+* Stability improvements
 
 = 1.0.5 =
 * Auto-refresh list of notifications
