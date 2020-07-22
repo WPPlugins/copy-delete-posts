@@ -2,8 +2,8 @@
 Contributors: CopyDeletePosts, copydelete
 Tags: Copy post, Copy page, Duplicate posts, Duplicate pages, Clone posts, Clone pages, Delete posts, Delete pages, Duplicate post, Duplicator, Copy posts, Copy pages
 Requires at least: 4.9
-Tested up to: 5.4.1
-Stable tag: 1.0.6
+Tested up to: 5.4.2
+Stable tag: 1.0.7
 License: GPLv3
 Requires PHP: 7.0
 
@@ -112,19 +112,19 @@ Does it work if you try to delete posts then? If not, please reach out to us in 
 If you copy posts or copy pages and want the new versions to have exactly the same title as the original post, make sure that prefix and suffix fields are blank in the “What name(s) should the copies have?” section of the Copy Delete Posts plugin area in the WordPress Dashboard.
 
 = If I duplicate posts, how do I know what their original page was?  =
-It can be a challenge to keep track of the original content if you duplicate posts.To prevent this we suggest to not leave the prefix and suffix fields empty (which define the name of the new posts) if you duplicate posts. However, even if you want to duplicate posts without any prefix or suffix, you can solve the issue as follows: Go to section “Other options” (on the duplicate post plugin configuration page), and at the bottom of this section you will find the option “Show reference to original item?”. Check this to ensure you can always keep track of original posts when duplicate pages or posts.
+It can be a challenge to keep track of the original content if you duplicate posts. To prevent this we suggest to not leave the prefix and suffix fields empty (which define the name of the new posts) if you duplicate posts. However, even if you want to duplicate posts without any prefix or suffix, you can solve the issue as follows: Go to section “Other options” (on the duplicate post plugin configuration page), and at the bottom of this section you will find the option “Show reference to original item?”. Check this to ensure you can always keep track of original posts when duplicate pages or posts.
 
 = Can I limit who can duplicate posts on my site? =
 By default only Administrators can access the plugin and copy posts or copy pages. You can extend these permissions to other user roles by going to the section “Other options”, and then tick boxes next to WP user roles that you want to give permission to. Then also those roles can duplicate posts (or delete posts).
 
 = I want to duplicate posts *only*, i.e. not duplicate pages. Is that possible? =
-You can limit the features to duplicate posts only by going to the “Other options”-chapter and select where it says “Content types which can be copied” to only copy posts, copy pages, copy custom posts or all of these.
+You can limit the features to duplicate posts only by going to the “Other options” - section and select where it says “Content types which can be copied” to only copy posts, copy pages, copy custom posts or all of these.
 
 = How can I make bulk copies? =
 If you want to duplicate posts en masse, select the copy posts option in the “Bulk actions” menu. You’ll see the lightbox asking you to specify your duplicate post options (i.e. which elements to copy).
 
 = I can duplicate posts but it takes a long time. Why? =
-If you duplicate posts and it takes long, then you may have selected to include attachments in the duplicate posts configurations. Go to the second chapter titled “Which elements should be copied?” and de-select the attachments option to exclude those when you duplicate posts.
+If you duplicate posts and it takes long, then you may have selected to include attachments in the duplicate posts configurations. Go to the second section titled “Which elements should be copied?” and de-select the attachments option to exclude those when you duplicate posts.
 
 = Can I bulk delete posts created by this plugin?  =
 To easily clean posts or delete duplicate pages that were created by this plugin, go to ”Delete duplicate posts or pages” section, tab “Manual cleanup”. Select Posts, Pages and Custom Posts, and uncheck all other filters, then hit the Scan button. In the empty results list, you will see the message “Click here to show all copies…” - “here” link will show you all posts and pages created by our multiplier plugin.
@@ -147,6 +147,13 @@ Copy Delete Posts WordPress plugin doesn’t store any site visitor information 
 8. Copy from Gutenberg editor
 
 == Changelog ==
+
+= 1.0.7 =
+* [Premium] Automatic Cleanup
+* Updated banner tooltips
+* Added more info to Admin Bar entries
+* Added new type to Admin Bar notifications "Auto Cleanup"
+* Changed logic of filter (More title options -> option "Yes")
 
 = 1.0.6 =
 * [Premium] WooCommerce integration

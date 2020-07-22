@@ -48,7 +48,7 @@
           // Pointers
           if ($_POST['f'] == 'no_intro') cdp_add_new_no_intro();
           else if ($_POST['f'] == 'intro_again') cdp_add_new_intro();
-          else if ($_POST['f'] == 'save_options') cdp_save_plugin_options();
+          else if ($_POST['f'] == 'save_options') cdp_save_plugin_options($areWePro);
           else if ($_POST['f'] == 'copy_post') cdp_insert_new_post($areWePro);
           else if ($_POST['f'] == 'get_settings') cdp_get_profile();
           else if ($_POST['f'] == 'get_all_settings') cdp_get_all_profiles();
@@ -72,6 +72,12 @@
           else if ($_POST['f'] == 'delete_redirect' && $areWePro) cdpp_delete_redirection();
           else if ($_POST['f'] == 'switch_redirects' && $areWePro) cdpp_switch_redirects();
           else if ($_POST['f'] == 'get_authors' && $areWePro) cdpp_get_authors();
+          else if ($_POST['f'] == 'get_curr_time' && $areWePro) cdpp_get_curr_s_time();
+          else if ($_POST['f'] == 'get_post_export' && $areWePro) cdpp_get_for_export();
+          else if ($_POST['f'] == 'import_posts' && $areWePro) cdpp_take_for_import();
+          else if ($_POST['f'] == 'save_aci' && $areWePro) cdpp_save_cleanup_settings();
+          else if ($_POST['f'] == 'get_aci' && $areWePro) cdpp_get_cleanup_settings();
+          else if ($_POST['f'] == 'turn_off_aci' && $areWePro) cdpp_turn_the_acii_off();
           else if ($_POST['f'] == 'i_love_squirrels' && $areWePro) cdpp_squirrel();
           else echo 'error';
 
@@ -167,10 +173,10 @@
  * This function will be fired when user want to save plugin options – again.
  * @since 1.0.0
  */
-  function cdp_save_plugin_options() {
+  function cdp_save_plugin_options($areWePro) {
 
     // Get the info about our professionalness
-    global $areWePro;
+    $areWePro = $areWePro;
 
     // Get new options and current profile.
     $options = ((isset($_POST['options']))?cdp_sanitize_array($_POST['options']):false);
@@ -332,7 +338,7 @@
     * @param $settings (array of preselected settings of profile or by user)
     * @return array with metadata values for post || false on wrong $metas
     */
-    function cdp_filter_meta($metas, $settings, $id, $areWePro, $site) {
+    function cdp_filter_meta($metas, $settings, $id, $areWePro, $site, $title) {
 
       // If $metas has wrong format return false
       if (!(is_array($metas) || is_object($metas))) return false;
@@ -342,6 +348,7 @@
         // Add or replace ours copy tracker
         array('_cdp_origin' => $id),
         array('_cdp_origin_site' => $site),
+        array('_cdp_origin_title' => $title),
         array('_cdp_counter' => '0')
       );
 
@@ -712,7 +719,7 @@
         // Run process and validate response
         $childrens = cdp_check_childs($id); // if sizeof($this) == has childs
         $post_data = cdp_filter_post($post, $swap, $pConv, $settings, $taxonomies, $areWePro, $swap); // can be false
-        $meta_data = cdp_filter_meta($meta, $settings, $id, $areWePro, $site); // can be false
+        $meta_data = cdp_filter_meta($meta, $settings, $id, $areWePro, $site, $post_data['post_title']); // can be false
         $inserted_posts = cdp_insert_post($id, $post_data, $times, $areWePro, $isChild, $p_ids, $site); // $res['error'] must be == 0
         $inserted_metas = cdp_insert_post_meta($inserted_posts['ids'], $meta_data, $areWePro, $inserted_posts['counter'], $site); // sizeof($res['error']) must be == 0
 
@@ -871,6 +878,7 @@
       'done' => false,
       'shown' => false,
       'f' => 'delete',
+      'del_size' => sizeof($ids),
       'handler' => 'cdp_cron_delete',
       'auit' => $auit,
       'auitd' => $auitd
@@ -921,13 +929,15 @@
     $cdp_cron = get_option('_cdp_crons');
 
     foreach ($cdp_cron as $cron => $val) {
-      if ($val['done'] != true) {
-        echo json_encode(array(
-          'status' => 'fail',
-          'type' => 'warning',
-          'msg' => 'You can\'t clear messages when tasks are in progress, please firstly kill tasks or wait till the end.'
-        ));
-        return;
+      if (array_key_exists('done', $val)) {
+        if ($val['done'] != true) {
+          echo json_encode(array(
+            'status' => 'fail',
+            'type' => 'warning',
+            'msg' => 'You can\'t clear messages when tasks are in progress, please firstly kill tasks or wait till the end.'
+          ));
+          return;
+        }
       }
     }
 
@@ -1000,9 +1010,9 @@
     $token = ((isset($_POST['task']))?sanitize_text_field($_POST['task']):false);
     $cdp_cron = get_option('_cdp_crons', array());
     $handler = $cdp_cron[$token]['handler'];
-    $args = $cdp_cron[$token]['args'];
+    $args = (array_key_exists('args', $cdp_cron[$token])?$cdp_cron[$token]['args']:array());
 
-    if ($cdp_cron[$token]['done'] == true) {
+    if ($cdp_cron[$token]['done'] != false) {
       echo json_encode(array('status' => 'fail', 'type' => 'error', 'msg' => 'This task has already ended this work, please wait for list refresh and try again.'));
       return;
     }
@@ -1013,7 +1023,7 @@
       if ($sres == false) $status = false;
     }
 
-    if ($cdp_cron[$token]['done'] == true) $status = true;
+    if ($cdp_cron[$token]['done'] != false) $status = true;
 
     if ($status == true) {
       unset($cdp_cron[$token]);
@@ -1045,12 +1055,15 @@
  */
   function cdp_debug_function() {
 
-    // $taxonomies = get_taxonomies();
-    // $terms = get_terms();
-    $post = get_post(9574)->to_array();
+    // require_once('C:/Developer/Web/wordpress/wp-content/plugins/copy-delete-posts-premium/classes/methods.php');
+    // $settings = get_option('cdpp_aci_settings', false);
+    // $meth = new CDP_Premium($settings);
+    // $posts = $meth->load_posts($settings['scan']);
+    // $filtred = $meth->filter_posts($posts);
 
+    $cdp_cron = get_option('_cdp_crons', false);
     $things_to_debug = array(
-      '$post' => $post
+      '$cdp_cron' => $cdp_cron
     );
     var_export($things_to_debug);
 

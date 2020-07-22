@@ -204,7 +204,7 @@ function cdp_configuration() {
                 <tbody class="cdp-ff-b1 cdp-f-s-18 cdp-tbody-of-settings">
                   <tr>
                     <td><label class="cdp-relative"><input <?php echo $defaults['title']=='true'?'checked ':''; ?>class="cdp-data-set" data-cdp-opt="title" type="checkbox" /><span>Title <span class="cdp-info-icon"></span></span></label></td>
-                    <td>…get the title as defined in the <a href="#" class="cdp-go-to-names-chapter"><span class="cdp-green">next chapter</span></a>.</td>
+                    <td>…get the title as defined in the <a href="#" class="cdp-go-to-names-chapter"><span class="cdp-green">next section</span></a>.</td>
                     <td>…be titled “Untitled”.</td>
                   </tr>
                   <tr>
@@ -374,7 +374,7 @@ function cdp_configuration() {
             <div class="cdp-center cdp-padding cdp-p-35-b">
               <button class="cdp-button cdp-save-options">Save</button>
               <div class="cdp-padding cdp-f-s-17">
-                <a href="#" class="cdp-close-chapter">Close chapter</a>
+                <a href="#" class="cdp-close-chapter">Close section</a>
               </div>
             </div>
           </div>
@@ -465,7 +465,7 @@ function cdp_configuration() {
             <div class="cdp-center">
               <button class="cdp-button cdp-save-options">Save</button>
               <div class="cdp-padding cdp-f-s-17">
-                <a href="#" class="cdp-close-chapter">Close chapter</a>
+                <a href="#" class="cdp-close-chapter">Close section</a>
               </div>
             </div>
           </div>
@@ -528,7 +528,7 @@ function cdp_configuration() {
                     if (isset($globals['roles'][$rn]) && $globals['roles'][$rn] == 'true')
                       $checked = ' checked';
 
-                  echo('<label for="cdp-roles-'.$rn.'"><input class="cdp-other-roles" id="cdp-roles-'.$rn.'"'.$checked.' type="checkbox"'.$d.' name="'.$rn.'">'.$role.'</label>&nbsp;');
+                  echo('<label for="cdp-roles-'.$rn.'"><input class="cdp-other-roles" id="cdp-roles-'.$rn.'"'.$checked.' type="checkbox"'.$d.' name="'.$rn.'">'.$role.'</label>');
                 }
                 ?>
               </div>
@@ -552,10 +552,18 @@ function cdp_configuration() {
                 <label for="cdp-o-posts2"><input <?php echo ($gos['cdp-references-post'] == 'true')?'checked ':''; ?>id="cdp-o-posts2" type="checkbox" class="cdp-other-inputs" name="cdp-references-post">Posts/pages lists</label>
                 <label for="cdp-o-edits2"><input <?php echo ($gos['cdp-references-edit'] == 'true')?'checked ':''; ?>id="cdp-o-edits2" type="checkbox" class="cdp-other-inputs" name="cdp-references-edit">Edit screens</label>
               </div>
+              <div><h2><b class="cdp-f-s-18 cdp-f-w-bold">Additional features</b></h2></div>
+              <div class="cdp-p-25-40 cdp-f-s-18 cdp-f-w-light">
+                <label for="cdp-o-premium-import">
+                  <?php if (!isset($gos['cdp-premium-import'])) $gos['cdp-premium-import'] = false; ?>
+                  <input id="cdp-o-premium-import"<?php echo ((!$areWePro)?' disabled="true"':''); ?> <?php echo ($areWePro && $gos['cdp-premium-import'] == 'true')?'checked ':''; ?> type="checkbox" class="cdp-other-inputs" name="cdp-premium-import" />
+                  <span class="cdp-relative cdp-tooltip-premium" data-top="5">Show post export & import buttons <span class="cdp-premium-icon cdp-big-icon" style="top: calc(50% - 12px)"></span></span>
+                </label>
+              </div>
               <div class="cdp-center cdp-padding-15-h">
                 <button class="cdp-button cdp-save-options">Save</button>
                 <div class="cdp-padding cdp-f-s-17">
-                  <a href="#" class="cdp-close-chapter">Close chapter</a>
+                  <a href="#" class="cdp-close-chapter">Close section</a>
                 </div>
               </div>
             </div>
@@ -567,7 +575,7 @@ function cdp_configuration() {
 
         <!-- DELETE SECTION -->
         <div class="cdp-collapsible" data-cdp-group="mains">
-          <div class="cdp-collapsible-title">
+          <div class="cdp-d-xclicked cdp-collapsible-title">
             <div class="cdp-cf">
               <div class="cdp-left cdp-ff-b1"><b class="cdp-ff-b4">Delete duplicate posts/pages</b></div>
               <div class="cdp-right"><i class="cdp-arrow cdp-arrow-left"></i></div>
@@ -584,7 +592,7 @@ function cdp_configuration() {
                 <div class="cdp-left cdp-tab-element cdp-tab-active" data-box="cdp-tabox-manual">
                   <span>Manual Cleanup</span>
                 </div>
-                <div class="cdp-left cdp-tab-element cdp-tooltip-premium cdpp-not-yet" data-top="-4" data-box="cdp-tabox-automatic" data-disabled="true">
+                <div class="cdp-left cdp-tab-element cdp-tooltip-premium" data-top="-4" data-box="cdp-tabox-automatic"<?php echo ((!$areWePro)?' data-disabled="true"':''); ?>>
                   <span class="cdp-relative">Automatic Cleanup <span class="cdp-premium-icon cdp-big-icon"></span></span>
                 </div>
                 <div class="cdp-left cdp-tab-element" data-box="cdp-tabox-redirects">
@@ -621,7 +629,9 @@ function cdp_configuration() {
                 <?php } ?>
               </div>
               <div class="cdp-cont-d-box-tabed" id="cdp-tabox-automatic">
-                TEST TEST 2
+                <?php if ($areWePro && function_exists('cdpp_automated_deletion')) { ?>
+                <?php cdpp_automated_deletion($cdp_plug_url); ?>
+                <?php } ?>
               </div>
               <div class="cdp-cont-d-box-tabed" id="cdp-tabox-manual">
 
@@ -660,7 +670,7 @@ function cdp_configuration() {
                         <div class="cdp-cf">
                           <label class="cdp-left cdp-f-s-18"><input type="radio" class="cdp-d-option cdp-radio" value="0" name="cdp-radio-btn-dtitles" checked>No</label>
                           <label class="cdp-left cdp-f-s-18"><input type="radio" class="cdp-d-option cdp-radio" value="1" name="cdp-radio-btn-dtitles">Yes</label>
-                          <span class="cdp-green cdp-f-s-17 cdp-tooltip-top cdp-left" title="The copies you created may have been given different titles automatically (according to the rules in <a href='#' class='cdp-go-to-names-chapter'>this chapter</a>) and therefore would not count as duplicates as they have different titles.<br /><br />To remedy this, you can select “Yes” here so that those posts/pages also get considered as duplicates." style="line-height: 44px;">When does “yes” make sense here?</span>
+                          <span class="cdp-green cdp-f-s-17 cdp-tooltip-top cdp-left" title="The copies you created may have been given different titles automatically (according to the rules in <a href='#' class='cdp-go-to-names-chapter'>this section</a>) and therefore would not count as duplicates as they have different titles.<br /><br />To remedy this, you can select “Yes” here so that those posts/pages also get considered as duplicates." style="line-height: 44px;">When does “yes” make sense here?</span>
                         </div>
                       </div>
                       <!-- <div class="cdp-padding-15-h cdp-f-s-18">
@@ -703,7 +713,7 @@ function cdp_configuration() {
                   </div>
                   <div class="cdp-relative cdp-f-s-19">
                     <span class="cdp-tooltip-premium" data-top="0">
-                      <b>More filters (optional)</b>: Only list them (as candidate for deletion) if they<span id="cdpp-switch-mf"> […]</span> <span class="cdp-premium-icon cdp-big-icon"></span>
+                      <b>Filter results (optional)</b>: Only list them, if they<span id="cdpp-switch-mf"> […]</span> <span class="cdp-premium-icon cdp-big-icon"></span>
                     </span>
                   </div>
                   <?php if ($areWePro && function_exists('cdpp_more_filters')) cdpp_more_filters(); ?>
@@ -753,7 +763,7 @@ function cdp_configuration() {
                           <th>Slug/URL</th>
                           <th>Type</th>
                           <th>Date created</th>
-                          <th># Words</th>
+                          <th># of words</th>
                         </tr>
                       </thead>
                       <thead>
@@ -876,7 +886,7 @@ function cdp_configuration() {
                         </div>
                       </div>
                       <div class="cdp-padding cdp-f-s-17 cdp-center">
-                        <a href="#" class="cdp-close-chapter">Close chapter</a>
+                        <a href="#" class="cdp-close-chapter">Close section</a>
                       </div>
                     </div>
                   </div>

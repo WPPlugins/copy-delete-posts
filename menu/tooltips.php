@@ -252,7 +252,7 @@ function cdp_tooltip_content($profiles = array()) {
       <div class="cdp-relative">
         <div class="cdp-modal-copy-times cdp-tooltip-c-t cdp-f-s-15">
           <div class="cdp-modal-copy-times-content">
-            <?php if (function_exists('cdpp_change_post_type')) cdpp_change_post_type(); ?>
+            <?php if ($areWePro && function_exists('cdpp_change_post_type')) cdpp_change_post_type(); ?>
             <div class="cdp-cf cdp-inline">
               <div class="cdp-left" style="line-height: 40px;">Copy&nbsp;</div>
               <div class="cdp-left" style="line-height: 40px;">

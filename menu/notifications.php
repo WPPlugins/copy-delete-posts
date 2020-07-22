@@ -25,6 +25,7 @@ if (!defined('ABSPATH')) exit;
     if (sizeof($cdp_cron) > 0) {
       foreach ($cdp_cron as $cron => $val) {
         $entry = array('t' => $cron, 's' => $val['shown'], 'f' => $val['f'], 'st' => $val['start']);
+        if (isset($val['data'])) $entry['data'] = $val['data'];
 
         if ($val['done'] == false) array_push($sorts['undone'], $entry);
         else if ($val['done'] == true) array_push($sorts['done'], $entry);
@@ -51,7 +52,7 @@ if (!defined('ABSPATH')) exit;
       $red = (($current - $val['st']) >= 86400) ? true : false;
       $html .= '<a class="ab-item cdp-dropdown-menu cdp-dd-item cdp-dd-ud' . (($val['s'] == false)?' cdp-bnew-notis':'') . '" data-token="' . $val['t'] . '">
         <div style="display: block; width: calc(100% - 3px);">
-          <div class="cdp-dropdown-left' . (($red)?' cdp-red':'') . '">' . (($val['f'] == 'delete')?'Deleting Posts':'Copying Posts') . '</div>
+          <div class="cdp-dropdown-left' . (($red)?' cdp-red':'') . '">' . (($val['f'] == 'delete')?'Deleting Posts':'Auto Cleaning-up') . '</div>
           <div class="cdp-dropdown-right cdp-noti-kill-btn">Kill</div>
         </div>
       </a>';
@@ -71,9 +72,18 @@ if (!defined('ABSPATH')) exit;
       <li class="cdp-dd-done-list">';
 
     foreach ($sorts['done'] as $index => $val) {
-      $html .= '<a class="ab-item cdp-dropdown-menu cdp-dd-item cdp-dd-d' . (($val['s'] == false)?' cdp-bnew-notis':'') . '" data-token="' . $val['t'] . '">
+      $format = ''; $ftext = '';
+      if (isset($val['data'])) {
+        if (array_key_exists('formated-date', $val['data'])) $format = $val['data']['formated-date'];
+        if (array_key_exists('text', $val['data'])) $ftext = $val['data']['text'];
+
+        if ($ftext != '') $ftext = 'data-ftext="' . $ftext . '" ';
+        if ($format != '') $format = 'data-fdate="Completed at ' . $format . '" ';
+      }
+
+      $html .= '<a ' . $ftext . $format . 'class="ab-item cdp-dropdown-menu cdp-dd-item cdp-dd-d' . (($val['s'] == false)?' cdp-bnew-notis':'') . '" data-token="' . $val['t'] . '">
         <div style="display: block; width: calc(100% - 3px);">
-          <div class="cdp-dropdown-left">' . (($val['f'] == 'delete')?'Deleted Posts':'Copied Posts') . '</div>
+          <div class="cdp-dropdown-left">' . (($val['f'] == 'delete')?'Deleted Posts':'Auto Cleaned-up') . '</div>
           <div class="cdp-dropdown-right cdp-noti-hide-btn">Hide</div>
         </div>
       </a>';
