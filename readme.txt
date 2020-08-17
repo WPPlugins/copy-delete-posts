@@ -1,84 +1,83 @@
-=== Copy Post ===
+=== Copy Page ===
 Contributors: CopyDeletePosts, copydelete
-Tags: Copy post, Copy page, Duplicate posts, Duplicate pages, Clone posts, Clone pages, Delete posts, Delete pages, Duplicate post, Duplicator, Copy posts, Copy pages
-Requires at least: 4.9
+Tags: Copy page, Copy post, Duplicate pages, Duplicate posts, Clone pages, Clone posts, Delete pages, Delete posts, Duplicate post, Duplicator, Copy pages, Copy posts
+Requires at least: 4.6
 Tested up to: 5.4.2
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPLv3
-Requires PHP: 7.0
+Requires PHP: 5.6
 
-Copy post copy posts
+Copy page copy pages
 
 == Description ==
 
 Massively increase your WordPress productivity!
 
-This plugin makes it easy to duplicate posts or copy pages - and delete them again!
+Copy Page plugin makes it super-easy to duplicate pages or copy posts - and delete them again!
 
-And why is it important to duplicate posts? Some use cases:
+And why is it handy to duplicate pages? Here are just some of the use cases:
 
-- Duplicate posts to save you the work to enter again the same elements you repeatedly use (e.g. content, excerpt, featured image, etc.)
-- Create a different version of a page or post quickly to modify them and compare side by side (for yourself, or your client or boss)
-- Create one stellar set of templates and then re-use them for different projects or clients
-- Give your product page a facelift but keep the old version if you want to switch back to it later
-- Create a "holiday special" template and use it for the various holidays with some adjustments
-- Make duplicates for pages used in page builders with their various settings
+- Duplicate pages to make short work of using again the same elements you repeatedly use (e.g. text paragraphs, images, video, featured image, etc.)
+- Create a variation of a page or post fast to modify it and compare side by side (for yourself, your client or company)
+- Create one perfect set of page templates and then re-use them for different projects, clients or products
+- Apply a facelift to a specific page but keep the older version in case you want to switch back to it anytime
+- Make a "holiday special" page template and use it for different holidays with respective adjustments
+- Create duplicates for pages used in page builders with their custom settings
 
-You can also load-test your server by duplicate posts by a factor of 1,000, and see how it behaves. The plugin also allows you to easily bulk delete posts again later!
+You can as well run a load-test on your server by duplicating as much as 1,000 pages, and track how the server behaves. Copy Page plugin also makes it super-easy for you to bulk-delete pages and posts whenever you feel it’s time for a clean-up!
 
 **How to use it**
 
-For all you visual people out there:
+Two-minute video tutorial and you are ready to use it, that’s how simple Copy Page is!
 
 [youtube https://youtu.be/1KXLuKhNCR4]
 
-After installation you'll see a new copy post link which, on mouse-over, shows you a tooltip (see screenshot) which allows you to copy posts or copy pages with different options:
+After installation you'll see a new copy page button which, on mouse-over, displays a tooltip (see screenshot) which allows you to copy pages or copy posts with various options:
 
-- Copy page or duplicate post instantly with one click
-- Specify how often you want to duplicate pages or clone posts
-- Choose to see more copy post options and define specifically what elements should be copied for this copy page or copy post operation
+- Copy page or duplicate post instantly with a single click
+- Expand to see additional copy page options and specify which elements should be copied for the current copy page or copy post action
 
-The new copy post option will be visible on:
+The new copy page button will be available on:
 
-- Your overview of pages and posts
-- Edit screens (duplicate post or duplicate page on the respective edit post or page screens)
+- All Pages and All Posts screens
+- Edit screens (duplicate page or duplicate post on the respective edit page/post screens)
 - Admin bar (at the top)
-- Bulk-option to copy posts or copy pages on your list of pages and posts
+- Bulk-option to copy pages or copy posts on All Pages and All Posts screens
 - Gutenberg editor
 
 
-You can remove copy post or copy pages button on any of these places from the plugin menu (Other options). Copy post function on the editor screen can help you quickly multiply post you are working on currently (and open it in the new tab immediately, too), so you can quickly create two variations, pick the one you like better, and later use the remove duplicates capabilities to trash duplicate that you didn’t like.
+You can hide copy page or copy post button on any of these places from the Copy Page plugin menu (Section: Other options). Copy page function on the editor screens allows fast and easy multiplying of pages you are working on at the moment (and open it in the new browser tab immediately, too), so you can quickly make a couple of variations, pick whichever you like better, and afterward use the Delete duplicate posts/pages tool of Copy Page plugin to remove duplicate(s) that you dislike.
 
-The copy posts plugin also offers an intuitive tool to define how the new posts or pages should be named (e.g. you can add a counter or the time/date of copying, etc.). So you can replicate post that will have a simple name, e.g. “ExamplePost - #4” - where number at the end will increase with each copy made; or you can replicate page with much more detailed copy-name such as: “ExamplePage created at 12:15:01 on Saturday, July 4th, 2020” - thanks to PHP date/time shortcodes being supported in custom date settings. Long name always help to spot the clone post more easily, either for further use or to remove duplicate.
+Copy Page plugin also provides an intuitive naming tool to define how the cloned pages or posts will be named (e.g. you can add the time and date of copying, or incremental counter, etc.). This way you can multiply page that will have a short name, e.g. “ExamplePage - #4” - where the number at the end will increase with each copy made; or you can duplicate page with much more detailed name of the copy, such as: “ExamplePage copied at 14:22:58 on Sunday, December 1st, 2021” - thankfully to PHP date/time shortcodes being supported in the custom date settings. Long names often make it easy to differentiate the clone post, either to remove duplicate or to e.g. edit it.
 
-Need to multiply page but also it’s child-page(s)? You can multiply pages all together with child-pages with all the copy settings that are applied to the parent page copy.
+Want to duplicate page but also it’s child-page(s)? You can multiply pages altogether with child-pages with all the copy settings currently applied to the parent page copy.
 
-Other options available if you copy posts:
+Other options available when you copy pages:
 
-- Define where you should be navigated to after you copy posts or copy pages
-- Define which users (roles) should be allowed to copy posts or copy pages
-- Define which content types should be allowed to be copied, i.e. copy posts, copy pages, and copy custom post types
-- Define to show a reference to the original copied page or post
+- Specify where you will be navigated to after you copy page or copy post
+- Specify which users (WP roles) will be granted to copy pages or copy posts
+- Specify which content types will be allowed to be copied - copy pages, copy posts, and copy custom post types
+- Enable/disable the display of a reference to the original of copied page or post
 
-Not only can you clone posts or clone pages quickly, but the plugin also offers a sophisticated tool to delete duplicate posts or delete pages.
+Not only can you clone pages or clone posts easily, but the Copy Page plugin also provides a highly developed tool to Delete duplicate posts/pages.
 
-As part of the cleanup process, you can define:
+As part of this cleanup process, you can specify:
 
-- Where the plugin should look for duplicates (i.e. delete posts, delete pages or delete custom posts)
-- What should count as duplicate post or duplicate page (i.e. have the same title, slug, excerpt or word count)
-- Which version you want to keep (oldest version - original or newest version - latest clone)
+- Where the plugin will look for duplicates (i.e. delete pages, delete posts or delete custom posts)
+- What will be considered as a duplicate page or duplicate post (i.e. will it be the same title, slug, excerpt or word count)
+- Which version of duplicates you want to keep: oldest version (original) or newest version (the latest duplicate)
 
 Even if you used this replicator tool to multiply pages or multiply posts in huge numbers, and you want to use this tool to trash duplicates every now and then, but leave out a few specific ones - you will be able to easily find duplicates when you use our duplicates scanner. After setting the parameters to find duplicates, you can use a search box to make sure you don’t delete duplicates you don’t want to, or remove duplicates to the last one (original included!). The duplicate checker tool can help you find duplicate and immediately visually check the clone page by clicking on the URL/slug link, in case you can’t tell by the name or the date clone page was created.
 
-You can select to throttle the delete posts or delete pages process - which you may want to do when you’re on a slow server (note however: the plugin codes to delete posts or delete pages are already optimized, so usually there shouldn’t be an issue).
+You can select to throttle the delete pages or delete posts process - which you may want to do when you’re on a slow server (note, however: the plugin codes to delete posts or delete pages are already optimized, so usually there shouldn’t be an issue).
 
-Copy Delete Posts is a cloner tool with a beautiful, modern design and features going beyond today’s post duplicator tools. Hopefully this will make it your favorite posts duplicator tool :)
+Copy Page is a cloner tool with a beautiful, modern design and features going beyond today’s post duplicator tools. We hope that Copy Page will become your favorite posts duplicator tool :)
 
-The free copy posts plugin offers a lot of options - if you want even more options to copy posts or copy pages, then check out the premium copy posts plugin (currently under development) which will offer the following additional features:
+The free Copy Page plugin offers a lot of options - if you want even more options to copy pages or copy posts, then check out the [premium Copy Page plugin](https://sellcodes.com/CylMIdJD) which offers the following additional features:
 
-- Use several configuration sets to copy posts or delete posts - useful when you want to quickly switch between the copy types, without having to go to the settings page.
+- Use several configuration sets to copy pages or delete posts - useful when you want to quickly switch between the copy types, without having to go to the settings page.
 - Export and import configuration sets - a handy tool for all of us who manage multiple sites and regularly replicate posts.
-- Also include information from third party plugins when you copy posts (e.g. Yoast-information linked to pages/posts)
+- Also include information from third party plugins when you copy pages (e.g. Yoast-information linked to pages/posts)
 - Replicate pages across multisite will also prove to be a real time-saver for multisite administrators
 - Automatically delete pages or posts - extremely useful for users that multiply posts or pages at high levels.
 - Apply automatic redirects for deleted pages or posts
@@ -147,6 +146,10 @@ Copy Delete Posts WordPress plugin doesn’t store any site visitor information 
 8. Copy from Gutenberg editor
 
 == Changelog ==
+
+= 1.0.8 =
+* Added support for WordPress 4.6
+* Added support for PHP 5.6
 
 = 1.0.7 =
 * [Premium] Automatic Cleanup

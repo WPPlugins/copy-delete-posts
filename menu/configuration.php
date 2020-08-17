@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) exit;
   	$current_screen = get_current_screen();
 
   	if (!is_object($current_screen)) return;
-  	if (wp_doing_ajax()) return;
+  	if (function_exists('wp_doing_ajax') && wp_doing_ajax()) return;
 
   	wp_enqueue_script('cdp');
   	wp_enqueue_script('jquery-ui-draggable');

@@ -3,7 +3,7 @@
  * Plugin Name: Copy & Delete Posts
  * Plugin URI: https://copy-delete-posts.com
  * Description: The best solution to easily make duplicates of your posts & pages, and delete them in one go.
- * Version: 1.0.7
+ * Version: 1.0.8
  * Author: Copy Delete Posts
  * Author URI: https://copy-delete-posts.com/
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) exit;
  */
 
 	 // Plugin constants
-	 define('CDP_VERSION', '1.0.7');
+	 define('CDP_VERSION', '1.0.8');
 	 define('CDP_WP_VERSION', get_bloginfo('version'));
 	 define('CDP_SCRIPT_DEBUG', false);
 	 $cdp_plug_url = plugins_url('', __FILE__);
@@ -162,7 +162,7 @@ if (!defined('ABSPATH')) exit;
  */
 	add_action('admin_enqueue_scripts', function () {
 		if (cdp_check_permissions(wp_get_current_user()) == false) return;
-  	if (wp_doing_ajax()) return; global $cdp_plug_url;
+  	if (function_exists('wp_doing_ajax') && wp_doing_ajax()) return; global $cdp_plug_url;
 
 		global $pagenow, $post;
 		$screen = get_current_screen();
@@ -212,7 +212,7 @@ if (!defined('ABSPATH')) exit;
  */
 	add_action('wp_enqueue_scripts', function () {
 		if (cdp_check_permissions(wp_get_current_user()) == false) return;
-  	if (wp_doing_ajax() || (!(is_single() || is_page()))) return; global $cdp_plug_url;
+  	if ((function_exists('wp_doing_ajax') && wp_doing_ajax()) || (!(is_single() || is_page()))) return; global $cdp_plug_url;
 
 		$ver = preg_replace('#[^\pL\pN/-]+#', '', CDP_VERSION);
   	$min = defined('CDP_SCRIPT_DEBUG') && CDP_SCRIPT_DEBUG ? '' : '.min';
