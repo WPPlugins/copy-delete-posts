@@ -43,7 +43,11 @@ function cdp_configuration() {
   $no_intro = (get_option('_cdp_no_intro')) ? get_option('_cdp_no_intro') : array();
   $has_intro = !in_array($user_id, $no_intro) || false;
   $profiles = get_option('_cdp_profiles');
-  $defaults = get_option('_cdp_profiles')['default'];
+
+  $defaults = get_option('_cdp_profiles');
+  if ($defaults && array_key_exists('default', $defaults)) $defaults = $defaults['default'];
+  else $defaults = cdp_default_options();
+
   $globals = get_option('_cdp_globals');
   $roles = get_editable_roles();
 
@@ -56,7 +60,7 @@ function cdp_configuration() {
   $names_format = false;
   $after_copy = false;
   $post_converter = false;
-  $gos = false;
+  $gos = cdp_default_global_options();
   if (isset($defaults['names']))
     if (isset($defaults['names']['format'])) $names_format = intval($defaults['names']['format']);
 
@@ -65,6 +69,8 @@ function cdp_configuration() {
     if (isset($globals['postConverter'])) $post_converter = $globals['postConverter'];
     if (isset($globals['others'])) $gos = $globals['others'];
   }
+
+  if (!array_key_exists('cdp-display-bulk', $gos)) $gos = cdp_default_global_options();
 
   // Ask for pro features
   $areWePro = areWePro();
@@ -156,7 +162,7 @@ function cdp_configuration() {
             </div>
             <select class="cdp-left cdp-profile-selected cdp-select-styled cdp-select cdp-select-padding cdp-ow-border cdp-f-s-19 cdp-color-p-i<?php echo ((!$areWePro)?' cdp-premium-in-select':''); ?>">
               <?php
-              $preSelProf = get_option('_cdp_preselections')[get_current_user_id()];
+              $preSelProf = get_option('_cdp_preselections')[intval(get_current_user_id())];
               if ($profiles != false && $areWePro) {
               foreach ($profiles as $profile => $vals):
                 $isSel = ($preSelProf == $profile);

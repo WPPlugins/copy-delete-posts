@@ -47,7 +47,7 @@ function cdp_modal($screen = '', $profiles = array()) {
         <div class="cdp-right" style="width: calc(100% - 200px) !important; text-align: right !important;">
           <div class="cdp-cf cdp-inline" style="line-height: 40px">
             <div class="cdp-left cdp-f-s-16">Use as basis settings</div>
-            <?php $gepres = get_option('_cdp_preselections'); if (array_key_exists(get_current_user_id(), $gepres)) $preSelProf = $gepres[get_current_user_id()]; else $preSelProf = 0; ?>
+            <?php $gepres = get_option('_cdp_preselections', array()); if (array_key_exists(get_current_user_id(), $gepres)) $preSelProf = $gepres[get_current_user_id()]; else $preSelProf = 0; ?>
             <select class="cdp-left cdp-modal-select cdp-ow-border cdp-input-dynamic cdp-modal-input-profiles-r cdp-select cdp-m-l-9-d" name="tooltip-which-profile-second">
               <option value="custom"<?php echo (array_key_exists($preSelProf, $profiles) && !$profiles[$preSelProf])?' selected':''?> disabled>–– Select ––</option>
               <option value="clear">Clean slate</option>

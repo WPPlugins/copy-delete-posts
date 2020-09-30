@@ -3,7 +3,7 @@
  * Plugin Name: Copy & Delete Posts
  * Plugin URI: https://copy-delete-posts.com
  * Description: The best solution to easily make duplicates of your posts & pages, and delete them in one go.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Author: Copy Delete Posts
  * Author URI: https://copy-delete-posts.com/
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) exit;
  */
 
 	 // Plugin constants
-	 define('CDP_VERSION', '1.1.0');
+	 define('CDP_VERSION', '1.1.1');
 	 define('CDP_WP_VERSION', get_bloginfo('version'));
 	 define('CDP_SCRIPT_DEBUG', false);
 	 $cdp_plug_url = plugins_url('', __FILE__);
@@ -170,8 +170,8 @@ if (!defined('ABSPATH')) exit;
 		$allowed = ['post', 'edit-post', 'toplevel_page_copy-delete-posts', 'edit-page', 'page'];
 		$at = ($screen->id != 'attachment');
 
-		$g = get_option('_cdp_globals');
-		if ($g['others']) $g = $g['others'];
+		$g = get_option('_cdp_globals', array());
+		if (array_key_exists('others', $g)) $g = $g['others'];
 		else $g = cdp_default_global_options();
 
 		if (is_object($post)) $type = $post->post_type;
@@ -186,7 +186,7 @@ if (!defined('ABSPATH')) exit;
 		wp_enqueue_script('cdp-tooltips', "{$cdp_plug_url}/assets/js/cdp.tooltip{$min}.js", '', $ver, true);
 		if (method_exists($screen, 'is_block_editor')) {
 			if (!$screen->is_block_editor() && $pagenow == 'post.php' && $at) {
-				if ($g['cdp-display-edit'] == 'true') {
+				if (isset($g['cdp-display-edit']) && $g['cdp-display-edit'] == 'true') {
 					$a = ($type == 'post' && $g['cdp-content-posts'] == 'true');
 					$b = ($type == 'page' && $g['cdp-content-pages'] == 'true');
 					$c = ($type != 'post' && $type != 'page' && $g['cdp-content-custom'] == 'true');
@@ -244,14 +244,16 @@ if (!defined('ABSPATH')) exit;
 		global $cdp_plug_url;
 		$min = defined('CDP_SCRIPT_DEBUG') && CDP_SCRIPT_DEBUG ? '' : '.min';
 
-		$g = get_option('_cdp_globals')['others'];
+		$g = get_option('_cdp_globals', array());
+		if (array_key_exists('others', $g)) $g = $g['others'];
+		else $g = cdp_default_global_options();
 
 		$ver = preg_replace('#[^\pL\pN/-]+#', '', CDP_VERSION);
 		if (is_object($post)) $type = $post->post_type; else $type = false;
 		$a = ($type == 'post' && $g['cdp-content-posts'] == 'true');
 		$b = ($type == 'page' && $g['cdp-content-pages'] == 'true');
 		$c = ($type != 'post' && $type != 'page' && $g['cdp-content-custom'] == 'true');
-		if ($g['cdp-display-gutenberg'] == 'true' && ($a || $b || $c)) {
+		if ((isset($g['cdp-display-gutenberg']) && $g['cdp-display-gutenberg'] == 'true') && ($a || $b || $c)) {
 			wp_enqueue_style('cdp-gutenberg', "{$cdp_plug_url}/assets/css/cdp-gutenberg{$min}.css", '', $ver);
 			wp_enqueue_script('cdp-js-gutenberg', "{$cdp_plug_url}/assets/js/cdp-gutenberg{$min}.js", ['jquery'], $ver, true);
 		}
@@ -287,11 +289,13 @@ if (!defined('ABSPATH')) exit;
 		if (cdp_check_permissions(wp_get_current_user()) == false) return $actions;
 
 		// Get global options and post type
-		$g = get_option('_cdp_globals')['others'];
+		$g = get_option('_cdp_globals', array());
+		if (array_key_exists('others', $g)) $g = $g['others'];
+		else $g = cdp_default_global_options();
 		$type = $post->post_type;
 
 		// If user want to see the copy buton here pass
-		if ($g['cdp-display-posts'] == 'true')
+		if (isset($g['cdp-display-posts']) && $g['cdp-display-posts'] == 'true')
 			if (($type == 'post' && $g['cdp-content-posts'] == 'true') || ($type != 'post' && $g['cdp-content-custom'] == 'true'))
 	  		$actions['cdp_copy'] = "<a href='#'><span class='cdp-copy-button cdp-tooltip-copy' x='".$type."' title='test' data-cdp-id='{$post->ID}'>Copy</span></a>";
 
@@ -307,11 +311,13 @@ if (!defined('ABSPATH')) exit;
 		if (cdp_check_permissions(wp_get_current_user()) == false) return;
 
 		// Get global options and post type
-		$g = get_option('_cdp_globals')['others'];
+		$g = get_option('_cdp_globals', array());
+		if (array_key_exists('others', $g)) $g = $g['others'];
+		else $g = cdp_default_global_options();
 		$type = $page->post_type;
 
 		// If user want to see the copy buton here pass
-		if ($g['cdp-display-posts'] == 'true')
+		if (isset($g['cdp-display-posts']) && $g['cdp-display-posts'] == 'true')
 			if (($type == 'page' && $g['cdp-content-pages'] == 'true') || ($type != 'page' && $g['cdp-content-custom'] == 'true'))
 				$actions['cdp_copy'] = "<a href='#'><span class='cdp-copy-button cdp-tooltip-copy' title='test' data-cdp-id='{$page->ID}'>Copy</span></a>";
 
@@ -326,8 +332,11 @@ if (!defined('ABSPATH')) exit;
 	add_filter('bulk_actions-edit-post', function ($bulk_actions) {
 		if (cdp_check_permissions(wp_get_current_user()) == false) return;
 
-		$g = get_option('_cdp_globals')['others'];
-		if ($g['cdp-display-bulk'] == 'true') $bulk_actions['cdp_bulk_copy'] = 'Copy';
+		$g = get_option('_cdp_globals', array());
+		if (array_key_exists('others', $g)) $g = $g['others'];
+		else $g = cdp_default_global_options();
+
+		if (isset($g['cdp-display-bulk']) && $g['cdp-display-bulk'] == 'true') $bulk_actions['cdp_bulk_copy'] = 'Copy';
 
 		return $bulk_actions;
 	});
@@ -340,8 +349,11 @@ if (!defined('ABSPATH')) exit;
 	add_filter('bulk_actions-edit-page', function ($bulk_actions) {
 		if (cdp_check_permissions(wp_get_current_user()) == false) return;
 
-		$g = get_option('_cdp_globals')['others'];
-		if ($g['cdp-display-bulk'] == 'true') $bulk_actions['cdp_bulk_copy'] = 'Copy';
+		$g = get_option('_cdp_globals', array());
+		if (array_key_exists('others', $g)) $g = $g['others'];
+		else $g = cdp_default_global_options();
+
+		if (isset($g['cdp-display-bulk']) && $g['cdp-display-bulk'] == 'true') $bulk_actions['cdp_bulk_copy'] = 'Copy';
 
 		return $bulk_actions;
 	});
@@ -358,7 +370,9 @@ if (!defined('ABSPATH')) exit;
 
 		if (!(is_single() || is_page() || (isset($screen) && ($screen != false && in_array($screen->id, $screens))))) return;
 
-		$g = get_option('_cdp_globals')['others'];
+		$g = get_option('_cdp_globals', array());
+		if (array_key_exists('others', $g)) $g = $g['others'];
+		else $g = cdp_default_global_options();
 
 		global $post;
 		if (is_object($post)) $type = $post->post_type; else $type = false;
@@ -366,7 +380,7 @@ if (!defined('ABSPATH')) exit;
 		$b = ($type == 'page' && $g['cdp-content-pages'] == 'true');
 		$c = ($type != 'post' && $type != 'page' && $g['cdp-content-custom'] == 'true');
 
-		if ($g['cdp-display-admin'] == 'false') return;
+		if (isset($g['cdp-display-admin']) && $g['cdp-display-admin'] == 'false') return;
 		global $cdp_plug_url;
 
 		if ($a || $b || $c) {
@@ -427,8 +441,11 @@ if (!defined('ABSPATH')) exit;
 	add_action('wp_footer', function () {
 		if (cdp_check_permissions(wp_get_current_user()) == false) return;
 
-		$g = get_option('_cdp_globals')['others'];
-		if ($g['cdp-display-admin'] == 'false') return;
+		$g = get_option('_cdp_globals', array());
+		if (array_key_exists('others', $g)) $g = $g['others'];
+		else $g = cdp_default_global_options();
+
+		if (isset($g['cdp-display-admin']) && $g['cdp-display-admin'] == 'false') return;
 
 		global $cdp_plug_url, $post;
 
@@ -500,8 +517,10 @@ if (!defined('ABSPATH')) exit;
  */
 	add_action('post_submitbox_start', function () {
 		if (cdp_check_permissions(wp_get_current_user()) == false) return;
-		$g = get_option('_cdp_globals')['others'];
-		if ($g['cdp-display-edit'] == 'false') return;
+		$g = get_option('_cdp_globals', array());
+		if (array_key_exists('others', $g)) $g = $g['others'];
+		else $g = cdp_default_global_options();
+		if (isset($g['cdp-display-edit']) && $g['cdp-display-edit'] == 'false') return;
 
 		global $post, $pagenow;
 		if (is_object($post)) $type = $post->post_type; else $type = false;
