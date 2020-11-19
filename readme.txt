@@ -1,13 +1,13 @@
-=== Copy Page ===
+=== Duplicate Post ===
 Contributors: CopyDeletePosts, copydelete
-Tags: Copy page, Copy post, Duplicate pages, Duplicate posts, Clone pages, Clone posts, Delete pages, Delete posts, Duplicate post, Duplicator, Copy pages, Copy posts
+Tags: Duplicate post, Copy posts, Copy pages, Duplicate posts, Duplicate pages, Clone posts, Clone pages, Delete posts, Delete pages, Duplicator, copy post, copy page
 Requires at least: 4.6
-Tested up to: 5.5.1
-Stable tag: 1.1.1
+Tested up to: 5.5.3
+Stable tag: 1.1.2
 License: GPLv3
 Requires PHP: 5.6
 
-Copy page copy pages
+Duplicate post
 
 == Description ==
 
@@ -146,6 +146,9 @@ Copy Delete Posts WordPress plugin doesn’t store any site visitor information 
 8. Copy from Gutenberg editor
 
 == Changelog ==
+
+= 1.1.2 =
+* Tested with newest version of WordPress
 
 = 1.1.1 =
 * Fixed some warnings and notices in PHP 7
