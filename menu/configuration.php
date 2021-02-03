@@ -97,8 +97,10 @@ function cdp_configuration() {
 
   <style>
     #wpcontent {padding-left: 2px !important;}
-    #wpbody {overflow-y: scroll;overflow-x: auto;max-height: calc(100vh - 32px);min-height: calc(100vh - 32px);}
-    #wpfooter {display: none;}
+    /* #wpbody {overflow-y: scroll;overflow-x: auto;max-height: calc(100vh - 32px);} */
+    #wpfooter { display: none; padding-bottom: 30vh; }
+    #wpfooter #footer-left { display: none; }
+    #wpfooter #footer-upgrade { display: none; }
   </style>
   <?php if ($areWePro && function_exists('cdpp_profile_manager_html')) cdpp_profile_manager_html(); ?>
   <?php if ($areWePro && function_exists('cdpp_delete_redi_modal')) cdpp_delete_redi_modal(); ?>
@@ -187,7 +189,7 @@ function cdp_configuration() {
           </div>
         </div>
       </div>
-      <div class="cdp-collapsibles" style="padding-top: 5px; padding-bottom: 35vh;">
+      <div class="cdp-collapsibles" style="padding-top: 5px;">
 
         <!-- SETTINGS PROFILE SECTION -->
         <div class="cdp-collapsible" data-cdp-group="mains">
