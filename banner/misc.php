@@ -219,6 +219,20 @@
             }
           }
 
+          if (!isset($this->menu)) {
+            $hhr = ['httpsremover', 'httphttpsremover'];
+            if (in_array($this->slug_low, $hhr)) {
+              $this->menu = 'httphttpsRemoval';
+            }
+          }
+
+          if (!isset($this->menu)) {
+            $wpc = ['wp-clone', 'wp-clone', 'wpclonebywpacademy'];
+            if (in_array($this->slug_low, $wpc)) {
+              $this->menu = 'wp-clone';
+            }
+          }
+
           // Make sure it found something
           if (isset($this->menu)) return true;
           else return $this->fail(6);

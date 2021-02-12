@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) exit;
  * There are constant (but dynamic per blog) variables.
  * @since 1.0.0
  */
-function cdp_vars($cdp_plug_url = 'x', $post_id = false, $parent = false, $notify = false) {
+function cdp_vars($hideTT = false, $cdp_plug_url = 'x', $post_id = false, $parent = false, $notify = false) {
 
   // $minutes = ((defined('CDP_SCRIPT_DEBUG'))?CDP_SCRIPT_DEBUG:false);
   $shouldShowNotify = false;
@@ -89,6 +89,9 @@ function cdp_vars($cdp_plug_url = 'x', $post_id = false, $parent = false, $notif
     <div class="cdp-spinner"></div>
   </div>
   <input type="text" hidden id="cdp-purl" style="display: none; visibility: hidden;" value="<?php echo $cdp_plug_url ?>">
+  <?php if ($hideTT == true): ?>
+  <input type="text" hidden id="cdp-hideTT" style="display: none; visibility: hidden;" value="true">
+  <?php endif; ?>
 
   <?php if ($post_id != false): ?>
   <input type="text" hidden id="cdp-current-post-id" style="display: none; visibility: hidden;" value="<?php echo $post_id ?>">

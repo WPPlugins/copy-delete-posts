@@ -3,7 +3,7 @@
  * Plugin Name: Copy & Delete Posts
  * Plugin URI: https://copy-delete-posts.com
  * Description: The best solution to easily make duplicates of your posts & pages, and delete them in one go.
- * Version: 1.1.3
+ * Version: 1.1.4
  * Author: Copy Delete Posts
  * Author URI: https://copy-delete-posts.com/
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -31,7 +31,7 @@ if (!defined('ABSPATH')) exit;
  */
 
 	 // Plugin constants
-	 define('CDP_VERSION', '1.1.3');
+	 define('CDP_VERSION', '1.1.4');
 	 define('CDP_WP_VERSION', get_bloginfo('version'));
 	 define('CDP_SCRIPT_DEBUG', false);
 	 $cdp_plug_url = plugins_url('', __FILE__);
@@ -477,7 +477,9 @@ if (!defined('ABSPATH')) exit;
 		$profiles = get_option('_cdp_profiles');
 
 		if (is_single() || is_page()) {
-			cdp_vars($cdp_plug_url, $post_id);
+			$hx = false;
+			if ($g['cdp-premium-hide-tooltip'] == 'true') $hx = true;
+			cdp_vars($hx, $cdp_plug_url, $post_id);
 			cdp_modal($screen, $profiles);
 		}
 	});
@@ -495,6 +497,7 @@ if (!defined('ABSPATH')) exit;
 		$screen = get_current_screen();
 		$profiles = get_option('_cdp_profiles');
 		$deny = ['edit-page', 'edit-post'];
+		$hx = false;
 
 		if (!in_array($screen->id, $deny)) {
 			if (isset($post->ID)) {
@@ -517,6 +520,9 @@ if (!defined('ABSPATH')) exit;
 				}
 			}
 		}
+		if ($cdp_globals && array_key_exists('others', $cdp_globals) && $cdp_globals['others']['cdp-premium-hide-tooltip'] == 'true') {
+			$hx = true;
+		}
 
 		if (get_option('_cdp_show_copy', false)) {
 			echo '<span style="display: none; visibility: hidden;" id="cdp-show-copy-banner" data-value="true"></span>';
@@ -524,7 +530,9 @@ if (!defined('ABSPATH')) exit;
 		}
 
 		if ($pagenow == 'edit.php') $post_id = false;
-		cdp_vars($cdp_plug_url, $post_id, $hasParent, true);
+		error_log(print_r($cdp_globals, true));
+		error_log(print_r($hx, true));
+		cdp_vars($hx, $cdp_plug_url, $post_id, $hasParent, true);
 		cdp_tooltip_content($profiles);
 		cdp_modal($screen, $profiles);
 
@@ -701,7 +709,8 @@ if (!defined('ABSPATH')) exit;
 			'cdp-display-gutenberg' => 'true',
 			'cdp-references-post' => 'false',
 			'cdp-references-edit' => 'false',
-			'cdp-premium-import' => 'false'
+			'cdp-premium-import' => 'false',
+			'cdp-premium-hide-tooltip' => 'false'
 		);
 	}
 /** –– **/

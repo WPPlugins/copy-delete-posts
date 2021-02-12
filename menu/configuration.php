@@ -562,10 +562,15 @@ function cdp_configuration() {
               </div>
               <div><h2><b class="cdp-f-s-18 cdp-f-w-bold">Additional features</b></h2></div>
               <div class="cdp-p-25-40 cdp-f-s-18 cdp-f-w-light">
+                <label for="cdp-o-premium-hide-tooltip">
+                  <?php if (!isset($gos['cdp-premium-hide-tooltip'])) $gos['cdp-premium-hide-tooltip'] = false; ?>
+                  <input id="cdp-o-premium-hide-tooltip"<?php echo ((!$areWePro)?' disabled="true"':''); ?> <?php echo ($areWePro && $gos['cdp-premium-hide-tooltip'] == 'true')?'checked ':''; ?> type="checkbox" class="cdp-other-inputs" name="cdp-premium-hide-tooltip" />
+                  <span class="cdp-relative cdp-tooltip-premium" data-top="5">Hide copy tooltip on hover and only show the button <span class="cdp-premium-icon cdp-big-icon" style="right: -30px"></span></span>
+                </label>
                 <label for="cdp-o-premium-import">
                   <?php if (!isset($gos['cdp-premium-import'])) $gos['cdp-premium-import'] = false; ?>
                   <input id="cdp-o-premium-import"<?php echo ((!$areWePro)?' disabled="true"':''); ?> <?php echo ($areWePro && $gos['cdp-premium-import'] == 'true')?'checked ':''; ?> type="checkbox" class="cdp-other-inputs" name="cdp-premium-import" />
-                  <span class="cdp-relative cdp-tooltip-premium" data-top="5">Show post export & import buttons <span class="cdp-premium-icon cdp-big-icon" style="top: calc(50% - 12px)"></span></span>
+                  <span class="cdp-relative cdp-tooltip-premium" data-top="5">Show post export & import buttons <span class="cdp-premium-icon cdp-big-icon" style="right: -30px"></span></span>
                 </label>
               </div>
               <div class="cdp-center cdp-padding-15-h">
@@ -910,78 +915,24 @@ function cdp_configuration() {
         <?php if (function_exists('cdpp_license')) cdpp_license(); ?>
       </div>
 
-      <!-- SUPPORTS – FOR FUTURE – ONLY CONCEPT -->
-      <div class="cdp-supports cdp-hide">
-        <div class="cdp-cf">
-          <a href="#" target="_blank">
-            <div class="cdp-left cdp-third cdp-support-box cdp-animated cdp-support-animated cdp-ignore">
-              <div class="cdp-support-header">
-                <img class="cdp-support-img" src="" alt="">
-                <div class="cdp-support-title"><b>Issues? Ask us in the Support Forum!</b></div>
-              </div>
-              <div class="cdp-support-desc">Your first port of call. We’ll try to respond quickly!</div>
-            </div>
-          </a>
-          <a href="#" target="_blank">
-            <div class="cdp-left cdp-third cdp-support-box cdp-animated cdp-support-animated cdp-ignore">
-              <div class="cdp-support-header">
-                <img class="cdp-support-img" src="" alt="">
-                <div class="cdp-support-title"><b>Get the Premium Plugin</b></div>
-              </div>
-              <div class="cdp-support-desc">…which many fancy features and hands-on support.</div>
-            </div>
-          </a>
-          <div class="cdp-left cdp-third cdp-support-box cdp-show-projects cdp-pointer">
-            <div class="cdp-center cdp-f20"><b>Check out our other projects</b></div>
-            <div class="cdp-center">
-              <div class="cdp-inline cdp-fourth"><img class="cdp-support-img" src="" alt=""></div>
-              <div class="cdp-inline cdp-fourth"><img class="cdp-support-img" src="" alt=""></div>
-              <div class="cdp-inline cdp-fourth"><img class="cdp-support-img" src="" alt=""></div>
-              <div class="cdp-inline cdp-fourth"><img class="cdp-support-img" src="" alt=""></div>
-            </div>
-          </div>
-        </div>
-        <div class="cdp-cf">
-          <div class="cdp-left cdp-center cdp-third"><span class="cdp-tooltip-top" title="Your account on Wordpress.org (where you open a new support thread) is different to the one you login to your WordPress dashboard (where you are now). If you don’t have a WordPress.org account yet, please sign up at the top right on the Support Forum page, and then scroll down on that page. It only takes a minute :) Thank you!">Cannot log in there?</span></div>
-          <div class="cdp-left cdp-center cdp-third"></div>
-          <div class="cdp-left cdp-center cdp-third"></div>
-        </div>
-      </div>
-      <div class="cdp-projects" style="display: none;">
-        <h1 class="cdp-center">Our other projects...</h1>
-        <div class="cdp-cf">
-          <a href="#" target="_blank">
-            <div class="cdp-left cdp-fourth cdp-ignore cdp-animated cdp-project-box cdp-center">
-              <img src="" alt="">
-              <h3>Backup & Migration</h3>
-              <div>The best Backup plugin for WordPress!</div>
-            </div>
-          </a>
-
-          <a href="#" target="_blank">
-            <div class="cdp-left cdp-fourth cdp-ignore cdp-animated cdp-project-box cdp-center">
-              <img src="" alt="">
-              <h3>Ultimatelysocial</h3>
-              <div>The best Social Media plugin for WordPress!</div>
-            </div>
-          </a>
-          <a href="#" target="_blank">
-            <div class="cdp-left cdp-fourth cdp-ignore cdp-animated cdp-project-box cdp-center">
-              <img src="" alt="">
-              <h3>follow.it</h3>
-              <div>Get more traffic for your website & follow the news!</div>
-            </div>
-          </a>
-          <a href="#" target="_blank">
-            <div class="cdp-left cdp-fourth cdp-animated cdp-project-box cdp-center">
-              <img src="" alt="">
-              <h3>MyPopUps</h3>
-              <div>Create the best pop-ups for highest conversion!</div>
-            </div>
-          </a>
-        </div>
+      <div class="cdp-f-s-20 cdp-p-hh cdp-center cdp-relative">
+        <b>Questions?</b> We're happy to help in the <a href="https://wordpress.org/support/plugin/copy-delete-posts/" target="_blank" style="text-decoration: none;">Support Forum</a>. <span class="cdp-info-icon cdp-tooltip-top" title="Your account on Wordpress.org (where you open a new support thread) is different to the one you login to your WordPress dashboard (where you are now). If you don't have a WordPress.org account yet, please sign up at the top right on here. It only takes a minute :) Thank you!"></span>
       </div>
 
+      <jdiv class="label_e50 _bottom_ea7 notranslate" id="cdp_jvlabelWrap-fake" style="background: linear-gradient(95deg, rgb(47, 50, 74) 20%, rgb(66, 72, 103) 80%);right: 30px;bottom: 0px;width: 310px;">
+    		<jdiv class="hoverl_bc6"></jdiv>
+    		<jdiv class="text_468 _noAd_b4d contentTransitionWrap_c73" style="font-size: 15px;font-family: Arial, Arial;font-style: normal;color: rgb(240, 241, 241);position: absolute;top: 8px;line-height: 13px;">
+    			<span><?php _e('Connect with support (click to load)', 'copy-delete-posts'); ?></span><br>
+    			<span style="color: #eee;font-size: 10px;">
+    				<?php _e('This will establish connection to the chat servers', 'copy-delete-posts'); ?>
+    			</span>
+    		</jdiv>
+    		<jdiv class="leafCont_180">
+    			<jdiv class="leaf_2cc _bottom_afb">
+    				<jdiv class="cssLeaf_464"></jdiv>
+    			</jdiv>
+    		</jdiv>
+    	</jdiv>
 
     </div>
   </div>
