@@ -2,8 +2,8 @@
 Contributors: CopyDeletePosts, copydelete
 Tags: Duplicate post, Copy posts, Copy pages, Duplicate posts, Duplicate pages, Clone posts, Clone pages, Delete posts, Delete pages, Duplicator, copy post, copy page
 Requires at least: 4.6
-Tested up to: 5.6.1
-Stable tag: 1.1.4
+Tested up to: 5.6.2
+Stable tag: 1.1.5
 License: GPLv3
 Requires PHP: 5.6
 
@@ -146,6 +146,12 @@ Copy Delete Posts WordPress plugin doesn’t store any site visitor information 
 8. Copy from Gutenberg editor
 
 == Changelog ==
+
+= 1.1.5 =
+* Tested up to WordPress 5.6.2
+* Fixed footer issue in Gutenberg editor
+* Fixed notice in premium version (regarding new option)
+* Added posibility to hide menu under tools
 
 = 1.1.4 =
 * Tested up to WordPress 5.6.1

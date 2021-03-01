@@ -3,7 +3,7 @@
  * Plugin Name: Copy & Delete Posts
  * Plugin URI: https://copy-delete-posts.com
  * Description: The best solution to easily make duplicates of your posts & pages, and delete them in one go.
- * Version: 1.1.4
+ * Version: 1.1.5
  * Author: Copy Delete Posts
  * Author URI: https://copy-delete-posts.com/
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -31,7 +31,7 @@ if (!defined('ABSPATH')) exit;
  */
 
 	 // Plugin constants
-	 define('CDP_VERSION', '1.1.4');
+	 define('CDP_VERSION', '1.1.5');
 	 define('CDP_WP_VERSION', get_bloginfo('version'));
 	 define('CDP_SCRIPT_DEBUG', false);
 	 $cdp_plug_url = plugins_url('', __FILE__);
@@ -197,6 +197,14 @@ if (!defined('ABSPATH')) exit;
 		if (is_object($post)) $type = $post->post_type;
 		else $type = false;
 
+		if (isset($g['cdp-menu-in-settings']) && $g['cdp-menu-in-settings'] == 'true') {
+			?>
+			<style media="screen">
+				#toplevel_page_copy-delete-posts { display: none; visibility: hidden; }
+			</style>
+			<?php
+		}
+
 		$ver = preg_replace('#[^\pL\pN/-]+#', '', CDP_VERSION);
 		wp_enqueue_style('cdp-css-global', "{$cdp_plug_url}/assets/css/cdp-global{$min}.css", '', $ver);
 		wp_enqueue_script('cdp-js-global', "{$cdp_plug_url}/assets/js/cdp-global{$min}.js", ['jquery'], $ver, true);
@@ -293,8 +301,16 @@ if (!defined('ABSPATH')) exit;
     // Main menu slug
     $parentSlug = 'copy-delete-posts';
 
+		// Globals
+		$g = get_option('_cdp_globals', array());
+		if (array_key_exists('others', $g)) $g = $g['others'];
+		else $g = cdp_default_global_options();
+
     // Main menu hook
     add_menu_page('Copy & Delete Posts', '<span id="cdp-menu">Copy & Delete Posts</span>', 'read', $parentSlug, 'cdp_configuration', $icon_url, $position = 98);
+		if (isset($g['cdp-menu-in-settings']) && $g['cdp-menu-in-settings'] == 'true') {
+			add_submenu_page('tools.php', 'Copy & Delete Posts Menu', '<span id="cdp-menu">Copy & Delete Posts</span>', 'read', 'copy-delete-posts', 'cdp_configuration', 3);
+		}
 
     // Remove default submenu by menu
     remove_submenu_page($parentSlug, $parentSlug);
@@ -520,7 +536,7 @@ if (!defined('ABSPATH')) exit;
 				}
 			}
 		}
-		if ($cdp_globals && array_key_exists('others', $cdp_globals) && $cdp_globals['others']['cdp-premium-hide-tooltip'] == 'true') {
+		if ($cdp_globals && array_key_exists('others', $cdp_globals) && array_key_exists('cdp-premium-hide-tooltip', $cdp_globals['others']) && $cdp_globals['others']['cdp-premium-hide-tooltip'] == 'true') {
 			$hx = true;
 		}
 
@@ -530,8 +546,6 @@ if (!defined('ABSPATH')) exit;
 		}
 
 		if ($pagenow == 'edit.php') $post_id = false;
-		error_log(print_r($cdp_globals, true));
-		error_log(print_r($hx, true));
 		cdp_vars($hx, $cdp_plug_url, $post_id, $hasParent, true);
 		cdp_tooltip_content($profiles);
 		cdp_modal($screen, $profiles);
@@ -710,7 +724,8 @@ if (!defined('ABSPATH')) exit;
 			'cdp-references-post' => 'false',
 			'cdp-references-edit' => 'false',
 			'cdp-premium-import' => 'false',
-			'cdp-premium-hide-tooltip' => 'false'
+			'cdp-premium-hide-tooltip' => 'false',
+			'cdp-menu-in-settings' => 'false',
 		);
 	}
 /** –– **/

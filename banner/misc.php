@@ -44,7 +44,7 @@
           $this->_root_dir = $root_dir;
 
           // Add handler for Ajax request
-          if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+          if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Check if slug is defined
             if (isset($_POST['slug']) && !empty($_POST['slug'])) {
@@ -446,7 +446,7 @@
     if (!defined('INISEV_CAROUSEL')) {
 
       // Make sure settings/menu page slug exsits
-      if (!empty($_GET['page']) || $_SERVER['REQUEST_METHOD'] === 'POST') {
+      if (!empty($_GET['page']) || (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST')) {
 
         // Initialize the Carousel
         $carousel = new Inisev_Carousel(__FILE__, __DIR__);

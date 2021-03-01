@@ -572,6 +572,10 @@ function cdp_configuration() {
                   <input id="cdp-o-premium-import"<?php echo ((!$areWePro)?' disabled="true"':''); ?> <?php echo ($areWePro && $gos['cdp-premium-import'] == 'true')?'checked ':''; ?> type="checkbox" class="cdp-other-inputs" name="cdp-premium-import" />
                   <span class="cdp-relative cdp-tooltip-premium" data-top="5">Show post export & import buttons <span class="cdp-premium-icon cdp-big-icon" style="right: -30px"></span></span>
                 </label>
+                <label for="cdp-o-menu-in-settings">
+                  <input <?php echo (isset($gos['cdp-menu-in-settings']) && $gos['cdp-menu-in-settings'] == 'true')?'checked ':''; ?>id="cdp-o-menu-in-settings" type="checkbox" class="cdp-other-inputs" name="cdp-menu-in-settings">
+                  Hide Copy & Delete Posts Menu under <b>Tools</b> dropdown
+                </label>
               </div>
               <div class="cdp-center cdp-padding-15-h">
                 <button class="cdp-button cdp-save-options">Save</button>
