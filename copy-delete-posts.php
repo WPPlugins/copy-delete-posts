@@ -3,7 +3,7 @@
  * Plugin Name: Copy & Delete Posts
  * Plugin URI: https://copy-delete-posts.com
  * Description: The best solution to easily make duplicates of your posts & pages, and delete them in one go.
- * Version: 1.1.5
+ * Version: 1.1.6
  * Author: Copy Delete Posts
  * Author URI: https://copy-delete-posts.com/
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -31,9 +31,11 @@ if (!defined('ABSPATH')) exit;
  */
 
 	 // Plugin constants
-	 define('CDP_VERSION', '1.1.5');
+	 define('CDP_VERSION', '1.1.6');
 	 define('CDP_WP_VERSION', get_bloginfo('version'));
 	 define('CDP_SCRIPT_DEBUG', false);
+	 define('CDP_ROOT_DIR', __DIR__);
+	 define('CDP_ROOT_FILE', __FILE__);
 	 $cdp_plug_url = plugins_url('', __FILE__);
 
  	// Other only admin stuff
@@ -136,6 +138,12 @@ if (!defined('ABSPATH')) exit;
 		require_once plugin_dir_path(__FILE__) . 'menu/modal.php';
 		require_once plugin_dir_path(__FILE__) . 'menu/notifications.php';
 		require_once plugin_dir_path(__FILE__) . 'post/handler.php';
+
+		// Review banner
+		if (!is_dir(WP_PLUGIN_DIR . '/copy-delete-posts-premium')) {
+			if (!(class_exists('Inisev\Subs\Inisev_Review') || class_exists('Inisev_Review'))) require_once CDP_ROOT_DIR . '/modules/review/review.php';
+			$review_banner = new \Inisev\Subs\Inisev_Review(CDP_ROOT_FILE, CDP_ROOT_DIR, 'copy-delete-posts', 'Copy & Delete Posts', 'https://bit.ly/2VeAf2E', 'copy-delete-posts');
+		}
 
 	});
 /** –– **/
