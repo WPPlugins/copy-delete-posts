@@ -2,14 +2,16 @@
 Contributors: CopyDeletePosts, copydelete
 Tags: Duplicate post, Copy posts, Copy pages, Duplicate posts, Duplicate pages, Clone posts, Clone pages, Delete posts, Delete pages, Duplicator, copy post, copy page
 Requires at least: 4.6
-Tested up to: 5.7.1
-Stable tag: 1.1.6
+Tested up to: 5.8
+Stable tag: 1.1.7
 License: GPLv3
 Requires PHP: 5.6
 
 Duplicate post
 
 == Description ==
+
+**Try it out on your free dummy site: Click here => [https://tastewp.com/plugins/copy-delete-posts](https://tastewp.com/plugins/copy-delete-posts?redirect-menu=copy-delete-posts)**.
 
 Massively increase your WordPress productivity!
 
@@ -84,6 +86,7 @@ The free Copy Page plugin offers a lot of options - if you want even more option
 
 Just try it out! You'll love it :)
 
+This plugin is part of the Inisev product family - [check out our other products](https://inisev.com).
 
 == Installation ==
 
@@ -146,6 +149,9 @@ Copy Delete Posts WordPress plugin doesn’t store any site visitor information 
 8. Copy from Gutenberg editor
 
 == Changelog ==
+
+= 1.1.7 =
+* Banner fixes
 
 = 1.1.6 =
 * Tested up to WordPress 5.7
@@ -230,7 +236,5 @@ Copy Delete Posts WordPress plugin doesn’t store any site visitor information 
 * Initial release
 
 == Upgrade Notice ==
-= 1.1.6 =
-* Tested up to WordPress 5.7
-* Fixed few notices in PHP 8
-* Updated review banner
+= 1.1.7 =
+* Banner fixes

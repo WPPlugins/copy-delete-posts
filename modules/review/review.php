@@ -30,11 +30,11 @@
         private $name; // Name displayed in banner
         private $days; // Days displayed in banner
         private $minutes; // Minutes displayed in banner
-        private $debug = true; // If true it will display minutes
-        // private $minimum_time = (1 * 24 * 60 * 60); // Minimum time required to display (in seconds)
-        private $minimum_time = (3 * 60); // Minimum time required to display (in seconds)
-        private $remind_time = '+3 minutes'; // Time when banner will be reminded
-        private $time_between = '+1 minutes'; // Time when new banner can be displayed
+        private $debug = false; // If true it will display minutes
+        private $minimum_time = (30 * 24 * 60 * 60); // Minimum time required to display (in seconds)
+        // private $minimum_time = (3 * 60); // Minimum time required to display (in seconds)
+        private $remind_time = '+14 days'; // Time when banner will be reminded
+        private $time_between = '+2 days'; // Time when new banner can be displayed
 
         /**
          * Local URLs
