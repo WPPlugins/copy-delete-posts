@@ -507,6 +507,17 @@ function cdp_insert_new_post($areWePro = false) {
         // Create empty array for new id(s) and error(s)
         $results = array('ids' => array(), 'error' => 0, 'counter' => 0);
 
+        // Prevent SQL injection
+        if (!is_numeric($id)) {
+
+          echo json_encode(array('status' => 'error', 'message' => __('Invalid ID argument.', 'copy-delete-posts')));
+          exit;
+
+        }
+
+        // And just in case
+        $id = esc_sql(intval($id));
+
         // Get Counter value
         $prefix = (($site != -1) ? $wpdb->get_blog_prefix($site) : $wpdb->get_blog_prefix());
         $newestId = $wpdb->get_results("SELECT post_id FROM {$prefix}postmeta WHERE meta_key = '_cdp_origin' AND meta_value = {$id} ORDER BY post_id DESC LIMIT 1", ARRAY_A);
