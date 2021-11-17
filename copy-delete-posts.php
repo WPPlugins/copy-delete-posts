@@ -4,7 +4,7 @@
  * Plugin Name: Copy & Delete Posts
  * Plugin URI: https://copy-delete-posts.com
  * Description: The best solution to easily make duplicates of your posts & pages, and delete them in one go.
- * Version: 1.2.1
+ * Version: 1.2.2
  * Author: Copy Delete Posts
  * Author URI: https://copy-delete-posts.com/
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -30,7 +30,7 @@ analyst_init(array(
  * @since 1.0.0
  */
 // Plugin constants
-define('CDP_VERSION', '1.2.1');
+define('CDP_VERSION', '1.2.2');
 define('CDP_WP_VERSION', get_bloginfo('version'));
 define('CDP_SCRIPT_DEBUG', false);
 define('CDP_ROOT_DIR', __DIR__);
@@ -247,85 +247,12 @@ add_action('admin_enqueue_scripts', function () {
     wp_enqueue_style('cdp-css-user', "{$cdp_plug_url}/assets/css/cdp-user{$min}.css", '', $ver);
     wp_enqueue_script('cdp-icPagination', "{$cdp_plug_url}/assets/js/cdp-icPagination{$min}.js", '', $ver);
     wp_enqueue_script('cdp', "{$cdp_plug_url}/assets/js/cdp{$min}.js", '', $ver, true);
-    $cdpJSArgs = [
-        'strNoItems' => __('No items to show, try with other filters!', 'copy-delete-posts'),
-        'strIntroSaveIssue' => __('Something went wrong and we couldn\'t save intro settings!', 'copy-delete-posts'),
-        'strIntroSaveIssue2' => __('Something went wrong and we couldn\'t save intro settings.', 'copy-delete-posts'),
-        'strIntroUpdateIssue' => __('Something went wrong and we couldn\'t update intro settings – try again!', 'copy-delete-posts'),
-        'strIntroUpdateIssue2' => __('Something went wrong and we couldn\'t update intro settings. – Please check console for more info.', 'copy-delete-posts'),
-        'strSettingsSaved' => __('All your settings were saved!', 'copy-delete-posts'),
-        'strSettingsSaveIssue' => __('Something went wrong and we couldn\'t save your settings.', 'copy-delete-posts'),
-        'strSettingsSaveIssue2' => __('Something went wrong and we couldn\'t save your settings. – Please check console for more info.', 'copy-delete-posts'),
-        'strTogglableName' => __('(Name of original)', 'copy-delete-posts'),
-        'strCopyNumIssue' => __('You need to insert positive number for copies.', 'copy-delete-posts'),
-        'strCopyPostIssue' => __('Something went wrong and we couldn\'t copy this post – please try again!', 'copy-delete-posts'),
-        'strCopyPostIssueConsInfo' => __('Something went wrong and we couldn\'t copy this post. – See dev console for more info.', 'copy-delete-posts'),
-        'strTooltipBtnIssue' => __('Couldn\'t recognize that button, please try again.', 'copy-delete-posts'),
-        'strSelectedProfIssue' => __('Unable to recognize selected profile, please try again.', 'copy-delete-posts'),
-        'strSelectedProfGetIssue' => __('Something went wrong and we couldn\'t get profile settings. – Check console for more details', 'copy-delete-posts'),
-        'strConsLogErr' => __('Copy & Delete Post – Error', 'copy-delete-posts'),
-        'strSelectedProfGetIssue2' => __('Something went wrong and we couldn\'t get profile settings – please try again!', 'copy-delete-posts'),
-        'strCopyInProgress' => __('Copy in progress...', 'copy-delete-posts'),
-        'strServerDataIssue' => __('There was an error while getting data from server, please try again.', 'copy-delete-posts'),
-        'strPostListIssue' => __('Something went wrong and we couldn\'t get post list. – Please check console for more info.', 'copy-delete-posts'),
-        'strCheckDuplicatesSearch' => __('Please, check for: which duplicates you are looking for', 'copy-delete-posts'),
-        'strServerConnectIssue' => __('Cannot connect to the server, premium filters will not be applied.', 'copy-delete-posts'),
-        'strFilterNotSelected' => __('You did not select any filter.<br>Click <a href="#" class="cdp-show-the-copies">here</a> to show all copies (of the selected post type) made by this plugin.', 'copy-delete-posts'),
-        'strNoDataForFilter' => __('No posts/pages meeting the current filter conditions.', 'copy-delete-posts'),
-        'strCheckSteps' => __('Please check that you completed all steps, before this task!', 'copy-delete-posts'),
-        'strSelectPostToDel' => __('Nothing to do here, please select at least one post to delete.', 'copy-delete-posts'),
-        'strFieldWrongCount' => __('You have wrong count in throttling field, please fix.', 'copy-delete-posts'),
-        'strDeletionProcessStarted' => __('Deletion process started, you can close this page now and wait till the process ends!', 'copy-delete-posts'),
-        'strDeletionTaskStart' => __('Something went wrong and we couldn\'t setup the deletion task.', 'copy-delete-posts'),
-        'strDeletionTaskEnd' => __('– Please try without throttling.', 'copy-delete-posts'),
-        'strDeletionTaskConsInfo' => __('Something went wrong and we couldn\'t setup the deletion task. – Please check console for more info.', 'copy-delete-posts'),
-        'strLicenseKeyEmpty' => __('Please enter license key, currently it is empty.', 'copy-delete-posts'),
-        'strLicenseActiveReloading' => __('License is already active, let us reload the page!', 'copy-delete-posts'),
-        'strLicenseValidPressBtn' => __('License is valid, press the button again to activate!', 'copy-delete-posts'),
-        'strUnknownRespRefreshPage' => __('Unknown response, please try refresh the page!', 'copy-delete-posts'),
-        'strSendRequestIssue' => __('Something went wrong and we couldn\'t send request, please try refresh page and try again.', 'copy-delete-posts'),
-        'strSendRequestIssue2' => __('Something went wrong and we couldn\'t send request, are you connected to the internet?', 'copy-delete-posts'),
-        'strIncludingHtml' => __('<b>including</b> empty', 'copy-delete-posts'),
-        'strIncludingHtml2' => __('only if <u><b>not</b></u> empty', 'copy-delete-posts'),
-        'strTogglableNameChange' => __('Change it to (Name of original)', 'copy-delete-posts'),
-        'strTogglableNameChangeBlank' => __('Change it to blank', 'copy-delete-posts'),
-        'strDeletingPosts' => __('Deleting Posts', 'copy-delete-posts'),
-        'strAutoCleanPosts' => __('Auto Cleaning-up', 'copy-delete-posts'),
-        'strKill' => __('Kill', 'copy-delete-posts'),
-        'strDeletedPosts' => __('Deleted Posts', 'copy-delete-posts'),
-        'strAutoCleanedPosts' => __('Auto Cleaned-up', 'copy-delete-posts'),
-        'strHide' => __('Hide', 'copy-delete-posts'),
-        'strDefCopySettingsStart' => __('Define your copy settings', 'copy-delete-posts'),
-        'strDefCopySettingsLink' => __('here', 'copy-delete-posts'),
-        'strCopyToOtherSiteHtml' => __('If you’re on a multisite you can copy it to other sites with the Premium Plugin. <a href="https://sellcodes.com/CylMIdJD" target="_blank">Order it now!</a>', 'copy-delete-posts'),
-        'strPremFeatureHtml' => __('This is a Premium Feature.<br><a href="https://sellcodes.com/CylMIdJD" target="_blank">Check it out and upgrade today</a>,<br>we made it <b>really affordable!</b>', 'copy-delete-posts'),
-        'strPreOrderHtml' => __('You can copy it to other sites with the Premium Plugin.<br><a href="https://sellcodes.com/CylMIdJD" target="_blank">Pre-order it now</a>', 'copy-delete-posts'),
-        'strMultisiteCanCopy' => __('If you’re on a multisite you can copy it to other sites.', 'copy-delete-posts'),
-        'strChangeTypeOfCopy' => __('Change the type of this copy <span class="cdp-premium-icon cdp-big-icon"></span>', 'copy-delete-posts'),
-        'strPostDuplicateOf' => __('This post is a duplicate of', 'copy-delete-posts'),
-        'strAreYouSure' => __('Are you REALLY sure?', 'copy-delete-posts'),
-        'strYouAreCrazy' => __('You\'re crazy! – Here is the output:', 'copy-delete-posts'),
-        'strDebugOutputEnd' => __('–––––––––––––- END OF THE DEBUG OUTPUT –––––––––––––- ', 'copy-delete-posts'),
-        'copySuccessfull' => __('Copy to clipboard was successfull.', 'copy-delete-posts'),
-        'copyFailed' => __('Copy to clipboard failed, your browser does not support this function.', 'copy-delete-posts'),
-    ];
-    wp_localize_script('cdp', 'cdpJS', $cdpJSArgs);
 
     wp_enqueue_script('cdp-modal', "{$cdp_plug_url}/assets/js/cdp-modal{$min}.js", '', $ver, true);
-    $cdpModalJSArgs = [
-      'strRowCopyIssue' => __('Please select at least one row to copy.', 'copy-delete-posts'),
-      'strRowCopyTryAgain' => __('Please select at least one row to copy and try again.', 'copy-delete-posts'),
-      'strSettCopyIssue' => __('Please select basic settings for this copy.', 'copy-delete-posts'),
-      'strPostCopyIssue' => __('Something went wrong and we couldn\'t copy this post – please try again!', 'copy-delete-posts'),
-      'strPostCopyIssueConsoleInfo' => __('Something went wrong and we couldn\'t copy this post. – See dev console for more info.', 'copy-delete-posts'),
-      'strRecogBtnIssue' => __('Couldn\'t recognize that button, please try again.', 'copy-delete-posts'),
-      'strCopyInProgress' => __('Copy in progress...', 'copy-delete-posts'),
-    ];
-    wp_localize_script('cdp-modal', 'cdpModalJS', $cdpModalJSArgs);
-
     wp_enqueue_script('cdp-bulk', "{$cdp_plug_url}/assets/js/cdp-bulk{$min}.js", '', $ver, true);
     $cdpBulkJSArgs = ['strOptCopy' => __('Copy', 'copy-delete-posts')];
     wp_localize_script('cdp-bulk', 'cdpBulkJS', $cdpBulkJSArgs);
+    cdp_load_localize_end_js();
 });
 /** –– * */
 /** –– **\
@@ -346,7 +273,6 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_script('jquery-ui-sortable');
     wp_enqueue_style('cdp-css-global', "{$cdp_plug_url}/assets/css/cdp-global{$min}.css", '', $ver);
     wp_enqueue_script('cdp-js-global', "{$cdp_plug_url}/assets/js/cdp-global{$min}.js", ['jquery'], $ver, true);
-    cdp_load_localize_global_js();
     wp_enqueue_style('cdp-css', "{$cdp_plug_url}/assets/css/cdp{$min}.css", '', $ver);
     wp_enqueue_style('cdp-css-user', "{$cdp_plug_url}/assets/css/cdp-user{$min}.css", '', $ver);
     wp_enqueue_script('cdp', "{$cdp_plug_url}/assets/js/cdp{$min}.js", ['jquery'], $ver, true);
@@ -356,6 +282,8 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_script('cdp-js-user', "{$cdp_plug_url}/assets/js/cdp-user{$min}.js", '', $ver, true);
     wp_enqueue_style('cdp-css-select', "{$cdp_plug_url}/assets/css/cdp-select{$min}.css", '', $ver);
     wp_enqueue_script('cdp-js-select', "{$cdp_plug_url}/assets/js/cdp-select{$min}.js", '', $ver, true);
+    cdp_load_localize_global_js();
+    cdp_load_localize_end_js();
 });
 /** –– * */
 /** –– **\
@@ -851,8 +779,86 @@ function cdp_load_localize_global_js() {
     'strErrWithNotif' => __('There was an error with this notification.', 'copy-delete-posts'),
     'strCDPInfo2' => __('Copy & Delete Posts', 'copy-delete-posts'),
   ];
-
   wp_localize_script('cdp-js-global', 'cdpGlobalJS', $cdpGlobalJSArgs);
+
+}
+
+function cdp_load_localize_end_js() {
+
+  $cdpJSArgs = [
+    'strNoItems' => __('No items to show, try with other filters!', 'copy-delete-posts'),
+    'strIntroSaveIssue' => __('Something went wrong and we couldn\'t save intro settings!', 'copy-delete-posts'),
+    'strIntroSaveIssue2' => __('Something went wrong and we couldn\'t save intro settings.', 'copy-delete-posts'),
+    'strIntroUpdateIssue' => __('Something went wrong and we couldn\'t update intro settings – try again!', 'copy-delete-posts'),
+    'strIntroUpdateIssue2' => __('Something went wrong and we couldn\'t update intro settings. – Please check console for more info.', 'copy-delete-posts'),
+    'strSettingsSaved' => __('All your settings were saved!', 'copy-delete-posts'),
+    'strSettingsSaveIssue' => __('Something went wrong and we couldn\'t save your settings.', 'copy-delete-posts'),
+    'strSettingsSaveIssue2' => __('Something went wrong and we couldn\'t save your settings. – Please check console for more info.', 'copy-delete-posts'),
+    'strTogglableName' => __('(Name of original)', 'copy-delete-posts'),
+    'strCopyNumIssue' => __('You need to insert positive number for copies.', 'copy-delete-posts'),
+    'strCopyPostIssue' => __('Something went wrong and we couldn\'t copy this post – please try again!', 'copy-delete-posts'),
+    'strCopyPostIssueConsInfo' => __('Something went wrong and we couldn\'t copy this post. – See dev console for more info.', 'copy-delete-posts'),
+    'strTooltipBtnIssue' => __('Couldn\'t recognize that button, please try again.', 'copy-delete-posts'),
+    'strSelectedProfIssue' => __('Unable to recognize selected profile, please try again.', 'copy-delete-posts'),
+    'strSelectedProfGetIssue' => __('Something went wrong and we couldn\'t get profile settings. – Check console for more details', 'copy-delete-posts'),
+    'strConsLogErr' => __('Copy & Delete Post – Error', 'copy-delete-posts'),
+    'strSelectedProfGetIssue2' => __('Something went wrong and we couldn\'t get profile settings – please try again!', 'copy-delete-posts'),
+    'strCopyInProgress' => __('Copy in progress...', 'copy-delete-posts'),
+    'strServerDataIssue' => __('There was an error while getting data from server, please try again.', 'copy-delete-posts'),
+    'strPostListIssue' => __('Something went wrong and we couldn\'t get post list. – Please check console for more info.', 'copy-delete-posts'),
+    'strCheckDuplicatesSearch' => __('Please, check for: which duplicates you are looking for', 'copy-delete-posts'),
+    'strServerConnectIssue' => __('Cannot connect to the server, premium filters will not be applied.', 'copy-delete-posts'),
+    'strFilterNotSelected' => __('You did not select any filter.<br>Click <a href="#" class="cdp-show-the-copies">here</a> to show all copies (of the selected post type) made by this plugin.', 'copy-delete-posts'),
+    'strNoDataForFilter' => __('No posts/pages meeting the current filter conditions.', 'copy-delete-posts'),
+    'strCheckSteps' => __('Please check that you completed all steps, before this task!', 'copy-delete-posts'),
+    'strSelectPostToDel' => __('Nothing to do here, please select at least one post to delete.', 'copy-delete-posts'),
+    'strFieldWrongCount' => __('You have wrong count in throttling field, please fix.', 'copy-delete-posts'),
+    'strDeletionProcessStarted' => __('Deletion process started, you can close this page now and wait till the process ends!', 'copy-delete-posts'),
+    'strDeletionTaskStart' => __('Something went wrong and we couldn\'t setup the deletion task.', 'copy-delete-posts'),
+    'strDeletionTaskEnd' => __('– Please try without throttling.', 'copy-delete-posts'),
+    'strDeletionTaskConsInfo' => __('Something went wrong and we couldn\'t setup the deletion task. – Please check console for more info.', 'copy-delete-posts'),
+    'strLicenseKeyEmpty' => __('Please enter license key, currently it is empty.', 'copy-delete-posts'),
+    'strLicenseActiveReloading' => __('License is already active, let us reload the page!', 'copy-delete-posts'),
+    'strLicenseValidPressBtn' => __('License is valid, press the button again to activate!', 'copy-delete-posts'),
+    'strUnknownRespRefreshPage' => __('Unknown response, please try refresh the page!', 'copy-delete-posts'),
+    'strSendRequestIssue' => __('Something went wrong and we couldn\'t send request, please try refresh page and try again.', 'copy-delete-posts'),
+    'strSendRequestIssue2' => __('Something went wrong and we couldn\'t send request, are you connected to the internet?', 'copy-delete-posts'),
+    'strIncludingHtml' => __('<b>including</b> empty', 'copy-delete-posts'),
+    'strIncludingHtml2' => __('only if <u><b>not</b></u> empty', 'copy-delete-posts'),
+    'strTogglableNameChange' => __('Change it to (Name of original)', 'copy-delete-posts'),
+    'strTogglableNameChangeBlank' => __('Change it to blank', 'copy-delete-posts'),
+    'strDeletingPosts' => __('Deleting Posts', 'copy-delete-posts'),
+    'strAutoCleanPosts' => __('Auto Cleaning-up', 'copy-delete-posts'),
+    'strKill' => __('Kill', 'copy-delete-posts'),
+    'strDeletedPosts' => __('Deleted Posts', 'copy-delete-posts'),
+    'strAutoCleanedPosts' => __('Auto Cleaned-up', 'copy-delete-posts'),
+    'strHide' => __('Hide', 'copy-delete-posts'),
+    'strDefCopySettingsStart' => __('Define your copy settings', 'copy-delete-posts'),
+    'strDefCopySettingsLink' => __('here', 'copy-delete-posts'),
+    'strCopyToOtherSiteHtml' => __('If you’re on a multisite you can copy it to other sites with the Premium Plugin. <a href="https://sellcodes.com/CylMIdJD" target="_blank">Order it now!</a>', 'copy-delete-posts'),
+    'strPremFeatureHtml' => __('This is a Premium Feature.<br><a href="https://sellcodes.com/CylMIdJD" target="_blank">Check it out and upgrade today</a>,<br>we made it <b>really affordable!</b>', 'copy-delete-posts'),
+    'strPreOrderHtml' => __('You can copy it to other sites with the Premium Plugin.<br><a href="https://sellcodes.com/CylMIdJD" target="_blank">Pre-order it now</a>', 'copy-delete-posts'),
+    'strMultisiteCanCopy' => __('If you’re on a multisite you can copy it to other sites.', 'copy-delete-posts'),
+    'strChangeTypeOfCopy' => __('Change the type of this copy <span class="cdp-premium-icon cdp-big-icon"></span>', 'copy-delete-posts'),
+    'strPostDuplicateOf' => __('This post is a duplicate of', 'copy-delete-posts'),
+    'strAreYouSure' => __('Are you REALLY sure?', 'copy-delete-posts'),
+    'strYouAreCrazy' => __('You\'re crazy! – Here is the output:', 'copy-delete-posts'),
+    'strDebugOutputEnd' => __('–––––––––––––- END OF THE DEBUG OUTPUT –––––––––––––- ', 'copy-delete-posts'),
+    'copySuccessfull' => __('Copy to clipboard was successfull.', 'copy-delete-posts'),
+    'copyFailed' => __('Copy to clipboard failed, your browser does not support this function.', 'copy-delete-posts'),
+  ];
+  wp_localize_script('cdp', 'cdpJS', $cdpJSArgs);
+
+  $cdpModalJSArgs = [
+    'strRowCopyIssue' => __('Please select at least one row to copy.', 'copy-delete-posts'),
+    'strRowCopyTryAgain' => __('Please select at least one row to copy and try again.', 'copy-delete-posts'),
+    'strSettCopyIssue' => __('Please select basic settings for this copy.', 'copy-delete-posts'),
+    'strPostCopyIssue' => __('Something went wrong and we couldn\'t copy this post – please try again!', 'copy-delete-posts'),
+    'strPostCopyIssueConsoleInfo' => __('Something went wrong and we couldn\'t copy this post. – See dev console for more info.', 'copy-delete-posts'),
+    'strRecogBtnIssue' => __('Couldn\'t recognize that button, please try again.', 'copy-delete-posts'),
+    'strCopyInProgress' => __('Copy in progress...', 'copy-delete-posts'),
+  ];
+  wp_localize_script('cdp-modal', 'cdpModalJS', $cdpModalJSArgs);
 
 }
 

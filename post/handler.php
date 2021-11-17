@@ -885,8 +885,8 @@ function cdp_insert_new_post($areWePro = false) {
       $isSlowPerf = false;
     }
 
-    // Check if the copy time of one page was slower than 0.051 of second
-    if ($copyTimePerOne > 0.051) {
+    // Check if the copy time of one page was slower than 0.045 of second
+    if ($copyTimePerOne > 0.045) {
       $isSlowPerf = true;
     }
 

@@ -31,22 +31,6 @@ if (!defined('ABSPATH')) exit;
 /** –– **/
 
 /** –– **\
- * Adding assets.
- * @since 1.0.9
- */
-  add_action('cdp_notices_special', function() {
-
-    if (cdp_check_permissions(wp_get_current_user()) == false) return;
-    if (!get_option('cdp_dismiss_perf_notice', false) && get_option('cdp_latest_slow_performance', false)) {
-
-      cdp_render_performance_notice();
-
-    }
-
-  });
-/** –– **/
-
-/** –– **\
  * Main plugin configuration menu.
  * @since 1.0.0
  */
@@ -138,8 +122,6 @@ function cdp_configuration() {
             <div class="cdp-s-i-a cdp-welcome-title-after cdp-text-right cdp-green"<?php echo $content ?>><a class="cdp-pointer" id="cdp-show-into-again"><span class="cdp-green cdp-f-s-16"><?php _e('Show intro', 'copy-delete-posts'); ?></span></a></div>
         </div>
       </div>
-
-      <?php do_action('cdp_notices_special'); ?>
 
       <div class="cdp-intro"<?php echo $intro ?>>
         <div class="cdp-box cdp-white-bg cdp-shadow">
@@ -996,63 +978,3 @@ function cdp_human_readable_bytes($bytes) {
 }
 
 /** –– * */
-
-/** –– **\
- * Notice about performance.
- * @since 1.0.9
- */
-function cdp_render_performance_notice() {
-
-  global $wp_version;
-  global $wpdb;
-
-  $mysqlVersion = $wpdb->db_version();
-
-  $cdp_notice2 = __('%b_start%Please%b_end% copy & paste the following log %a_start%into the forum%a_end% so that we can make the plugin better. Thank you!', 'copy-delete-posts');
-  $cdp_notice2 = str_replace('%a_start%', '<a target="_blank" href="https://wordpress.org/support/plugin/copy-delete-posts/#new-topic-0">', $cdp_notice2);
-  $cdp_notice2 = str_replace('%a_end%', '</a>', $cdp_notice2);
-  $cdp_notice2 = str_replace('%b_start%', '<b class="cdp-please-big">', $cdp_notice2);
-  $cdp_notice2 = str_replace('%b_end%', '</b>', $cdp_notice2);
-
-  $logs = get_option('cdp_copy_logs_times', array());
-
-  $theLog = '';
-
-  $theLog .= 'The OS: ' . PHP_OS . "\n";
-  $theLog .= 'PHP Version: ' . PHP_VERSION . "\n";
-  $theLog .= 'WP Version: ' . $wp_version . "\n";
-  $theLog .= 'MySQL Version: ' . $mysqlVersion . "\n";
-  $theLog .= 'Directory Separator: ' . DIRECTORY_SEPARATOR . "\n\n";
-
-  $theLog .= 'Copy logs:' . "\n";
-
-  foreach ($logs as $key => $value) {
-    $amount = isset($value['amount']) ? $value['amount'] : 1;
-    $time = $value['time'];
-    $perOne = $value['perOne'];
-    $data = date('d-m-Y H:i:s', $value['data']);
-    $memory = cdp_human_readable_bytes(intval($value['memory']));
-    $peak = cdp_human_readable_bytes(intval($value['peak']));
-
-    $theLog .= $data . ' - ' . $amount . 'x, [total: ' . $time . ', avg: ' . $perOne . '] (mem: ' . $memory . ' - ' . $value['memory'] . ', peak: ' . $peak . ' - ' . $value['peak'] . ')' . "\n";
-  }
-
-  ?>
-
-  <div id="cdp_notice_error">
-    <div class="cdp-cf cdp_notice_heading">
-      <div class="cdp-left cdp_warning_icon"></div>
-      <div class="cdp-left cdp_notice_content">
-        <?php _e('The plugin works, however we noticed some optimization potential on your site.', 'copy-delete-posts'); ?><br>
-        <?php echo $cdp_notice2; ?>
-      </div>
-      <div class="cdp-left cdp_notice_perf_close cdp-tooltip-top" title="<?php _e('Dismiss forever', 'copy-delete-posts'); ?>">&times;</div>
-    </div>
-    <div class="cdp-textarea-wr-notice">
-      <textarea readonly class="cdp_notice_logs"><?php echo $theLog ?></textarea>
-      <div class="cdp-copy-notice-logs"><?php _e('Copy logs', 'copy-delete-posts'); ?></div>
-    </div>
-  </div>
-  <?php
-}
-/** –– **/
