@@ -440,7 +440,7 @@ function cdp_insert_new_post($areWePro = false) {
 
                 // Prepare data and insert filtered to results
                 foreach ($vals as $val)
-                    array_push($prepared, array($meta => $val));
+                    $prepared[] = array($meta => $val);
 
             } else {
 
@@ -885,8 +885,8 @@ function cdp_insert_new_post($areWePro = false) {
       $isSlowPerf = false;
     }
 
-    // Check if the copy time of one page was slower than 0.045 of second
-    if ($copyTimePerOne > 0.045) {
+    // Check if the copy time of one page was slower than 0.020 of second
+    if ($copyTimePerOne > 0.020) {
       $isSlowPerf = true;
     }
 
