@@ -1,7 +1,5 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit;
-
 if (!function_exists('analyst_resolve_sdk')) {
 
 	/**
@@ -22,9 +20,9 @@ if (!function_exists('analyst_resolve_sdk')) {
 
         $plugins = get_option('active_plugins');
 
-    		if ($thisPluginPath) {
-    			array_push($plugins, plugin_basename($thisPluginPath));
-    		}
+		if ($thisPluginPath) {
+			array_push($plugins, plugin_basename($thisPluginPath));
+		}
 
         $pluginsFolder = WP_PLUGIN_DIR;
 

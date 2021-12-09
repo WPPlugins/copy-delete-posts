@@ -153,7 +153,7 @@ class Collector
 	 */
 	public function getServerIp()
 	{
-		return sanitize_text_field($_SERVER['SERVER_ADDR']);
+		return $_SERVER['SERVER_ADDR'];
 	}
 
 	/**
@@ -171,11 +171,7 @@ class Collector
 	{
 		$conn = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 
-		if ($conn) {
-			$version = mysqli_get_server_info($conn);
-		} else {
-			return 'unknown';
-		}
+		$version = mysqli_get_server_info($conn);
 
 		return $version ? $version : 'unknown';
 	}

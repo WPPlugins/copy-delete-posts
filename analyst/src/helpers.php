@@ -1,7 +1,5 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit;
-
 if (! function_exists('analyst_assets_path')) {
 	/**
 	 * Generates path to file in assets folder
@@ -71,5 +69,16 @@ if (! function_exists('analyst_require_template')) {
 		extract($data);
 
 		require analyst_templates_path($file);
+	}
+}
+
+if (! function_exists('dd')) {
+	/**
+	 * Dump some data
+	 */
+	function dd ()
+	{
+		var_dump(func_get_args());
+		die();
 	}
 }

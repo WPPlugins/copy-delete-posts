@@ -1,29 +1,28 @@
-<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
-<div id="analyst-install-modal" class="analyst-modal" style="display: none" analyst-plugin-id="<?php echo esc_attr( $pluginToInstall ); ?>">
+<div id="analyst-install-modal" class="analyst-modal" style="display: none" analyst-plugin-id="<?=$pluginToInstall?>">
 	<div class="analyst-modal-content" style="width: 450px">
 		<div class="analyst-disable-modal-mask" id="analyst-disable-install-modal-mask" style="display: none"></div>
 		<div style="display: flex">
 			<div class="analyst-install-image-block">
-				<img src="<?php echo esc_url( $shieldImage ); ?>"/>
+				<img src="<?=$shieldImage?>"/>
 			</div>
 			<div class="analyst-install-description-block">
 				<strong class="analyst-modal-header">Stay on the safe side</strong>
 				<p class="analyst-install-description-text">Receive our plugin’s alerts in
-					case of <strong>critical security</strong>, feature & special deal
+					case of <strong>critical security</strong> & feature
 					updates and allow non-sensitive
 					diagnostic tracking.</p>
 			</div>
 		</div>
 		<div class="analyst-modal-def-top-padding">
-			<button class="analyst-btn-success" id="analyst-install-action">Allow & Continue &gt;</button>
+			<button class="analyst-btn-success" id="analyst-install-action">Allow & Continue ></button>
 		</div>
 		<div class="analyst-modal-def-top-padding" id="analyst-permissions-block" style="display: none">
 			<span>You’re granting these permissions:</span>
 			<ul class="analyst-install-permissions-list">
-				<li><strong>Your profile information</strong> (name and email) </li>
+				<li><strong>Your profile information</strong> (name and email) ​</li>
 				<li><strong>Your site information</strong> (URL, WP version, PHP info, plugins & themes)</li>
 				<li><strong>Plugin notices</strong> (updates, announcements, marketing, no spam)</li>
-				<li><strong>Plugin events</strong> (activation, deactivation and uninstall)</li>
+				<li><strong>Plugin events</strong> (activation, deactivation and uninstall)​</li>
 			</ul>
 		</div>
 		<div class="analyst-install-footer analyst-modal-def-top-padding">
@@ -49,8 +48,7 @@
         url: ajaxurl,
         method: 'POST',
         data: {
-          action: 'analyst_install_' + pluginId,
-          analyst_nonce: analyst_opt_localize.analyst_nonce
+          action: 'analyst_install_' + pluginId
         },
         success: function (data) {
 		  if (data && !data.success) {
@@ -105,14 +103,11 @@
     })
 
 	$('#analyst-install-skip').click(function () {
-    var pluginId = $('#analyst-install-modal').attr('analyst-plugin-id')
+      var pluginId = $('#analyst-install-modal').attr('analyst-plugin-id')
 
-	  $.post(ajaxurl, {
-      action: 'analyst_skip_install_' + pluginId,
-      analyst_nonce: analyst_opt_localize.analyst_nonce
-    }).done(function () {
-		  $('#analyst-install-modal').hide()
-    })
+	  $.post(ajaxurl, {action: 'analyst_skip_install_' + pluginId}).done(function () {
+		$('#analyst-install-modal').hide()
+      })
     })
   })(jQuery)
 </script>

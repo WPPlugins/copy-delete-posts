@@ -1,7 +1,5 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit;
-
 require_once __DIR__ . '/src/helpers.php';
 
 require_once __DIR__ . '/src/Contracts/HttpClientContract.php';
@@ -9,12 +7,8 @@ require_once __DIR__ . '/src/Contracts/RequestContract.php';
 require_once __DIR__ . '/src/Contracts/RequestorContract.php';
 require_once __DIR__ . '/src/Contracts/TrackerContract.php';
 require_once __DIR__ . '/src/Contracts/CacheContract.php';
-require_once __DIR__ . '/src/Contracts/StorageContract.php';
 
 require_once __DIR__ . '/src/Core/AbstractFactory.php';
-
-require_once __DIR__ . '/src/Storage/DatabaseStorage.php';
-require_once __DIR__ . '/src/Storage/FileStorage.php';
 
 require_once __DIR__ . '/src/Cache/DatabaseCache.php';
 
