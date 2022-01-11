@@ -624,7 +624,7 @@ function cdp_configuration() {
             <div class="cdp-padding">
               <div class="cdp-backup-alert cdp-f-s-20 cdp-f-w-light">
                 <?php _e('Before you delete anything here (which cannot be undone!) we <b class="cdp-f-w-bold">strongly suggest</b><br />
-                that you create a backup, for example with <a href="https://wordpress.org/plugins/wp-clone-by-wp-academy/" target="_blank">this plugin</a>', 'copy-delete-posts'); ?>
+                that you create a backup, for example with <a href="https://wordpress.org/plugins/backup-backup/" target="_blank">this plugin</a>', 'copy-delete-posts'); ?>
               </div>
               <div class="cdp-cf cdp-tab-list">
                 <div class="cdp-left cdp-tab-element cdp-tab-active" data-box="cdp-tabox-manual">
