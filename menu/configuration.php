@@ -325,7 +325,6 @@ function cdp_configuration() {
                       <td><?php _e('…be without private taxonomy.', 'copy-delete-posts'); ?></td>
                   </tr>
 
-                  <?php if (false): ?>
                   <tr>
                     <td class="cdp-tooltip-premium">
                       <label>
@@ -334,7 +333,7 @@ function cdp_configuration() {
                             <input <?php echo (array_key_exists('all_metadata', $defaults) && $defaults['all_metadata']=='true' && $areWePro == true)?'checked ':''; ?>class="cdp-data-set" data-cdp-opt="all_metadata" type="checkbox" />
                           </div>
                           <div class="cdp-left cdp-relative" style="width: calc(100% - 45px)">
-                              <span><?php _e('Other Plugin Settings', 'copy-delete-posts'); ?><span class="cdp-premium-icon cdp-big-icon" style="top: calc(50% + 2px) !important;"></span> </span>
+                              <span><?php _e('All post meta', 'copy-delete-posts'); ?><span class="cdp-premium-icon cdp-big-icon"></span> </span>
                           </div>
                         </div>
                       </label>
@@ -342,7 +341,6 @@ function cdp_configuration() {
                     <td><?php _e('…clone all metadata tags assigned to post/page.', 'copy-delete-posts'); ?></td>
                     <td><?php _e('…copy only required post/page metadata.', 'copy-delete-posts'); ?></td>
                   </tr>
-                  <?php endif; ?>
                   <tr<?php echo (!$isWoo)?' style="display: none;"':'' ?>>
                     <td class="cdp-tooltip-premium">
                       <label>
