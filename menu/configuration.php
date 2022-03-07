@@ -101,7 +101,7 @@ function cdp_configuration() {
   <style>
     #wpcontent {padding-left: 2px !important;}
     /* #wpbody {overflow-y: scroll;overflow-x: auto;max-height: calc(100vh - 32px);} */
-    #wpfooter { display: none; padding-bottom: 30vh; }
+    #wpfooter { display: none !important; }
     #wpfooter #footer-left { display: none; }
     #wpfooter #footer-upgrade { display: none; }
   </style>
@@ -593,7 +593,7 @@ function cdp_configuration() {
                 </label>
                 <label for="cdp-o-menu-in-settings">
                   <input <?php echo (isset($gos['cdp-menu-in-settings']) && $gos['cdp-menu-in-settings'] == 'true')?'checked ':''; ?>id="cdp-o-menu-in-settings" type="checkbox" class="cdp-other-inputs" name="cdp-menu-in-settings">
-                  <?php _e('Hide Copy & Delete Posts Menu under <b>Tools</b> dropdown', 'copy-delete-posts'); ?>
+                  <?php _e('Move <b>Copy & Delete Posts</b> <u>menu item</u> under <b>Tools</b> dropdown', 'copy-delete-posts'); ?>
                 </label>
               </div>
               <div class="cdp-center cdp-padding-15-h">
@@ -835,7 +835,7 @@ function cdp_configuration() {
                         <div class="cdp-p-10-h">
                           <div class="cdp-cf cdp-low-margin-bot" style="line-height: 28px;">
                             <div class="cdp-left cdp-blue-circle">1</div>
-                            <div class="cdp-left">&nbsp;<?php _e('Make sure you created a backup with, e.g. with <a href="https://wordpress.org/plugins/wp-clone-by-wp-academy/" target="_blank">this plugin</a>.', 'copy-delete-posts'); ?></div>
+                            <div class="cdp-left">&nbsp;<?php _e('Make sure you created a backup with, e.g. with <a href="https://wordpress.org/plugins/backup-backup/" target="_blank">this plugin</a>.', 'copy-delete-posts'); ?></div>
                           </div>
                           <div class="cdp-cf cdp-low-margin-bot" style="line-height: 28px;">
                             <div class="cdp-left cdp-blue-circle">2</div>
@@ -958,6 +958,10 @@ function cdp_configuration() {
     	</jdiv>
 
     </div>
+  </div>
+
+  <div id="cdp_carrousel" style="display: none; margin-top: 100px;">
+    <?php do_action('ins_global_print_carrousel'); ?>
   </div>
 
   <?php
