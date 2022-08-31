@@ -4,7 +4,7 @@
  * Plugin Name: Copy & Delete Posts
  * Plugin URI: https://copy-delete-posts.com
  * Description: The best solution to easily make duplicates of your posts & pages, and delete them in one go.
- * Version: 1.3.0
+ * Version: 1.3.1
  * Author: Copy Delete Posts
  * Author URI: https://copy-delete-posts.com/
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -30,7 +30,7 @@ analyst_init(array(
  * @since 1.0.0
  */
 // Plugin constants
-define('CDP_VERSION', '1.3.0');
+define('CDP_VERSION', '1.3.1');
 define('CDP_WP_VERSION', get_bloginfo('version'));
 define('CDP_SCRIPT_DEBUG', false);
 define('CDP_ROOT_DIR', __DIR__);
@@ -125,6 +125,10 @@ add_action('upgrader_process_complete', function () {
  * @since 1.0.0
  */
 	add_action('cdp_loaded', function () {
+
+    if (get_option('_cdp_globals', false) === false) {
+      do_action('cdp_plugin_setup');
+    }
 
 		// Include footer banner
 		include_once trailingslashit(__DIR__) . '/banner/misc.php';
@@ -262,9 +266,11 @@ add_action('admin_enqueue_scripts', function () {
     wp_enqueue_script('cdp', "{$cdp_plug_url}/assets/js/cdp{$min}.js", '', $ver, true);
 
     wp_enqueue_script('cdp-modal', "{$cdp_plug_url}/assets/js/cdp-modal{$min}.js", '', $ver, true);
-    wp_enqueue_script('cdp-bulk', "{$cdp_plug_url}/assets/js/cdp-bulk{$min}.js", '', $ver, true);
-    $cdpBulkJSArgs = ['strOptCopy' => __('Copy', 'copy-delete-posts')];
-    wp_localize_script('cdp-bulk', 'cdpBulkJS', $cdpBulkJSArgs);
+    if ($g['cdp-content-custom'] == 'true') {
+      wp_enqueue_script('cdp-bulk', "{$cdp_plug_url}/assets/js/cdp-bulk{$min}.js", '', $ver, true);
+      $cdpBulkJSArgs = ['strOptCopy' => __('Copy', 'copy-delete-posts')];
+      wp_localize_script('cdp-bulk', 'cdpBulkJS', $cdpBulkJSArgs);
+    }
     cdp_load_localize_end_js();
 });
 /** –– * */
@@ -381,9 +387,11 @@ add_filter('post_row_actions', function ($actions, $post) {
     $type = $post->post_type;
 
     // If user want to see the copy buton here pass
-    if (isset($g['cdp-display-posts']) && $g['cdp-display-posts'] == 'true')
-        if (($type == 'post' && $g['cdp-content-posts'] == 'true') || ($type != 'post' && $g['cdp-content-custom'] == 'true'))
-            $actions['cdp_copy'] = "<a href='#'><span class='cdp-copy-button cdp-tooltip-copy' x='" . $type . "' title='" . __('test', 'copy-delete-posts') . "' data-cdp-id='{$post->ID}'>" . __('Copy', 'copy-delete-posts') . "</span></a>";
+    if (isset($g['cdp-display-posts']) && $g['cdp-display-posts'] == 'true') {
+      if (($type == 'post' && $g['cdp-content-posts'] == 'true') || ($type != 'post' && $g['cdp-content-custom'] == 'true')) {
+        $actions['cdp_copy'] = "<a href='#'><span class='cdp-copy-button cdp-tooltip-copy' x='" . $type . "' title='" . __('test', 'copy-delete-posts') . "' data-cdp-id='{$post->ID}'>" . __('Copy', 'copy-delete-posts') . "</span></a>";
+      }
+    }
 
     return $actions;
 }, 10, 2);
@@ -405,9 +413,11 @@ add_filter('page_row_actions', function ($actions, $page) {
     $type = $page->post_type;
 
     // If user want to see the copy buton here pass
-    if (isset($g['cdp-display-posts']) && $g['cdp-display-posts'] == 'true')
-        if (($type == 'page' && $g['cdp-content-pages'] == 'true') || ($type != 'page' && $g['cdp-content-custom'] == 'true'))
-            $actions['cdp_copy'] = "<a href='#'><span class='cdp-copy-button cdp-tooltip-copy' title='" . __('test', 'copy-delete-posts') . "' data-cdp-id='{$page->ID}'>" . __('Copy', 'copy-delete-posts') . "</span></a>";
+    if (isset($g['cdp-display-posts']) && $g['cdp-display-posts'] == 'true') {
+      if (($type == 'page' && $g['cdp-content-pages'] == 'true') || ($type != 'page' && $g['cdp-content-custom'] == 'true')) {
+        $actions['cdp_copy'] = "<a href='#'><span class='cdp-copy-button cdp-tooltip-copy' title='" . __('test', 'copy-delete-posts') . "' data-cdp-id='{$page->ID}'>" . __('Copy', 'copy-delete-posts') . "</span></a>";
+      }
+    }
 
     return $actions;
 }, 10, 2);
@@ -426,8 +436,9 @@ add_filter('bulk_actions-edit-post', function ($bulk_actions) {
     else
         $g = cdp_default_global_options();
 
-    if (isset($g['cdp-display-bulk']) && $g['cdp-display-bulk'] == 'true')
-        $bulk_actions['cdp_bulk_copy'] = __('Copy', 'copy-delete-posts');
+    if (isset($g['cdp-display-bulk']) && $g['cdp-display-bulk'] == 'true' && isset($g['cdp-content-posts']) && $g['cdp-content-posts'] == 'true') {
+      $bulk_actions['cdp_bulk_copy'] = __('Copy', 'copy-delete-posts');
+    }
 
     return $bulk_actions;
 });
@@ -446,8 +457,9 @@ add_filter('bulk_actions-edit-page', function ($bulk_actions) {
     else
         $g = cdp_default_global_options();
 
-    if (isset($g['cdp-display-bulk']) && $g['cdp-display-bulk'] == 'true')
-        $bulk_actions['cdp_bulk_copy'] = __('Copy', 'copy-delete-posts');
+    if (isset($g['cdp-display-bulk']) && $g['cdp-display-bulk'] == 'true' && isset($g['cdp-content-pages']) && $g['cdp-content-pages'] == 'true') {
+      $bulk_actions['cdp_bulk_copy'] = __('Copy', 'copy-delete-posts');
+    }
 
     return $bulk_actions;
 });
@@ -853,7 +865,7 @@ function cdp_load_localize_end_js() {
     'strDefCopySettingsLink' => __('here', 'copy-delete-posts'),
     'strCopyToOtherSiteHtml' => __('If you’re on a multisite you can copy it to other sites with the Premium Plugin. <a href="https://sellcodes.com/CylMIdJD" target="_blank">Order it now!</a>', 'copy-delete-posts'),
     'strPremFeatureHtml' => __('This is a Premium Feature.<br><a href="https://sellcodes.com/CylMIdJD" target="_blank">Check it out and upgrade today</a>,<br>we made it <b>really affordable!</b>', 'copy-delete-posts'),
-    'strPreOrderHtml' => __('You can copy it to other sites with the Premium Plugin.<br><a href="https://sellcodes.com/CylMIdJD" target="_blank">Pre-order it now</a>', 'copy-delete-posts'),
+    'strPreOrderHtml' => __('This is a Premium Feature.<br><a href="https://sellcodes.com/CylMIdJD" target="_blank">Check it out and upgrade today</a>,<br>we made it <b>really affordable!</b>', 'copy-delete-posts'),
     'strMultisiteCanCopy' => __('If you’re on a multisite you can copy it to other sites.', 'copy-delete-posts'),
     'strChangeTypeOfCopy' => __('Change the type of this copy <span class="cdp-premium-icon cdp-big-icon"></span>', 'copy-delete-posts'),
     'strPostDuplicateOf' => __('This post is a duplicate of', 'copy-delete-posts'),
@@ -932,7 +944,8 @@ function cdp_default_global_options() {
         'cdp-references-edit' => 'false',
         'cdp-premium-import' => 'false',
         'cdp-premium-hide-tooltip' => 'false',
-        'cdp-menu-in-settings' => 'false',
+        'cdp-premium-replace-domain' => 'false',
+        'cdp-menu-in-settings' => 'false'
     );
 }
 
