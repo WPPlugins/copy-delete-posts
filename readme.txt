@@ -2,8 +2,8 @@
 Contributors: CopyDeletePosts, copydelete
 Tags: Duplicate post, Copy posts, Copy pages, Duplicate posts, Duplicate pages, Clone posts, Clone pages, Delete posts, Delete pages, Duplicator, copy post, copy page
 Requires at least: 4.6
-Tested up to: 6.0.1
-Stable tag: 1.3.1
+Tested up to: 6.0.2
+Stable tag: 1.3.2
 License: GPLv3
 Requires PHP: 5.6
 
@@ -176,6 +176,12 @@ Vietnamese: [Sao chép bài đăng, sao chép trang, sao chép bài đăng tùy 
 8. Copy from Gutenberg editor
 
 == Changelog ==
+
+= 1.3.2 =
+* NEW: Added automatic creation of non-existing categories for subsite duplication
+* Fixed issues with assigning taxonomy on new posts
+* Resolved issues with featured image duplication between sites
+* Tested with WordPress 6.0.2 + Multisite (PHP 8)
 
 = 1.3.1 =
 * Version fully tested with WordPress 6.0.1 + Multisite
@@ -359,18 +365,8 @@ Vietnamese: [Sao chép bài đăng, sao chép trang, sao chép bài đăng tùy 
 * Initial release
 
 == Upgrade Notice ==
-= 1.3.1 =
-* Version fully tested with WordPress 6.0.1 + Multisite
-* Removed unnecessary debug code
-* Fixed issues with falsive attachment duplication
-* Fixed issue inside tooltip while redirect to edit screen option was enabled
-* Fixed issue while during duplication notice "Please select settings" appeared
-* Fixed issue with multi-post duplication to different subsite
-* Fixed post type restrictions, copy option won't appear in dropdown while copying is forbidden
-* Fixed corner cases where copy action button was not displayed in subsites
-* Fixed issues with backslashes and unicode characters - they should copied correctly now
-* Default WordPress Posts and Pages are not longer treated as custom posts
-* Resolved issues with scheduled clean-ups - sometimes this option settings were blank
-* Resolved all deprecated warnings with PHP 8+
-* NEW: Added automatic URL adjustment for multisites (premium)
-* NEW: Added possibility to copy into multiple subsites at once - inside bulk modal (premium)
+= 1.3.2 =
+* NEW: Added automatic creation of non-existing categories for subsite duplication
+* Fixed issues with assigning taxonomy on new posts
+* Resolved issues with featured image duplication between sites
+* Tested with WordPress 6.0.2 + Multisite (PHP 8)
