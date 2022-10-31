@@ -2,8 +2,8 @@
 Contributors: CopyDeletePosts, copydelete
 Tags: Duplicate post, Copy posts, Copy pages, Duplicate posts, Duplicate pages, Clone posts, Clone pages, Delete posts, Delete pages, Duplicator, copy post, copy page
 Requires at least: 4.6
-Tested up to: 6.0.2
-Stable tag: 1.3.2
+Tested up to: 6.1
+Stable tag: 1.3.3
 License: GPLv3
 Requires PHP: 5.6
 
@@ -176,6 +176,10 @@ Vietnamese: [Sao chép bài đăng, sao chép trang, sao chép bài đăng tùy 
 8. Copy from Gutenberg editor
 
 == Changelog ==
+= 1.3.3 =
+* Tested with WordPress 6.1-RC5 + Multisite
+* Fully tested on PHP 7.4, 8.0, 8.1
+* Removed function that could cause conflicts
 
 = 1.3.2 =
 * NEW: Added automatic creation of non-existing categories for subsite duplication
@@ -365,8 +369,7 @@ Vietnamese: [Sao chép bài đăng, sao chép trang, sao chép bài đăng tùy 
 * Initial release
 
 == Upgrade Notice ==
-= 1.3.2 =
-* NEW: Added automatic creation of non-existing categories for subsite duplication
-* Fixed issues with assigning taxonomy on new posts
-* Resolved issues with featured image duplication between sites
-* Tested with WordPress 6.0.2 + Multisite (PHP 8)
+= 1.3.3 =
+* Tested with WordPress 6.1-RC5 + Multisite
+* Fully tested on PHP 7.4, 8.0, 8.1
+* Removed function that could cause conflicts
