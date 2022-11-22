@@ -4,7 +4,7 @@
  * Plugin Name: Copy & Delete Posts
  * Plugin URI: https://copy-delete-posts.com
  * Description: The best solution to easily make duplicates of your posts & pages, and delete them in one go.
- * Version: 1.3.4
+ * Version: 1.3.5
  * Author: Copy Delete Posts
  * Author URI: https://copy-delete-posts.com/
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -30,7 +30,7 @@ analyst_init(array(
  * @since 1.0.0
  */
 // Plugin constants
-define('CDP_VERSION', '1.3.4');
+define('CDP_VERSION', '1.3.5');
 define('CDP_WP_VERSION', get_bloginfo('version'));
 define('CDP_SCRIPT_DEBUG', false);
 define('CDP_ROOT_DIR', __DIR__);
@@ -147,6 +147,11 @@ add_action('upgrader_process_complete', function () {
 			if (!(class_exists('Inisev\Subs\Inisev_Review') || class_exists('Inisev_Review'))) require_once CDP_ROOT_DIR . '/modules/review/review.php';
 			$review_banner = new \Inisev\Subs\Inisev_Review(CDP_ROOT_FILE, CDP_ROOT_DIR, 'copy-delete-posts', 'Copy & Delete Posts', 'https://bit.ly/2VeAf2E', 'copy-delete-posts');
 		}
+
+    if (!(class_exists('\Inisev\Subs\InisevBlackFriday') || class_exists('Inisev\Subs\InisevBlackFriday') || class_exists('InisevBlackFriday'))) {
+      require_once CDP_ROOT_DIR . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'blackfriday2022' . DIRECTORY_SEPARATOR . 'bf.php';
+    }
+    $blackfriday_banner = new \Inisev\Subs\InisevBlackFriday('copy-delete-posts', 'Copy Delete Posts', 'https://bit.ly/3OqjsDM', ['admin.php?page=copy-delete-posts', 'tools.php?page=copy-delete-posts']);
 
     // Deactivation module
     // $cdp_plugin_path = trailingslashit(basename(CDP_ROOT_DIR)) . basename(CDP_ROOT_FILE);

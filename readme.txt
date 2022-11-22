@@ -2,8 +2,8 @@
 Contributors: CopyDeletePosts, copydelete
 Tags: Duplicate post, Copy posts, Copy pages, Duplicate posts, Duplicate pages, Clone posts, Clone pages, Delete posts, Delete pages, Duplicator, copy post, copy page
 Requires at least: 4.6
-Tested up to: 6.1
-Stable tag: 1.3.4
+Tested up to: 6.1.1
+Stable tag: 1.3.5
 License: GPLv3
 Requires PHP: 5.6
 
@@ -176,6 +176,10 @@ Vietnamese: [Sao chép bài đăng, sao chép trang, sao chép bài đăng tùy 
 8. Copy from Gutenberg editor
 
 == Changelog ==
+= 1.3.5 =
+* Added black-friday theme (only for that period)
+* Tested up to WordPress 6.1.1
+
 = 1.3.4 =
 * Improved premium plugin performance
 * Tested with final WordPress 6.1 version
@@ -373,6 +377,6 @@ Vietnamese: [Sao chép bài đăng, sao chép trang, sao chép bài đăng tùy 
 * Initial release
 
 == Upgrade Notice ==
-= 1.3.4 =
-* Improved premium plugin performance
-* Tested with final WordPress 6.1 version
+= 1.3.5 =
+* Added black-friday theme (only for that period)
+* Tested up to WordPress 6.1.1
