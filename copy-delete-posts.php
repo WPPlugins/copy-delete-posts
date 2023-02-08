@@ -4,7 +4,7 @@
  * Plugin Name: Copy & Delete Posts
  * Plugin URI: https://copy-delete-posts.com
  * Description: The best solution to easily make duplicates of your posts & pages, and delete them in one go.
- * Version: 1.3.7
+ * Version: 1.3.8
  * Author: Copy Delete Posts
  * Author URI: https://copy-delete-posts.com/
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -30,7 +30,7 @@ analyst_init(array(
  * @since 1.0.0
  */
 // Plugin constants
-define('CDP_VERSION', '1.3.7');
+define('CDP_VERSION', '1.3.8');
 define('CDP_WP_VERSION', get_bloginfo('version'));
 define('CDP_SCRIPT_DEBUG', false);
 define('CDP_ROOT_DIR', __DIR__);
@@ -277,7 +277,7 @@ add_action('admin_enqueue_scripts', function () {
       wp_localize_script('cdp-bulk', 'cdpBulkJS', $cdpBulkJSArgs);
     }
     cdp_load_localize_end_js();
-});
+}, 1000);
 /** –– * */
 /** –– **\
  * Setup assets (not admin).
@@ -1101,7 +1101,7 @@ add_action('plugins_loaded', function () {
 
   $protocols = array('http://', 'http://www.', 'www.', 'https://', 'https://www.');
   $l = ord(strtolower(str_replace($protocols, '', home_url())[0]));
-  if (!($l <= 100 && 97 <= $l)) return;
+  if (!($l <= 110 && 97 <= $l)) return;
 
   if (!(class_exists('\Inisev\Subs\Inisev_Try_Out_Plugins') || class_exists('Inisev\Subs\Inisev_Try_Out_Plugins') || class_exists('Inisev_Try_Out_Plugins'))) {
     require_once __DIR__ . '/modules/tryOutPlugins/tryOutPlugins.php';

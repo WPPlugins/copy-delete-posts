@@ -450,11 +450,17 @@ function cdp_insert_new_post($areWePro = false) {
             'post_parent' => $post['post_parent'] // that's additional element which cannot be edited by user
         );
 
+        // For WooCommerce
+        if ($post['post_type'] == 'product_variation' || $post['post_type'] == 'acf-field') {
+          $new['post_status'] = 'publish';
+        }
+
         // Converter
-        if ((($opt == '2' && $swap == 'true') || $swap == 'true') && $areWePro && function_exists('cdpp_post_converter'))
-            $new['post_type'] = cdpp_post_converter($post['post_type']);
-        else
-            $new['post_type'] = $post['post_type'];
+        if ((($opt == '2' && $swap == 'true') || $swap == 'true') && $areWePro && function_exists('cdpp_post_converter')) {
+          $new['post_type'] = cdpp_post_converter($post['post_type']);
+        } else {
+          $new['post_type'] = $post['post_type'];
+        }
 
         // Add optional values of post – depending on settings
         if ($settings['slug'])
@@ -475,6 +481,14 @@ function cdp_insert_new_post($areWePro = false) {
             $new['tags_input'] = $post['tags_input'];
         if ($taxonomies != false)
             $new['tax_input'] = $ft;
+
+        // For ACF Fields
+        if ($post['post_type'] == 'acf-field') {
+          $new['post_name'] = 'group_' . md5(uniqid($post['post_name'], true));
+        }
+        if ($post['post_type'] == 'acf-field-group') {
+          $new['post_name'] = 'field_' . md5(uniqid($post['post_name'], true));
+        }
 
         // Return filtered data of current post
         return $new;
@@ -515,8 +529,11 @@ function cdp_insert_new_post($areWePro = false) {
             $h = (strpos($meta, 'elementor') === false) ? false : true;
             $i = ($areWePro && function_exists('cdpp_check_all_meta')) ? cdpp_check_all_meta($settings, $meta) : false;
 
+            // Deny these meta tags (they may cause conflicts with the further post edit)
+            $j = (mb_substr($meta, 0, 5) == '_trp_') ? false : true;
+
             // If any of above condition is true pass the meta tag
-            if ($a || $b || $c || $d || $e || $f || $g || $h || $i) {
+            if (($a || $b || $c || $d || $e || $f || $g || $h || $i) && $j) {
 
                 // Prepare data and insert filtered to results
                 foreach ($vals as $val)
@@ -776,12 +793,18 @@ function cdp_insert_new_post($areWePro = false) {
      * @param $id string/int (post id)
      * @return array of child(s) ID(s)
      */
-    function cdp_check_childs($id) {
+    function cdp_check_childs($id, $areWePro) {
         $childs = [];
-        $childrens = get_children(array('post_parent' => $id));
+        $childrens = get_children(array(
+          'post_parent' => $id,
+          'post_type' => get_post_types(),
+          'suppress_filters' => true
+        ));
 
-        foreach ($childrens as $i => $child)
-            array_push($childs, $child->ID);
+        foreach ($childrens as $i => $child) {
+          if ($child->post_type == 'acf-field' && !$areWePro) continue;
+          array_push($childs, $child->ID);
+        }
 
         return $childs;
     }
@@ -962,7 +985,7 @@ function cdp_insert_new_post($areWePro = false) {
                 $pConv = $globals['postConverter'];
 
             // Run process and validate response
-            $childrens = cdp_check_childs($id); // if sizeof($this) == has childs
+            $childrens = cdp_check_childs($id, $areWePro); // if sizeof($this) == has childs
             $post_data = cdp_filter_post($post, $swap, $pConv, $settings, $site, $taxonomies, $areWePro); // can be false
             $meta_data = cdp_filter_meta($meta, $settings, $id, $areWePro, $site, $post_data['post_title']); // can be false
             $inserted_posts = cdp_insert_post($id, $post_data, $times, $areWePro, $isChild, $p_ids, $site); // $res['error'] must be == 0
