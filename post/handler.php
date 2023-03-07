@@ -266,7 +266,7 @@ function cdp_save_plugin_options($areWePro) {
     $globals = $entire;
 
     // Check if there is default profile
-    if (!array_key_exists('default', $already) || !array_key_exists('title', $already['default'])) {
+    if (!isset($already['default']) || !isset($already['default']['title'])) {
         $already['default'] = array();
 
         if (function_exists('cdp_default_options'))
@@ -632,7 +632,7 @@ function cdp_insert_new_post($areWePro = false) {
         // Get Counter value
         $prefix = (($site != -1) ? $wpdb->get_blog_prefix($site) : $wpdb->get_blog_prefix());
         $newestId = $wpdb->get_results("SELECT post_id FROM {$prefix}postmeta WHERE meta_key = '_cdp_origin' AND meta_value = {$id} ORDER BY post_id DESC LIMIT 1", ARRAY_A);
-        $newestId = ((array_key_exists(0, $newestId)) ? (intval($newestId[0]['post_id'])) : false);
+        $newestId = ((isset($newestId[0])) ? (intval($newestId[0]['post_id'])) : false);
         if (isset($newestId) && $newestId != false && $newestId > 0)
             $counter = $wpdb->get_results("SELECT meta_value AS 'Counter' FROM {$prefix}postmeta WHERE meta_key = '_cdp_counter' AND post_id = {$newestId} ORDER BY post_id DESC", ARRAY_A)[0]['Counter'];
         else
@@ -972,17 +972,18 @@ function cdp_insert_new_post($areWePro = false) {
 
             // Check if this post type is allowed to copy
             $type = $post['post_type'];
-            if ($g['cdp-content-pages'] == 'false' && $type == 'page')
+            if ((isset($g['cdp-content-pages']) && $g['cdp-content-pages'] == 'false') && $type == 'page')
                 continue;
-            if ($g['cdp-content-posts'] == 'false' && $type == 'post')
+            if ((isset($g['cdp-content-posts']) && $g['cdp-content-posts'] == 'false') && $type == 'post')
                 continue;
-            if ($g['cdp-content-custom'] == 'false' && ($type != 'page' && $type != 'post'))
+            if ((isset($g['cdp-content-custom']) && $g['cdp-content-custom'] == 'false') && ($type != 'page' && $type != 'post'))
                 continue;
 
             // Post converting?
             $pConv = false;
-            if (array_key_exists('postConverter', $globals))
-                $pConv = $globals['postConverter'];
+            if (isset($globals['postConverter'])) {
+              $pConv = $globals['postConverter'];
+            }
 
             // Run process and validate response
             $childrens = cdp_check_childs($id, $areWePro); // if sizeof($this) == has childs
@@ -1068,11 +1069,11 @@ function cdp_insert_new_post($areWePro = false) {
         cdpp_handle_multisite($site[0]);
 
     $pConv = false;
-    if (array_key_exists('postConverter', $g) && $areWePro)
+    if (isset($g['postConverter']) && $areWePro)
         $pConv = (($g['postConverter'] === '2' || $g['postConverter'] === 2) ? true : false);
 
     // Output link if it's edited post
-    $aCop = ((array_key_exists('afterCopy', $g)) ? $g['afterCopy'] : '1');
+    $aCop = ((isset($g['afterCopy'])) ? $g['afterCopy'] : '1');
     if (($data['type'] == 'copy-custom-link' || $aCop == '2'))
         $output['link'] = get_edit_post_link($new_insertions['$new_posts']['parents'][0], 'x');
 
@@ -1278,7 +1279,7 @@ function cdp_clear_all_crons() {
     $cdp_cron = get_option('_cdp_crons');
 
     foreach ($cdp_cron as $cron => $val) {
-        if (array_key_exists('done', $val)) {
+        if (isset($val['done'])) {
             if ($val['done'] != true) {
                 echo json_encode(array(
                     'status' => 'fail',
@@ -1371,7 +1372,7 @@ function cdp_just_kill_task() {
     $token = ((isset($_POST['task'])) ? sanitize_text_field($_POST['task']) : false);
     $cdp_cron = get_option('_cdp_crons', array());
     $handler = $cdp_cron[$token]['handler'];
-    $args = (array_key_exists('args', $cdp_cron[$token]) ? $cdp_cron[$token]['args'] : array());
+    $args = (isset($cdp_cron[$token]['args']) ? $cdp_cron[$token]['args'] : array());
 
     if ($cdp_cron[$token]['done'] != false) {
         echo json_encode(array('status' => 'fail', 'type' => 'error', 'msg' => __('This task has already ended this work, please wait for list refresh and try again.', 'copy-delete-posts')));

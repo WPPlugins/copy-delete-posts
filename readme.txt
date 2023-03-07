@@ -3,7 +3,7 @@ Contributors: CopyDeletePosts, copydelete
 Tags: Duplicate post, Copy posts, Copy pages, Duplicate posts, Duplicate pages, Clone posts, Clone pages, Delete posts, Delete pages, Duplicator, copy post, copy page
 Requires at least: 4.6
 Tested up to: 6.2
-Stable tag: 1.3.8
+Stable tag: 1.3.9
 License: GPLv3
 Requires PHP: 5.6
 
@@ -176,6 +176,13 @@ Vietnamese: [Sao chép bài đăng, sao chép trang, sao chép bài đăng tùy 
 8. Copy from Gutenberg editor
 
 == Changelog ==
+
+= 1.3.9 =
+* Tested up with WordPress 6.2
+* Removed two unused modules
+* Updated carrousel module
+* Fixed old database version compatibility
+* Extended TIF module for everyone
 
 = 1.3.8 =
 * Tested up WordPress 6.2-Beta1
@@ -393,12 +400,10 @@ Vietnamese: [Sao chép bài đăng, sao chép trang, sao chép bài đăng tùy 
 * Initial release
 
 == Upgrade Notice ==
-= 1.3.8 =
-What's new in 1.3.8?
-* Tested up WordPress 6.2-Beta1
-* [Premium] Added full ACF duplication support
-* Adjusted proper duplication of WooCommerce products
-* Fixed duplication of WooCommerce variations
-* Resolved issues with child-post custom types
-* Extended new module
-* Minimized styling conflicts in custom post type pages
+= 1.3.9 =
+What's new in 1.3.9?
+* Tested up with WordPress 6.2
+* Removed two unused modules
+* Updated carrousel module
+* Fixed old database version compatibility
+* Extended TIF module for everyone
