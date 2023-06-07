@@ -949,6 +949,64 @@ function cdp_insert_new_post($areWePro = false) {
         return $all_inserts;
     }
 
+    /**
+     * cdp_clone_woocommerce_tables - Clones additional tables
+     *
+     * @return void
+     */
+    function cdp_clone_woocommerce_tables($sourceID, $newID) {
+
+      global $wpdb;
+      $tables = $wpdb->get_results('SHOW TABLES;');
+      $parsedTables = [];
+      foreach ($tables as $names) {
+        foreach ($names as $table => $name) {
+          $parsedTables[] = $name;
+        }
+      }
+
+      $affectedTables = [
+        'wusp_group_product_price_mapping',
+        'wusp_role_pricing_mapping',
+        'wusp_user_pricing_mapping'
+      ];
+
+      for ($i = 0; $i < sizeof($parsedTables); ++$i) {
+        $table = $parsedTables[$i];
+
+        for ($j = 0; $j < sizeof($affectedTables); ++$j) {
+          $affectTable = $affectedTables[$j];
+          if (substr($table, -strlen($affectTable)) == $affectTable) {
+            $results = $wpdb->get_results($wpdb->prepare(
+              "SELECT * FROM %i WHERE %i = %d",
+              array($table, 'product_id', $sourceID)
+            ));
+
+            foreach($results as $result => $row) {
+              $columns = [];
+              $values = [];
+
+              foreach($row as $column => $value) {
+                if ($column == 'id') continue;
+                $columns[] = $column;
+                if ($column == 'product_id') $values[] = $newID;
+                else $values[] = $value;
+              }
+
+              $preparedValues = [];
+              $preparedValues = array_merge($preparedValues, [$table], $columns, $values);
+
+              $query = $wpdb->get_results($wpdb->prepare(
+                "INSERT INTO %i (" . implode(', ', array_fill(0, sizeof($columns), '%i')) . ") VALUES (" . implode(', ', array_fill(0, sizeof($values), '%s')) . ")",
+                $preparedValues
+              ));
+            }
+          }
+        }
+      }
+
+    }
+
     // Main code for this duplication – for each id (post) do whole process
     function cdp_process_ids($ids, $swap, $settings, $times, $site, $areWePro, $g, $isChild = false, $p_ids = null) {
 
@@ -1001,6 +1059,12 @@ function cdp_insert_new_post($areWePro = false) {
             if ($settings['format'])
                 foreach ($inserted_posts['ids'] as $i => $tid)
                     $isReFormat = set_post_format($tid, get_post_format($id));
+
+            if ($areWePro && function_exists('cdpp_check_woo') && cdpp_check_woo($settings, $meta, $id)) {
+              foreach ($inserted_posts['ids'] as $i => $tid) {
+                cdp_clone_woocommerce_tables($id, $tid);
+              }
+            }
 
             if ($settings['f_image']) {
               $thumbnail_id = get_post_thumbnail_id($id);
