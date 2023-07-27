@@ -647,9 +647,13 @@ function cdp_insert_new_post($areWePro = false) {
           $buildUrl .= $parsedPostHomeURL['path'];
         }
 
+        $uploadsDirOld = wp_upload_dir()['basedir'];
+
         // Handle multisite for premium
         if ($areWePro && function_exists('cdpp_handle_multisite'))
             cdpp_handle_multisite($site);
+
+        $uploadsDirNew = wp_upload_dir()['basedir'];
 
         // Loop for each post iteration
         for ($i = 0; $i < $times; ++$i) {
@@ -688,17 +692,16 @@ function cdp_insert_new_post($areWePro = false) {
               array_push($results['ids'], $new);
 
               // SeedProd Premium CSS files
-              $uploadsDir = wp_upload_dir()['basedir'];
-              $oldCssFile = $uploadsDir . '/seedprod-css/style-' . $id . '.css';
-              $newCssFile = $uploadsDir . '/seedprod-css/style-' . $new . '.css';
+              $oldCssFile = $uploadsDirOld . '/seedprod-css/style-' . $id . '.css';
+              $newCssFile = $uploadsDirNew . '/seedprod-css/style-' . $new . '.css';
 
               if (file_exists($oldCssFile) && is_file($oldCssFile)) {
                 @copy($oldCssFile, $newCssFile);
               }
 
               // Elementor cached CSS
-              $oldCssFile = $uploadsDir . '/elementor/css/post-' . $id . '.css';
-              $newCssFile = $uploadsDir . '/elementor/css/post-' . $new . '.css';
+              $oldCssFile = $uploadsDirOld . '/elementor/css/post-' . $id . '.css';
+              $newCssFile = $uploadsDirNew . '/elementor/css/post-' . $new . '.css';
               if (file_exists($oldCssFile) && is_file($oldCssFile)) {
                 $customCssContent = file_get_contents($oldCssFile);
                 $customCssContent = str_replace('-' . $id, '-' . $new, $customCssContent);
@@ -1145,6 +1148,13 @@ function cdp_insert_new_post($areWePro = false) {
         $output['link'] = 'pConv';
     else
         update_option('_cdp_show_copy', true);
+
+    // Regenerate Elementor cache if needed
+    if (is_plugin_active('elementor/elementor.php') && class_exists('\Elementor\Plugin')) {
+      try { \Elementor\Plugin::$instance->files_manager->clear_cache(); }
+      catch (\Throwable $e) {}
+      catch (\Exception $e) {}
+  	}
 
     // Handle multisite for premium fix
     if ($areWePro && function_exists('cdpp_handle_multisite_after'))
