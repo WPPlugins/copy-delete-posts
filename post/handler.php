@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copy & Delete Posts – Post requests handler file.
  *
@@ -8,6 +7,7 @@
  * @author CopyDeletePosts
  * @since 1.0.0
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 /** –– **\
  * Main handler + It will also sanitize and verify that request a little bit.
  * @since 1.0.0
@@ -15,6 +15,10 @@
 add_action('wp_ajax_cdp_action_handling', function () {
     if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
         if (isset($_POST['token']) && $_POST['token'] == 'cdp' && isset($_POST['f']) && is_admin()) {
+
+            if (check_ajax_referer('copy-delete-posts-ajax', 'nonce', false) === false) {
+              return wp_send_json_error();
+            }
 
             // Expand execution time
             if (intval(ini_get('max_execution_time')) < 7200)

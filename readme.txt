@@ -3,7 +3,7 @@ Contributors: CopyDeletePosts, copydelete
 Tags: Duplicate post, Copy posts, Copy pages, Duplicate posts, Duplicate pages, Clone posts, Clone pages, Delete posts, Delete pages, Duplicator, copy post, copy page
 Requires at least: 4.6
 Tested up to: 6.3
-Stable tag: 1.4.1
+Stable tag: 1.4.2
 License: GPLv3
 Requires PHP: 5.6
 
@@ -176,6 +176,9 @@ Vietnamese: [Sao chép bài đăng, sao chép trang, sao chép bài đăng tùy 
 8. Copy from Gutenberg editor
 
 == Changelog ==
+
+= 1.4.2 =
+* Added additional nonce verification
 
 = 1.4.1 =
 * Tested with WP 6.3 RC
@@ -420,3 +423,4 @@ What's new in 1.4.1?
 * Added possibility for automatic Elementor Cache clearing after duplication
 * Fixed localization issues, when plugin hanged on previously selected language
 * Updated all shared modules to their latest versions
+* Added additional nonce verification

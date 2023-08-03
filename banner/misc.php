@@ -4,7 +4,7 @@
    * File for our cool Carousel in the footer
    *
    * @category Child Plugin
-   * @version v0.3.0
+   * @version v0.3.1
    * @since v0.1.0
    * @author iClyde <kontakt@iclyde.pl>
    */
@@ -204,8 +204,9 @@
           // IMPORTANT: It requires the plugin to use own icon (own assets)
           foreach ($menu as $priority => $details) {
             if (is_array($details) && sizeof($details) >= 6) {
-              for ($i = 0; $i < sizeof($details); ++$i) {
-                if ($this->makelower($details[$i]) == $this->slug_low) {
+              foreach ($details as $key => $value) {
+                if (is_object($value) || is_array($value)) continue;
+                if ($this->makelower($value) == $this->slug_low) {
                   $this->menu = $details[2];
                   break;
                 }

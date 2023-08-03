@@ -4,7 +4,7 @@
  * Plugin Name: Copy & Delete Posts
  * Plugin URI: https://copy-delete-posts.com
  * Description: The best solution to easily make duplicates of your posts & pages, and delete them in one go.
- * Version: 1.4.1
+ * Version: 1.4.2
  * Text Domain: copy-delete-posts
  * Author: Copy Delete Posts
  * Author URI: https://copy-delete-posts.com/
@@ -31,7 +31,7 @@ analyst_init(array(
  * @since 1.0.0
  */
 // Plugin constants
-define('CDP_VERSION', '1.4.1');
+define('CDP_VERSION', '1.4.2');
 define('CDP_WP_VERSION', get_bloginfo('version'));
 define('CDP_SCRIPT_DEBUG', false);
 define('CDP_ROOT_DIR', __DIR__);
@@ -827,6 +827,7 @@ function cdp_load_localize_global_js() {
     'strHideBannerNow' => __('It will hide this banner just for now.', 'copy-delete-posts'),
     'strErrWithNotif' => __('There was an error with this notification.', 'copy-delete-posts'),
     'strCDPInfo2' => __('Copy & Delete Posts', 'copy-delete-posts'),
+    'ajaxNonce' => wp_create_nonce('copy-delete-posts-ajax')
   ];
   wp_localize_script('cdp-js-global', 'cdpGlobalJS', $cdpGlobalJSArgs);
 
