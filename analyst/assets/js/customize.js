@@ -6,7 +6,7 @@
     $.post(ajaxurl, {
       action: 'analyst_notification_dismiss', 
       id: id,
-      analyst_nonce: analyst_opt_localize.analyst_nonce
+      nonce: analyst_opt_localize.nonce
     }).done(function () {
       $(self).parent().fadeOut()
     })
@@ -22,7 +22,7 @@
       method: 'POST',
       data: {
         action: 'analyst_install_verified_' + pluginId,
-        analyst_nonce: analyst_opt_localize.analyst_nonce
+        nonce: analyst_opt_localize.nonce
       },
       success: function () {
         // Refresh page without query params

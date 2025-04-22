@@ -221,12 +221,6 @@ function cdp_add_new_intro() {
  */
 function cdp_save_plugin_options($areWePro) {
 
-    // Only administrators/users with manage_options capability can save plugin global settings & profiles
-    if (!current_user_can('manage_options')) {
-        echo 'no_access';
-        return;
-    }
-
     // Get the info about our professionalness
     $areWePro = $areWePro;
 
@@ -299,41 +293,6 @@ function cdp_save_plugin_options($areWePro) {
 /** –– * */
 
 /** –– **\
- * Limits status and author of a copy to what the current user could set
- * when creating a post of that type themselves.
- * Must run on the destination site (after any multisite switch).
- * @param $data (array of post data ready for wp_insert_post)
- * @return array of post data
- * @since 1.5.8
- */
-function cdp_enforce_copy_capabilities($data) {
-
-    $type = isset($data['post_type']) ? $data['post_type'] : 'post';
-    $pto = get_post_type_object($type);
-    if (!$pto) $pto = get_post_type_object('post');
-
-    $publish_cap = $pto->cap->publish_posts;
-    $edit_others_cap = $pto->cap->edit_others_posts;
-
-    // Without publish capability only draft or pending are allowed
-    // (publish, future and private all require it)
-    $status = isset($data['post_status']) ? $data['post_status'] : 'draft';
-    if (!in_array($status, array('draft', 'pending'), true) && !current_user_can($publish_cap)) {
-        $data['post_status'] = 'draft';
-    }
-
-    // Assigning another author requires edit_others_posts
-    $current_user_id = get_current_user_id();
-    $author = isset($data['post_author']) ? intval($data['post_author']) : $current_user_id;
-    if ($author !== $current_user_id && !current_user_can($edit_others_cap)) {
-        $data['post_author'] = $current_user_id;
-    }
-
-    return $data;
-}
-/** –– **/
-
-/** –– **\
  * This function will be fired when user want to save plugin options – again.
  * @since 1.0.0
  */
@@ -347,21 +306,6 @@ function cdp_insert_new_post($areWePro = false) {
 
     // Get ID(s) of post(s)
     $ids = ((isset($_POST['id'])) ? cdp_sanitize_array($_POST['id']) : false);
-
-    if (is_array($ids)) {
-        $allowed_ids = array();
-        foreach ($ids as $id) {
-            if (current_user_can('read_post', $id) && (post_password_required($id) == false || current_user_can('edit_post', $id))) {
-                $allowed_ids[] = $id;
-            }
-        }
-        $ids = $allowed_ids;
-    }
-
-    if (empty($ids)) {
-        echo json_encode(array('status' => 'error', 'message' => __('Copy not authorized for this post(s).','copy-delete-posts')));
-        exit;
-    }
 
     // Get all important pieces of information from requester
     $data = ((isset($_POST['data'])) ? cdp_sanitize_array($_POST['data']) : false);
@@ -390,11 +334,6 @@ function cdp_insert_new_post($areWePro = false) {
     foreach ($settings as $setting => $val)
         if ($setting != 'names')
             $settings[$setting] = (($val == 'true') ? true : false);
-
-    // Fill missing options (e.g. older saved profiles) as disabled to avoid undefined key warnings
-    foreach (cdp_default_options() as $setting => $val)
-        if ($setting != 'names' && !isset($settings[$setting]))
-            $settings[$setting] = false;
 
     /**
      * cdp_duplicate_categories - Makes sure that categories exist on new subsite
@@ -470,7 +409,7 @@ function cdp_insert_new_post($areWePro = false) {
      * @param $settings (array of preselected settings of profile or by user)
      * @return array with insert ready values for wordpress post || false on wrong $post
      */
-    function cdp_filter_post($post, $swap, $opt, $settings, $site, $taxonomies = false, $areWePro = false, $globals = false) {
+    function cdp_filter_post($post, $swap, $opt, $settings, $site, $taxonomies = false, $areWePro = false) {
       
         // If $post has wrong format return false
         if (!(is_array($post) || is_object($post)))
@@ -512,8 +451,6 @@ function cdp_insert_new_post($areWePro = false) {
                 array_push($ft[$tn], $taxonomy->term_id);
             }
         }
-        $is_elementor = cdp_is_elementor_post($post['ID']);
-        $content_meta = $is_elementor ? get_post_meta($post['ID'], '_elementor_data', true) : addslashes($post['post_content']);
 
         // Create array with required values and contant values
         $new = array(
@@ -521,7 +458,7 @@ function cdp_insert_new_post($areWePro = false) {
             'post_date' => ($settings['date'] ? $post['post_date'] : current_time('mysql')),
             'post_status' => ($settings['status'] ? $post['post_status'] : 'draft'),
             'post_author' => ($settings['author'] ? $post['post_author'] : wp_get_current_user()->ID),
-            'post_content' => ($settings['content'] ? $content_meta : ''),
+            'post_content' => ($settings['content']) ? addslashes($post['post_content']) : '',
             'comment_status' => $post['comment_status'], // that's additional element which cannot be edited by user
             'post_parent' => $post['post_parent'] // that's additional element which cannot be edited by user
         );
@@ -538,8 +475,8 @@ function cdp_insert_new_post($areWePro = false) {
         foreach ($ft as $taxonomyName => $ids) {
           $fixed_categories = cdp_duplicate_categories($ids, $taxonomyName, $site, $areWePro, $post['post_type'], $new['post_type'], true);
           $ft[$taxonomyName] = $fixed_categories['ids'];
-          if (isset($fixed_categories['taxonomy']) && $fixed_categories['taxonomy'] == 'post_tag') $ft_tags = $fixed_categories['ids'];
-          if (isset($fixed_categories['taxonomy']) && $fixed_categories['taxonomy'] == 'category') $ft_categories = $fixed_categories['ids'];
+          if ($fixed_categories['taxonomy'] == 'post_tag') $ft_tags = $fixed_categories['ids'];
+          if ($fixed_categories['taxonomy'] == 'category') $ft_categories = $fixed_categories['ids'];
         }
         
         $new['multisite_taxonomy'] = $ft;
@@ -550,17 +487,8 @@ function cdp_insert_new_post($areWePro = false) {
         }
 
         // Add optional values of post – depending on settings
-        if ($settings['slug']){
+        if ($settings['slug'])
             $new['post_name'] = $post['post_name'];
-            if (isset($globals['others']['cdp-take-over-original-slug']) && $globals['others']['cdp-take-over-original-slug'] == 'true' && current_user_can('edit_post', $post['ID'])) {
-                $original_new_slug = $post['post_name'] . '-old';
-                wp_update_post(array(
-                    'ID' => $post['ID'],
-                    'post_name' => $original_new_slug
-                ));
-            }
-
-        }
         if ($settings['excerpt'])
             $new['post_excerpt'] = $post['post_excerpt'];
         if ($settings['template'])
@@ -574,13 +502,11 @@ function cdp_insert_new_post($areWePro = false) {
           $fixed_categories = array_values(array_unique(array_merge($fixed_categories, $ft_categories)));
           $new['post_category'] = $fixed_categories;
         }
-        if ($settings['post_tag']){
+        if ($settings['post_tag'])
             $tags = array_values(array_unique(array_merge($post['tags_input'], $ft_tags)));
             $new['tags_input'] = $tags;
-        }
-        if ($taxonomies != false){
+        if ($taxonomies != false)
             $new['tax_input'] = $ft;
-        }
 
         // For ACF Fields
         if ($post['post_type'] == 'acf-field') {
@@ -620,11 +546,6 @@ function cdp_insert_new_post($areWePro = false) {
             array('_cdp_counter' => '0')
         );
 
-        if (isset($metas['_elementor_data']) && $settings['content'] !== true) { // Remove elementor content if content copy is disabled
-            $prepared[] = array('_elementor_data' => []);
-            unset($metas['_elementor_data']);
-        }
-
         // Iterate through every meta index
         foreach ($metas as $meta => $vals) {
 
@@ -661,26 +582,6 @@ function cdp_insert_new_post($areWePro = false) {
     }
 
     /**
-     * Turn a user-supplied title prefix/suffix into plain text.
-     * Entities are decoded (repeatedly, to catch double encoding) before tags
-     * are stripped, so values like "&lt;img onerror=...&gt;" can't survive.
-     */
-    function cdp_clean_title_affix($value) {
-        if (!is_string($value)) return '';
-
-        for ($i = 0; $i < 5; $i++) {
-            $decoded = html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-            if ($decoded === $value) break;
-            $value = $decoded;
-        }
-
-        $value = wp_strip_all_tags($value, true);
-        $value = str_replace(array('<', '>', '"', '`'), '', $value);
-
-        return sanitize_text_field($value);
-    }
-
-    /**
      * This local function format title by user settings
      * @param $title (string)
      * @param $settings (array of name settings preselected in profile)
@@ -708,12 +609,8 @@ function cdp_insert_new_post($areWePro = false) {
         $date = date($date_format, $curr);
         $time = date('H:i:s', $curr);
 
-        // Clean prefix and suffix so (entity-encoded) markup can't reach the title
-        $prefix = cdp_clean_title_affix(isset($settings['prefix']) ? $settings['prefix'] : '');
-        $suffix = cdp_clean_title_affix(isset($settings['suffix']) ? $settings['suffix'] : '');
-
         // Concat whole title with prefix and suffix
-        $new_title = $prefix . ' ' . $title . ' ' . $suffix;
+        $new_title = $settings['prefix'] . ' ' . $title . ' ' . $settings['suffix'];
 
         // Make replace of placeholders
         $new_title = str_replace('[CurrentDate]', $date, $new_title);
@@ -825,7 +722,7 @@ function cdp_insert_new_post($areWePro = false) {
 
         $uploadsDirNew = wp_upload_dir()['basedir'];
         $alreadyReplaced = false;
-        $originalPostName = isset($data['post_name']) ? $data['post_name'] : '';
+
         // Loop for each post iteration
         for ($i = 0; $i < $times; ++$i) {
 
@@ -835,8 +732,8 @@ function cdp_insert_new_post($areWePro = false) {
 
             // Replace title with Counter if multiple copies
             $data['post_title'] = str_replace('[Counter]', ($counter + $i), $base_title);
-            if ($i > 0 && isset($data['post_name']) && strlen($data['post_name']) > 0) {
-              $data['post_name'] = $originalPostName . '-' . $i;
+            if (isset($data['meta_input']) && isset($data['meta_input']['_elementor_template_type'])) {
+                $data['post_name'] = $data['post_name'] . '-' . ($counter + $i);
             }
 
             // Adjust URLs for new subsite
@@ -849,9 +746,6 @@ function cdp_insert_new_post($areWePro = false) {
 
               }
             }
-
-            // Never let the copy get a status or author the user couldn't set themselves
-            $data = cdp_enforce_copy_capabilities($data);
 
             // Insert post with filtered data
             $new = wp_insert_post($data, true);
@@ -1202,12 +1096,6 @@ function cdp_insert_new_post($areWePro = false) {
     // Main code for this duplication – for each id (post) do whole process
     function cdp_process_ids($ids, $swap, $settings, $times, $site, $areWePro, $g, $isChild = false, $p_ids = null) {
 
-        foreach ($ids as $key => $id) {
-            if (!current_user_can('read_post', $id) || (post_password_required($id) && !current_user_can('edit_post', $id))) {
-                unset($ids[$key]);
-            }
-        }
-
         // Make it clear
         $globals = cdp_default_global_options();
         if ($g != false)
@@ -1243,7 +1131,7 @@ function cdp_insert_new_post($areWePro = false) {
 
             // Run process and validate response
             $childrens = cdp_check_childs($id, $areWePro); // if sizeof($this) == has childs
-            $post_data = cdp_filter_post($post, $swap, $pConv, $settings, $site, $taxonomies, $areWePro, $globals); // can be false
+            $post_data = cdp_filter_post($post, $swap, $pConv, $settings, $site, $taxonomies, $areWePro); // can be false
             $meta_data = cdp_filter_meta($meta, $settings, $id, $areWePro, $site, $post_data['post_title']); // can be false
             if (isset($meta['_elementor_template_type'])) { // Add Elementor template type to post data to prevent setting the type of template to 'page' by default in Elementor after creating the new post
                 $post_data['meta_input']['_elementor_template_type'] = $meta['_elementor_template_type'][0];
@@ -1442,75 +1330,32 @@ function cdp_get_all_posts() {
     $args = array(
         'numberposts' => -1,
         'post_type' => 'post',
-        'post_status' => 'publish,private,draft,future,pending,inherit,sticky',
-        'perm' => 'readable'
+        'post_status' => 'publish,private,draft,future,pending,inherit,sticky'
     );
 
-    $raw_posts = get_posts($args);
+    $output['posts'] = get_posts($args);
     $args['post_type'] = 'page';
-    $raw_pages = get_posts($args);
-    $raw_custom = array();
+    $output['pages'] = get_posts($args);
+    $output['custom'] = array();
 
     $post_types = get_post_types(array('public' => true, '_builtin' => false));
 
-    if (sizeof($post_types) > 0) {
-        $raw_custom = get_posts(array(
+    if (sizeof($post_types) > 0)
+        $output['custom'] = get_posts(array(
             'post_type' => $post_types,
             'numberposts' => -1,
-            'post_status' => 'publish,private,draft,future,pending,inherit,sticky',
-            'perm' => 'readable'
+            'post_status' => 'publish,private,draft,future,pending,inherit,sticky'
         ));
-    }
 
-    $output['posts'] = array();
-    $output['pages'] = array();
-    $output['custom'] = array();
     $output['meta'] = array();
-
-    $process_posts = function($posts_list) use (&$output) {
-        $filtered = array();
-        foreach ($posts_list as $p) {
-            if (!current_user_can('read_post', $p->ID) || (post_password_required($p) && !current_user_can('edit_post', $p->ID))) {
-                continue;
-            }
-
-            $p->post_password = '';
-            unset($p->post_password);
-
-            $filtered[] = $p;
-
-            $all_meta = get_post_meta($p->ID);
-            $clean_meta = array();
-            if (is_array($all_meta)) {
-                foreach ($all_meta as $key => $val) {
-                    if (is_protected_meta($key, 'post') && strpos($key, '_cdp_') !== 0) {
-                        continue;
-                    }
-                    $clean_meta[$key] = $val;
-                }
-            }
-            $output['meta'][$p->ID] = $clean_meta;
-        }
-        return $filtered;
-    };
-
-    $output['posts'] = $process_posts($raw_posts);
-    $output['pages'] = $process_posts($raw_pages);
-    $output['custom'] = $process_posts($raw_custom);
+    foreach ($output['posts'] as $k => $p)
+        $output['meta'][$p->ID] = get_post_meta($p->ID);
+    foreach ($output['pages'] as $k => $p)
+        $output['meta'][$p->ID] = get_post_meta($p->ID);
+    foreach ($output['custom'] as $k => $p)
+        $output['meta'][$p->ID] = get_post_meta($p->ID);
 
     echo json_encode(cdp_sanitize_array($output));
-}
-
-/** –– **\
- * This function return either the given post id is elementor post or not
- * @param int $post_id
- * @return boolean
- */
-function cdp_is_elementor_post($post_id) {
-    if (get_post_meta($post_id, '_elementor_edit_mode', true) === 'builder') {
-        return true;
-    }
-    return false;
 }
 
 /** –– * */
@@ -1521,22 +1366,6 @@ function cdp_is_elementor_post($post_id) {
  */
 function cdp_delete_posts() {
     $ids = ((isset($_POST['ids'])) ? cdp_sanitize_array($_POST['ids']) : false); // ids to delete
-
-    if (is_array($ids)) {
-        $allowed_ids = array();
-        foreach ($ids as $id) {
-            if (current_user_can('delete_post', $id)) {
-                $allowed_ids[] = $id;
-            }
-        }
-        $ids = $allowed_ids;
-    }
-
-    if (empty($ids)) {
-        echo json_encode(array('status' => 'error', 'message' => __('Delete not authorized for this post(s).','copy-delete-posts')));
-        exit;
-    }
-
     $throttling = sanitize_text_field($_POST['throttling']); // throttling if enabeld
     $thc = sanitize_text_field($_POST['thc']); // throttling count if enabeld
     $thrs = sanitize_text_field($_POST['thrs']) == 'true' ? true : false; // trash or not?
@@ -1668,15 +1497,10 @@ function cdp_set_noti_as_seen() {
     if (wp_doing_cron())
         return;
 
-    $token = ((isset($_POST['noti_token']) && is_string($_POST['noti_token'])) ? sanitize_text_field(wp_unslash($_POST['noti_token'])) : false);
-    $stored_cron = get_option('_cdp_crons', array());
-    $cdp_cron = cdp_filter_cron_tasks($stored_cron);
-
-    if ($token !== false && cdp_is_valid_cron_token($token) && array_key_exists($token, $cdp_cron))
-        $cdp_cron[$token]['shown'] = true;
-
-    if ($cdp_cron !== $stored_cron)
-        update_option('_cdp_crons', $cdp_cron);
+    $token = ((isset($_POST['noti_token'])) ? sanitize_text_field($_POST['noti_token']) : false);
+    $cdp_cron = get_option('_cdp_crons', array());
+    $cdp_cron[$token]['shown'] = true;
+    update_option('_cdp_crons', $cdp_cron);
 
     echo json_encode(array('status' => 'success'));
 }
@@ -1745,11 +1569,7 @@ function cdp_just_kill_task() {
  * @return object of tasks or fail
  */
 function cdp_just_get_tasks() {
-    $stored_cron = get_option('_cdp_crons', false);
-    $cdp_cron = cdp_filter_cron_tasks($stored_cron);
-
-    if ($stored_cron !== false && $cdp_cron !== $stored_cron)
-        update_option('_cdp_crons', $cdp_cron);
+    $cdp_cron = get_option('_cdp_crons', false);
 
     if ($cdp_cron)
         echo json_encode(array('status' => 'success', 'tasks' => cdp_sanitize_array($cdp_cron)));

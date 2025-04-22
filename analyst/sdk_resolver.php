@@ -1,7 +1,5 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit;
-
 if (!function_exists('analyst_resolve_sdk')) {
 
 	/**

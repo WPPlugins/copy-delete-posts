@@ -1,10 +1,9 @@
-<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <div id="analyst-opt-out-modal" class="analyst-modal" style="display: none">
 	<div class="analyst-modal-content" style="width: 600px">
 		<div class="analyst-disable-modal-mask" id="analyst-disable-opt-out-modal-mask" style="display: none"></div>
 		<div style="display: flex">
 			<div class="analyst-install-image-block" style="width: 120px">
-				<img src="<?php echo esc_url( $shieldImage ); ?>"/>
+				<img src="<?php echo $shieldImage; ?>"/>
 			</div>
 			<div class="analyst-install-description-block">
 				<strong class="analyst-modal-header">By opting out, we cannot alert you anymore  in case of important security updates.</strong>
@@ -22,6 +21,7 @@
 		<div id="analyst-opt-out-error" class="analyst-modal-def-top-padding" style="display: none;">
 			<span style="color: #dc3232; font-size: 16px">Service unavailable. Please try again later</span>
 		</div>
+	</div>
 	</div>
 </div>
 
@@ -66,7 +66,7 @@
           method: 'POST',
           data: {
             action: 'analyst_opt_out_' + pluginId,
-            analyst_nonce: analyst_opt_localize.analyst_nonce
+            nonce: analyst_opt_localize.nonce
           },
           success: function (data) {
             $(self).text('Opt out')

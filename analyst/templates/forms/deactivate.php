@@ -1,15 +1,14 @@
-<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <div id="analyst-deactivate-modal" class="analyst-modal" style="display: none">
 	<div class="analyst-modal-content" style="width: 500px">
 		<div class="analyst-disable-modal-mask" id="analyst-disable-deactivate-modal-mask" style="display: none"></div>
 		<div style="display: flex">
 			<div class="analyst-install-image-block" style="width: 80px">
-				<img src="<?php echo esc_url( $pencilImage ); ?>"/>
+				<img src="<?php echo $pencilImage; ?>"/>
 			</div>
 			<div class="analyst-install-description-block" style="padding-left: 20px">
 				<strong class="analyst-modal-header">Why do you deactivate?</strong>
 				<div class="analyst-install-description-text" style="padding-top: 2px">
-					Please let us know, so we can improve it! Thank you <img class="analyst-smile-image" src="<?php echo esc_url( $smileImage ); ?>" alt="">
+					Please let us know, so we can improve it! Thank you <img class="analyst-smile-image" src="<?php echo $smileImage; ?>" alt="">
 				</div>
 			</div>
 		</div>
@@ -132,7 +131,7 @@
       var data = {
         action: 'analyst_plugin_deactivate_' + pluginId,
 		    question: question,
-        analyst_nonce: analyst_opt_localize.analyst_nonce
+        nonce: analyst_opt_localize.nonce
       }
 
 	  if (reason) {

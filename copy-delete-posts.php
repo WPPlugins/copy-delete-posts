@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Copy & Delete Posts
  * Description: The best solution to easily make duplicates of your posts & pages, and delete them in one go.
- * Version: 1.5.8
+ * Version: 1.5.0
  * Text Domain: copy-delete-posts
  * Author: Inisev
  * Author URI: https://inisev.com
@@ -31,7 +31,7 @@ analyst_init(array(
  * @since 1.0.0
  */
 // Plugin constants
-define('CDP_VERSION', '1.5.8');
+define('CDP_VERSION', '1.5.0');
 define('CDP_WP_VERSION', get_bloginfo('version'));
 define('CDP_SCRIPT_DEBUG', false);
 define('CDP_ROOT_DIR', __DIR__);
@@ -61,7 +61,13 @@ if (is_admin()) {
  * @since 1.0.0
  */
 register_activation_hook(__FILE__, function () {
+    if (function_exists('activate_plugin')) {
         add_option('_cdp_redirect', true);
+        $cdp_premium_path = WP_PLUGIN_DIR . '/copy-delete-posts-premium';
+        $plugin = 'copy-delete-posts-premium/copy-delete-posts-premium.php';
+        if (!is_plugin_active($plugin) && is_dir($cdp_premium_path))
+            activate_plugin($plugin);
+    }
 
     if (get_option('_cdp_review', false) == false) {
         $review = array(
@@ -74,7 +80,6 @@ register_activation_hook(__FILE__, function () {
 
     do_action('cdp_plugin_setup');
 });
-
 /** –– * */
 /** –– **\
  * Fired on plugin deactivation.
@@ -140,12 +145,7 @@ add_action('upgrader_process_complete', function () {
 		if (!is_dir(WP_PLUGIN_DIR . '/copy-delete-posts-premium')) {
 			if (!(class_exists('Inisev\Subs\Inisev_Review') || class_exists('Inisev_Review'))) require_once CDP_ROOT_DIR . '/modules/review/review.php';
 			$review_banner = new \Inisev\Subs\Inisev_Review(CDP_ROOT_FILE, CDP_ROOT_DIR, 'copy-delete-posts', 'Copy & Delete Posts', 'https://bit.ly/2VeAf2E', 'copy-delete-posts');
-        }
-
-        if (!(class_exists('\Inisev\Subs\New_BB_Banner') || class_exists('Inisev\Subs\New_BB_Banner') || class_exists('New_BB_Banner'))) {
-            require_once __DIR__ . '/modules/new-bb-banner/misc.php';
-            new \Inisev\Subs\New_BB_Banner(CDP_ROOT_FILE,  CDP_ROOT_DIR, 'copy-delete-posts', 'Copy & Delete Posts', 'copy-delete-posts');
-        }
+		}
 
 	});
 /** –– **/
@@ -159,20 +159,28 @@ add_action('admin_init', function () {
         return;
 
     if (get_option('_cdp_redirect', false)) {
-        delete_option('_cdp_redirect');
-
-        $is_bulk_action = isset($_REQUEST['action']) && $_REQUEST['action'] === 'activate-selected';
-        $is_bulk_action_alt = isset($_REQUEST['action2']) && $_REQUEST['action2'] === 'activate-selected';
-        $is_multi_activate = isset($_GET['activate-multi']) && $_GET['activate-multi'] === 'true';
-        if (!($is_bulk_action || $is_bulk_action_alt || $is_multi_activate)) wp_redirect(admin_url('admin.php?page=copy-delete-posts'));
+        delete_option('_cdp_redirect', false);
+        wp_redirect(admin_url('admin.php?page=copy-delete-posts'));
     }
 
     global $cdp_premium;
+    $cdp_premium_path = WP_PLUGIN_DIR . '/copy-delete-posts-premium';
     $cdp_premium_ver_path = WP_PLUGIN_DIR . '/copy-delete-posts-premium/version.txt';
     if (defined('CDP_PREMIUM_VERSION') && version_compare(CDP_PREMIUM_VERSION, CDP_VERSION, '!=')) {
         update_option('_cdp_mishmash', true);
-    } else{
-        delete_option('_cdp_mishmash');
+    } else {
+        if (is_dir($cdp_premium_path) && file_exists($cdp_premium_ver_path)) {
+            $cdp_prem_ver_file = fopen($cdp_premium_ver_path, 'r') or false;
+            $cdp_prem_ver = fgets($cdp_prem_ver_file);
+            fclose($cdp_prem_ver_file);
+
+            if ((trim($cdp_prem_ver) == CDP_VERSION) && !is_plugin_active($cdp_premium)) {
+                activate_plugin($cdp_premium, '', false, true);
+                // add_option('_cdp_redirect', false);
+            }
+            if (trim($cdp_prem_ver) == CDP_VERSION)
+                update_option('_cdp_mishmash', false);
+        }
     }
     if (is_plugin_active($cdp_premium) && !file_exists($cdp_premium_ver_path)) {
         if (is_plugin_active($cdp_premium))
@@ -318,11 +326,7 @@ add_action('enqueue_block_editor_assets', function () {
     if ((isset($g['cdp-display-gutenberg']) && $g['cdp-display-gutenberg'] == 'true') && ($a || $b || $c)) {
         wp_enqueue_style('cdp-gutenberg', "{$cdp_plug_url}/assets/css/cdp-gutenberg{$min}.css", '', $ver);
         wp_enqueue_script('cdp-js-gutenberg', "{$cdp_plug_url}/assets/js/cdp-gutenberg{$min}.js", ['jquery'], $ver, true);
-        if ($post && current_user_can('read_post', $post->ID) && (!post_password_required($post) || current_user_can('edit_post', $post->ID))) {
-            $cdpGutenbergJSArgs = ['cdpCopy' => __('Copy this', 'copy-delete-posts')];
-        } else {
-            $cdpGutenbergJSArgs = [];
-        }
+        $cdpGutenbergJSArgs = ['cdpCopy' => __('Copy this', 'copy-delete-posts')];
         wp_localize_script('cdp-js-gutenberg', 'cdpGutenbergJS', $cdpGutenbergJSArgs);
     }
 });
@@ -376,9 +380,6 @@ add_filter('post_row_actions', function ($actions, $post) {
     if (cdp_check_permissions(wp_get_current_user()) == false)
         return $actions;
 
-    if (!current_user_can('read_post', $post->ID) || (post_password_required($post) && !current_user_can('edit_post', $post->ID)))
-        return $actions;
-
     // Get global options and post type
     $g = get_option('_cdp_globals', array());
     if (isset($g['others'])) {
@@ -407,10 +408,6 @@ add_filter('page_row_actions', function ($actions, $page) {
 
     if (cdp_check_permissions(wp_get_current_user()) == false) {
       return $actions;
-    }
-
-    if (!current_user_can('read_post', $page->ID) || (post_password_required($page) && !current_user_can('edit_post', $page->ID))) {
-        return $actions;
     }
 
     // Get global options and post type
@@ -519,17 +516,15 @@ add_action('admin_bar_menu', function ($admin_bar) {
     global $cdp_plug_url;
 
     if ($a || $b || $c) {
-        if ($post && current_user_can('read_post', $post->ID) && (!post_password_required($post) || current_user_can('edit_post', $post->ID))) {
-            $icon = '<span class="cdp-admin-bar-icon" data-plug-path="' . $cdp_plug_url . '" data-this-id="' . get_the_ID() . '"></span>';
-            $admin_bar->add_menu(array(
-                'id' => 'cdp-copy-bar-x',
-                'parent' => '',
-                'group' => '',
-                'title' => $icon . __('Copy this', 'copy-delete-posts'),
-                'href' => '#',
-                'meta' => array('class' => 'cdp-admin-bar-copy', 'target' => '_self')
-            ));
-        }
+        $icon = '<span class="cdp-admin-bar-icon" data-plug-path="' . $cdp_plug_url . '" data-this-id="' . get_the_ID() . '"></span>';
+        $admin_bar->add_menu(array(
+            'id' => 'cdp-copy-bar-x',
+            'parent' => null,
+            'group' => null,
+            'title' => $icon . __('Copy this', 'copy-delete-posts'),
+            'href' => '#',
+            'meta' => array('class' => 'cdp-admin-bar-copy', 'target' => '_self')
+        ));
     }
 }, 80);
 /** –– * */
@@ -550,8 +545,8 @@ add_action('admin_bar_menu', function ($admin_bar) {
         $data = cdp_notifications_menu();
         $admin_bar->add_menu(array(
             'id' => 'wp-admin-copy-and-delete-posts',
-            'parent' => '',
-            'group' => '',
+            'parent' => null,
+            'group' => null,
             'title' => $data['html'],
             'href' => '#',
             'meta' => array(
@@ -667,7 +662,7 @@ add_action('admin_init', function () {
       cdp_vars($hx, $cdp_plug_url, $post_id, $hasParent, true);
       cdp_tooltip_content($profiles);
       cdp_modal($screen, $profiles);
-  }, 12);
+  });
 }, 10000);
 /** –– * */
 /** –– **\
@@ -699,12 +694,9 @@ add_action('post_submitbox_start', function () {
     $b = ($type == 'page' && (isset($g['cdp-content-pages']) && $g['cdp-content-pages'] == 'true'));
     $c = ($type != 'post' && $type != 'page' && (isset($g['cdp-content-custom']) && $g['cdp-content-custom'] == 'true'));
 
-    if (($a || $b || $c) && $pagenow != 'post-new.php') {
-        if ($post && current_user_can('read_post', $post->ID) && (!post_password_required($post) || current_user_can('edit_post', $post->ID))) {
-            echo '<div id="cdp-copy-btn"><a class="cdp-copy-btn-editor" href="#">' . __('Copy this', 'copy-delete-posts') . '</a></div>';
-        }
-    }
- });
+    if (($a || $b || $c) && $pagenow != 'post-new.php')
+        echo '<div id="cdp-copy-btn"><a class="cdp-copy-btn-editor" href="#">' . __('Copy this post', 'copy-delete-posts') . '</a></div>';
+});
 /** –– * */
 /** –– **\
  * Add hook for cron (deletion).
@@ -860,7 +852,6 @@ function cdp_load_localize_end_js() {
     'strIntroUpdateIssue2' => __('Something went wrong and we couldn\'t update intro settings. – Please check console for more info.', 'copy-delete-posts'),
     'strSettingsSaved' => __('All your settings were saved!', 'copy-delete-posts'),
     'strSettingsSaveIssue' => __('Something went wrong and we couldn\'t save your settings.', 'copy-delete-posts'),
-    'strSettingsNoAccess' => __('Only administrators can change these settings.', 'copy-delete-posts'),
     'strSettingsSaveIssue2' => __('Something went wrong and we couldn\'t save your settings. – Please check console for more info.', 'copy-delete-posts'),
     'strTogglableName' => __('(Name of original)', 'copy-delete-posts'),
     'strCopyNumIssue' => __('You need to insert positive number for copies.', 'copy-delete-posts'),
@@ -985,8 +976,6 @@ function cdp_default_global_options() {
         'cdp-premium-import' => 'false',
         'cdp-premium-hide-tooltip' => 'false',
         'cdp-premium-replace-domain' => 'false',
-        'cdp-delete-on-uninstall' => 'false',
-        'cdp-take-over-original-slug' => 'false',
         'cdp-menu-in-settings' => 'false'
     );
 }
@@ -1126,35 +1115,6 @@ function cdp_sanitize_array($data = null) {
     }
 
     return $array;
-}
-
-/** –– * */
-
-/** –– **\
- * Check whether a notification task token uses the expected safe format.
- *
- * @param mixed $token Notification task token.
- * @return boolean
- */
-function cdp_is_valid_cron_token($token) {
-    return is_string($token) && preg_match('/^[A-Za-z0-9_\-]+(?:\.[A-Za-z0-9_\-]+)?$/D', $token) === 1;
-}
-
-/** –– **\
- * Remove notification tasks with invalid tokens or malformed values.
- *
- * @param mixed $tasks Notification tasks.
- * @return array
- */
-function cdp_filter_cron_tasks($tasks) {
-    if (!is_array($tasks))
-        return array();
-
-    foreach ($tasks as $token => $task)
-        if (!cdp_is_valid_cron_token($token) || !is_array($task))
-            unset($tasks[$token]);
-
-    return $tasks;
 }
 
 /** –– **/
