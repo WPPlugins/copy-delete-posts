@@ -221,6 +221,12 @@ function cdp_add_new_intro() {
  */
 function cdp_save_plugin_options($areWePro) {
 
+    // Only administrators/users with manage_options capability can save plugin global settings & profiles
+    if (!current_user_can('manage_options')) {
+        echo 'no_access';
+        return;
+    }
+
     // Get the info about our professionalness
     $areWePro = $areWePro;
 
@@ -293,6 +299,41 @@ function cdp_save_plugin_options($areWePro) {
 /** –– * */
 
 /** –– **\
+ * Limits status and author of a copy to what the current user could set
+ * when creating a post of that type themselves.
+ * Must run on the destination site (after any multisite switch).
+ * @param $data (array of post data ready for wp_insert_post)
+ * @return array of post data
+ * @since 1.5.8
+ */
+function cdp_enforce_copy_capabilities($data) {
+
+    $type = isset($data['post_type']) ? $data['post_type'] : 'post';
+    $pto = get_post_type_object($type);
+    if (!$pto) $pto = get_post_type_object('post');
+
+    $publish_cap = $pto->cap->publish_posts;
+    $edit_others_cap = $pto->cap->edit_others_posts;
+
+    // Without publish capability only draft or pending are allowed
+    // (publish, future and private all require it)
+    $status = isset($data['post_status']) ? $data['post_status'] : 'draft';
+    if (!in_array($status, array('draft', 'pending'), true) && !current_user_can($publish_cap)) {
+        $data['post_status'] = 'draft';
+    }
+
+    // Assigning another author requires edit_others_posts
+    $current_user_id = get_current_user_id();
+    $author = isset($data['post_author']) ? intval($data['post_author']) : $current_user_id;
+    if ($author !== $current_user_id && !current_user_can($edit_others_cap)) {
+        $data['post_author'] = $current_user_id;
+    }
+
+    return $data;
+}
+/** –– **/
+
+/** –– **\
  * This function will be fired when user want to save plugin options – again.
  * @since 1.0.0
  */
@@ -349,6 +390,11 @@ function cdp_insert_new_post($areWePro = false) {
     foreach ($settings as $setting => $val)
         if ($setting != 'names')
             $settings[$setting] = (($val == 'true') ? true : false);
+
+    // Fill missing options (e.g. older saved profiles) as disabled to avoid undefined key warnings
+    foreach (cdp_default_options() as $setting => $val)
+        if ($setting != 'names' && !isset($settings[$setting]))
+            $settings[$setting] = false;
 
     /**
      * cdp_duplicate_categories - Makes sure that categories exist on new subsite
@@ -506,7 +552,7 @@ function cdp_insert_new_post($areWePro = false) {
         // Add optional values of post – depending on settings
         if ($settings['slug']){
             $new['post_name'] = $post['post_name'];
-            if (isset($globals['others']['cdp-take-over-original-slug']) && $globals['others']['cdp-take-over-original-slug'] == 'true') {
+            if (isset($globals['others']['cdp-take-over-original-slug']) && $globals['others']['cdp-take-over-original-slug'] == 'true' && current_user_can('edit_post', $post['ID'])) {
                 $original_new_slug = $post['post_name'] . '-old';
                 wp_update_post(array(
                     'ID' => $post['ID'],
@@ -615,6 +661,26 @@ function cdp_insert_new_post($areWePro = false) {
     }
 
     /**
+     * Turn a user-supplied title prefix/suffix into plain text.
+     * Entities are decoded (repeatedly, to catch double encoding) before tags
+     * are stripped, so values like "&lt;img onerror=...&gt;" can't survive.
+     */
+    function cdp_clean_title_affix($value) {
+        if (!is_string($value)) return '';
+
+        for ($i = 0; $i < 5; $i++) {
+            $decoded = html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            if ($decoded === $value) break;
+            $value = $decoded;
+        }
+
+        $value = wp_strip_all_tags($value, true);
+        $value = str_replace(array('<', '>', '"', '`'), '', $value);
+
+        return sanitize_text_field($value);
+    }
+
+    /**
      * This local function format title by user settings
      * @param $title (string)
      * @param $settings (array of name settings preselected in profile)
@@ -642,8 +708,12 @@ function cdp_insert_new_post($areWePro = false) {
         $date = date($date_format, $curr);
         $time = date('H:i:s', $curr);
 
+        // Clean prefix and suffix so (entity-encoded) markup can't reach the title
+        $prefix = cdp_clean_title_affix(isset($settings['prefix']) ? $settings['prefix'] : '');
+        $suffix = cdp_clean_title_affix(isset($settings['suffix']) ? $settings['suffix'] : '');
+
         // Concat whole title with prefix and suffix
-        $new_title = $settings['prefix'] . ' ' . $title . ' ' . $settings['suffix'];
+        $new_title = $prefix . ' ' . $title . ' ' . $suffix;
 
         // Make replace of placeholders
         $new_title = str_replace('[CurrentDate]', $date, $new_title);
@@ -779,6 +849,9 @@ function cdp_insert_new_post($areWePro = false) {
 
               }
             }
+
+            // Never let the copy get a status or author the user couldn't set themselves
+            $data = cdp_enforce_copy_capabilities($data);
 
             // Insert post with filtered data
             $new = wp_insert_post($data, true);

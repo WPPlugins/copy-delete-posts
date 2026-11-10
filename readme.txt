@@ -2,8 +2,8 @@
 Contributors: CopyDeletePosts, copydelete
 Tags: Duplicate post, Copy posts, Copy pages, Duplicate posts, Duplicate pages
 Requires at least: 4.6
-Tested up to: 7.1.2
-Stable tag: 1.5.7
+Tested up to: 7.1.4
+Stable tag: 1.5.8
 License: GPLv3
 Requires PHP: 5.6
 
@@ -142,6 +142,10 @@ Copy Delete Posts WordPress plugin doesn’t store any site visitor information 
 = ACF compatibility =
 ACF is fully supported by Copy Delete Post Premium, as ACF is something more than a simple post. The plugin can only cop native posts and pages ( that are aligned with WordPress standards ). ACF does not stick with these standards as they put multiple posts attached to one post ID, which is visible on the list, while others are hidden.
 
+= Where do I report security bugs found in this plugin? =
+
+Please report security bugs found in the source code of the Duplicate Post plugin through the [Patchstack Vulnerability Disclosure  Program](https://patchstack.com/database/vdp/9e5fb67b-0e90-4bcd-bf4f-57eb37da201a). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+
 = Is the plugin also available in my language? =
 So far we have translated the plugin into these languages:
 
@@ -177,12 +181,24 @@ Vietnamese: [Sao chép bài đăng, sao chép trang, sao chép bài đăng tùy 
 
 == Changelog ==
 
-= 1.5.7 =
-* Tested up to WordPress 7.1.2
-* [SECURITY] Fixed stored XSS vulnerability in notifications by properly securing task token output.
+= 1.5.8 =
+* Tested up to WordPress 7.1.4
+* [SECURITY] Fixed stored XSS (CVE-2026-120081) in the "duplicate of" notice by escaping the original post title and URL and rendering them as text
+* [SECURITY] Sanitized title prefix/suffix settings on output and before they are added to duplicated post titles
+* [SECURITY] Restricted saving plugin settings and profiles to administrators (`manage_options`)
+* [SECURITY] Copies can no longer get a post status or author the current user isn't allowed to set
+* [SECURITY] Added an `edit_post` capability check before taking over the original post's slug
+* [IMPROVEMENT] Non-administrators now see a notice instead of the Save button on the settings screen
+* [FIX] Fixed "Undefined array key" PHP warnings when copying posts with profiles saved by older plugin versions.
 
 == Upgrade Notice ==
-= 1.5.7 =
-What's new in 1.5.7?
-* Tested up to WordPress 7.1.2
-* [SECURITY] Fixed stored XSS vulnerability in notifications by properly securing task token output.
+= 1.5.8 =
+What's new in 1.5.8?
+* Tested up to WordPress 7.1.4
+* [SECURITY] Fixed stored XSS (CVE-2026-120081) in the "duplicate of" notice by escaping the original post title and URL and rendering them as text
+* [SECURITY] Sanitized title prefix/suffix settings on output and before they are added to duplicated post titles
+* [SECURITY] Restricted saving plugin settings and profiles to administrators (`manage_options`)
+* [SECURITY] Copies can no longer get a post status or author the current user isn't allowed to set
+* [SECURITY] Added an `edit_post` capability check before taking over the original post's slug
+* [IMPROVEMENT] Non-administrators now see a notice instead of the Save button on the settings screen
+* [FIX] Fixed "Undefined array key" PHP warnings when copying posts with profiles saved by older plugin versions.

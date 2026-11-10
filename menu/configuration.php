@@ -51,6 +51,9 @@ function cdp_configuration() {
   $globals = get_option('_cdp_globals');
   $roles = get_editable_roles();
 
+  // Only administrators can save settings (enforced in cdp_save_plugin_options)
+  $can_save_settings = current_user_can('manage_options');
+
   $isCoolInstalled = '';
   if (get_option('_cdp_cool_installation', false)) {
     delete_option('_cdp_cool_installation');
@@ -412,7 +415,7 @@ function cdp_configuration() {
                 Please <a href="mailto:hi@copy-delete-posts.com" target="_blank"><span class="cdp-green">tell us about it</span></a>, we always want to further improve this plugin! :) ', 'copy-delete-posts'); ?></i>
             </div>
             <div class="cdp-center cdp-padding cdp-p-35-b">
-                <button class="cdp-button cdp-save-options"><?php _e('Save', 'copy-delete-posts'); ?></button>
+                <?php if ($can_save_settings): ?><button class="cdp-button cdp-save-options"><?php _e('Save', 'copy-delete-posts'); ?></button><?php else: ?><p class="cdp-gray cdp-f-s-17"><?php _e('Only administrators can change these settings.', 'copy-delete-posts'); ?></p><?php endif; ?>
               <div class="cdp-padding cdp-f-s-17">
                   <a href="#" class="cdp-close-chapter"><?php _e('Close section', 'copy-delete-posts'); ?></a>
               </div>
@@ -442,7 +445,7 @@ function cdp_configuration() {
             <div class="cdp-cf cdp-center">
               <div class="cdp-left cdp-names-input">
                 <div strip-br="true" class="cdp-magic-input cdp-shadow cdp-sorts cdp-names-real-input cdp-names-prefix" wrap="off" contenteditable="true" style="margin-right: 0">
-                  <?php echo (isset($defaults['names']) && isset($defaults['names']['prefix']))?$defaults['names']['prefix']:''; ?>
+                  <?php echo esc_html((isset($defaults['names']) && isset($defaults['names']['prefix']))?$defaults['names']['prefix']:''); ?>
                 </div>
               </div>
               <div class="cdp-left cdp-names-divider cdp-f-s-19 cdp-f-w-light">
@@ -450,7 +453,7 @@ function cdp_configuration() {
               </div>
               <div class="cdp-left cdp-names-input">
                 <div strip-br="true" class="cdp-magic-input cdp-shadow cdp-sorts cdp-names-real-input cdp-names-suffix" wrap="off" contenteditable="true" style="margin-left: 0">
-                  <?php echo (isset($defaults['names']) && isset($defaults['names']['suffix']))?$defaults['names']['suffix']:''; ?>
+                  <?php echo esc_html((isset($defaults['names']) && isset($defaults['names']['suffix']))?$defaults['names']['suffix']:''); ?>
                 </div>
               </div>
             </div>
@@ -503,7 +506,7 @@ function cdp_configuration() {
                 <p class="cdp-f-s-18"><?php _e('If you make multiple copies in one go, use the Counter-option as otherwise some copies will have the same name.', 'copy-delete-posts'); ?></p>
             </div>
             <div class="cdp-center">
-                <button class="cdp-button cdp-save-options"><?php _e('Save', 'copy-delete-posts'); ?></button>
+                <?php if ($can_save_settings): ?><button class="cdp-button cdp-save-options"><?php _e('Save', 'copy-delete-posts'); ?></button><?php else: ?><p class="cdp-gray cdp-f-s-17"><?php _e('Only administrators can change these settings.', 'copy-delete-posts'); ?></p><?php endif; ?>
               <div class="cdp-padding cdp-f-s-17">
                   <a href="#" class="cdp-close-chapter"><?php _e('Close section', 'copy-delete-posts'); ?></a>
               </div>
@@ -660,7 +663,7 @@ function cdp_configuration() {
 
               </div>
               <div class="cdp-center cdp-padding-15-h">
-                  <button class="cdp-button cdp-save-options"><?php _e('Save', 'copy-delete-posts'); ?></button>
+                  <?php if ($can_save_settings): ?><button class="cdp-button cdp-save-options"><?php _e('Save', 'copy-delete-posts'); ?></button><?php else: ?><p class="cdp-gray cdp-f-s-17"><?php _e('Only administrators can change these settings.', 'copy-delete-posts'); ?></p><?php endif; ?>
                 <div class="cdp-padding cdp-f-s-17">
                     <a href="#" class="cdp-close-chapter"><?php _e('Close section', 'copy-delete-posts'); ?></a>
                 </div>

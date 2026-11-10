@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Copy & Delete Posts
  * Description: The best solution to easily make duplicates of your posts & pages, and delete them in one go.
- * Version: 1.5.7
+ * Version: 1.5.8
  * Text Domain: copy-delete-posts
  * Author: Inisev
  * Author URI: https://inisev.com
@@ -31,7 +31,7 @@ analyst_init(array(
  * @since 1.0.0
  */
 // Plugin constants
-define('CDP_VERSION', '1.5.7');
+define('CDP_VERSION', '1.5.8');
 define('CDP_WP_VERSION', get_bloginfo('version'));
 define('CDP_SCRIPT_DEBUG', false);
 define('CDP_ROOT_DIR', __DIR__);
@@ -860,6 +860,7 @@ function cdp_load_localize_end_js() {
     'strIntroUpdateIssue2' => __('Something went wrong and we couldn\'t update intro settings. – Please check console for more info.', 'copy-delete-posts'),
     'strSettingsSaved' => __('All your settings were saved!', 'copy-delete-posts'),
     'strSettingsSaveIssue' => __('Something went wrong and we couldn\'t save your settings.', 'copy-delete-posts'),
+    'strSettingsNoAccess' => __('Only administrators can change these settings.', 'copy-delete-posts'),
     'strSettingsSaveIssue2' => __('Something went wrong and we couldn\'t save your settings. – Please check console for more info.', 'copy-delete-posts'),
     'strTogglableName' => __('(Name of original)', 'copy-delete-posts'),
     'strCopyNumIssue' => __('You need to insert positive number for copies.', 'copy-delete-posts'),

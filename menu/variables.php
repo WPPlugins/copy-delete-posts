@@ -133,7 +133,7 @@ function cdp_vars($hideTT = false, $cdp_plug_url = 'x', $post_id = false, $paren
     if (typeof ajaxurl === 'undefined') ajaxurl = '<?php echo esc_url(admin_url('admin-ajax.php')); ?>';
   </script>
   <div class="cdp-copy-alert-success" style="top: -28px; opacity: 0; display: none;">
-    <img src="<?php echo $cdp_plug_url ?>/assets/imgs/copy.png" alt="<?php _e('Successfull copy image', 'copy-delete-posts'); ?>">
+    <img src="<?php echo esc_url($cdp_plug_url) ?>/assets/imgs/copy.png" alt="<?php _e('Successfull copy image', 'copy-delete-posts'); ?>">
   </div>
   <?php do_action('cdp_notices_special'); ?>
   <div class="cdp-copy-loader-overlay" style="opacity: 0">
@@ -147,17 +147,17 @@ function cdp_vars($hideTT = false, $cdp_plug_url = 'x', $post_id = false, $paren
     </div>
     <div class="cdp-spinner"></div>
   </div>
-  <input type="text" hidden id="cdp-purl" style="display: none; visibility: hidden;" value="<?php echo $cdp_plug_url ?>">
+  <input type="text" hidden id="cdp-purl" style="display: none; visibility: hidden;" value="<?php echo esc_url($cdp_plug_url) ?>">
   <?php if ($hideTT == true): ?>
   <input type="text" hidden id="cdp-hideTT" style="display: none; visibility: hidden;" value="true">
   <?php endif; ?>
 
   <?php if ($post_id != false): ?>
-  <input type="text" hidden id="cdp-current-post-id" style="display: none; visibility: hidden;" value="<?php echo $post_id ?>">
+  <input type="text" hidden id="cdp-current-post-id" style="display: none; visibility: hidden;" value="<?php echo esc_attr(intval($post_id)) ?>">
   <?php endif;?>
 
-  <?php if ($parent != false): ?>
-  <input type="text" hidden id="cdp-original-post" style="display: none; visibility: hidden;" data-cdp-parent="<?php echo $parent['title'] ?>" data-cdp-parent-url="<?php echo $parent['link'] ?>">
+  <?php if ($parent != false && is_array($parent)): ?>
+  <input type="text" hidden id="cdp-original-post" style="display: none; visibility: hidden;" data-cdp-parent="<?php echo esc_attr(isset($parent['title']) ? $parent['title'] : '') ?>" data-cdp-parent-url="<?php echo esc_url(isset($parent['link']) ? $parent['link'] : '') ?>">
   <?php endif;?>
 
   <?php
