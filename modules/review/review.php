@@ -13,7 +13,7 @@
   namespace Inisev\Subs;
 
   // Disallow direct access
-  if (defined('ABSPATH')) {
+  if ( ! defined( 'ABSPATH' ) ) exit;
 
     /**
      * Main class for handling the Review
@@ -43,6 +43,8 @@
         private $assets_url; // Root URL for review assets
         private $review_url; // Review URL
         private $plugin_menu_url; // Plugin's settings menu
+        public $option_name = '_irb_h_bn_review'; // Option name for this module
+        public $using_since; // Check since user uses this plugin
 
         /**
          * __construct:
@@ -69,7 +71,6 @@
 
           $this->root_url = plugin_dir_url($this->file);
           $this->assets_url = $this->root_url . 'modules/review/assets/';
-          $this->option_name = '_irb_h_bn_review';
           $option_name = $this->option_name;
           $empty = ['users' => []];
           $empty[$individual_slug] = time();
@@ -152,19 +153,7 @@
          */
         private function _asset($file) {
 
-          echo $this->assets_url . $file;
-
-        }
-
-        /**
-         * _dir_asset - Loads assets and automatically echo
-         *
-         * @param  string $file path relative
-         * @echo   string       absolute path
-         */
-        private function _dir_asset($file) {
-
-          echo __DIR__ . '/assets' . '/' . $file;
+          echo esc_url($this->assets_url . $file);
 
         }
 
@@ -174,6 +163,21 @@
          * @return bool true if banner can be displayed
          */
         private function can_be_displayed() {
+          
+          global $pagenow;
+          
+          $excluded_pages = array(
+            'post.php',
+            'post-new.php',
+            'profile.php',
+            'site-editor.php',
+            'widgets.php',
+            'customize.php'
+          );
+
+          if ( in_array( $pagenow, $excluded_pages, true ) ) {
+              return false;
+          }
 
           $uid = get_current_user_id();
           if (!defined('IRB_H_CHECK_LOADED') && function_exists('get_current_user_id') && isset($uid) && intval($uid) > 0) {
@@ -235,6 +239,9 @@
             define('IRB_H_ASSETS_LOADED', true);
             wp_enqueue_script('inisev-review-script', $this->__asset('js/script.js'), [], filemtime($this->__dir_asset('js/script.js')), true);
             wp_enqueue_style('inisev-review-style', $this->__asset('css/style.css'), [], filemtime($this->__dir_asset('css/style.css')));
+            wp_localize_script('inisev-review-script', 'inisev_review_dismiss', [
+              'nonce' => wp_create_nonce('inisev_review_dismiss'),
+            ], true);
           }
 
         }
@@ -263,6 +270,10 @@
          * @return json returns it to browser
          */
         public function handle_review_action() {
+
+          if (check_ajax_referer('inisev_review_dismiss', 'nonce', false) === false) {
+            return wp_send_json_error();
+          }
 
           $slug = sanitize_text_field($_POST['slug']);
           $mode = sanitize_text_field($_POST['mode']);
@@ -314,4 +325,3 @@
       }
     }
 
-  }

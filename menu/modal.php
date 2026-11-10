@@ -51,8 +51,9 @@ function cdp_modal($screen = '', $profiles = array()) {
           <div class="cdp-cf cdp-inline" style="line-height: 40px">
               <div class="cdp-left cdp-f-s-16"><?php _e('Use as basis settings', 'copy-delete-posts'); ?></div>
             <?php $gepres = get_option('_cdp_preselections', array()); if (array_key_exists(get_current_user_id(), $gepres)) $preSelProf = $gepres[get_current_user_id()]; else $preSelProf = 0; ?>
-            <select class="cdp-left cdp-modal-select cdp-ow-border cdp-input-dynamic cdp-modal-input-profiles-r cdp-select cdp-m-l-9-d" name="tooltip-which-profile-second">
+            <select class="cdp-left cdp-modal-select cdp-ow-border cdp-input-dynamic cdp-modal-input-profiles-r cdp-select cdp-m-l-9-d" name="tooltip-which-profile-second-modal">
                 <option value="custom"<?php echo (array_key_exists($preSelProf, $profiles) && !$profiles[$preSelProf])?' selected':''?> disabled><?php _e('–– Select ––', 'copy-delete-posts'); ?></option>
+                <option value="alloptions"><?php _e('Select all', 'copy-delete-posts'); ?></option>
                 <option value="clear"><?php _e('Clean slate', 'copy-delete-posts'); ?></option>
                 <optgroup label="<?php _e('–– Profiles ––', 'copy-delete-posts'); ?>"></optgroup>
                 <option value="custom_named" disabled><?php _e('Custom', 'copy-delete-posts'); ?></option>
@@ -149,7 +150,7 @@ function cdp_modal($screen = '', $profiles = array()) {
             <span><?php _e('Tags', 'copy-delete-posts'); ?></span>
           </label>
           <label>
-            <input class="cdp-modal-option-r cdp-input-dynamic" type="checkbox" name="taxonomy">
+            <input class="cdp-modal-option-r cdp-input-dynamic" type="checkbox" name="cdp_taxonomy">
             <span><?php _e('Taxonomies', 'copy-delete-posts'); ?></span>
           </label>
           <label>
@@ -161,9 +162,10 @@ function cdp_modal($screen = '', $profiles = array()) {
             <span><?php _e('Link categories', 'copy-delete-posts'); ?></span>
           </label>
         </div>
-        <?php if ($isYoast || $isUSM || $isWoo): ?>
+        <?php if ($isYoast || $isUSM || $isWoo || true): ?>
           <div class="cdp-modal-checkboxes cdp-checkboxes cdp-modal-checkboxes-three">
             <label class="cdp-relative"><span class="cdp-premium-icon" style="margin-left: 0"></span><b style="padding-left: 21px;" class="cdp-f-s-15 cdp-f-w-medium"><?php _e('Plugin options:', 'copy-delete-posts'); ?></b></label>
+            <br>
             <?php if ($isWoo): ?>
             <label class="cdp-woo">
               <div class="cdp-inline cdp-tooltip-premium-spc">
@@ -175,7 +177,7 @@ function cdp_modal($screen = '', $profiles = array()) {
             <?php if ($isYoast): ?>
             <label class="cdp-yoast">
               <div class="cdp-inline cdp-tooltip-premium-spc">
-                <input class="cdp-input-dynamic" type="checkbox" name="yoast">
+                <input class="cdp-modal-option-r cdp-input-dynamic" type="checkbox" name="yoast">
                 <span><?php _e('Yoast Settings', 'copy-delete-posts'); ?></span>
               </div>
             </label>
@@ -183,19 +185,17 @@ function cdp_modal($screen = '', $profiles = array()) {
             <?php if ($isUSM): ?>
             <label>
               <div class="cdp-inline cdp-tooltip-premium-spc">
-                <input class="cdp-input-dynamic" type="checkbox" name="usmplugin">
+                <input class="cdp-modal-option-r cdp-input-dynamic" type="checkbox" name="usmplugin">
                 <span><?php _e('USM Settings', 'copy-delete-posts'); ?></span>
               </div>
             </label>
             <?php endif; ?>
-            <?php if (false): ?>
             <label>
               <div class="cdp-inline cdp-tooltip-premium-spc">
-                <input class="cdp-input-dynamic" type="checkbox" name="all_metadata">
-                <span><?php _e('Other Plugin Settings', 'copy-delete-posts'); ?></span>
+                <input class="cdp-modal-option-r cdp-input-dynamic" type="checkbox" name="all_metadata">
+                <span><?php _e('All post meta', 'copy-delete-posts'); ?></span>
               </div>
             </label>
-            <?php endif; ?>
           </div>
         <?php endif; ?>
       </div>
@@ -214,13 +214,24 @@ function cdp_modal($screen = '', $profiles = array()) {
             <div class="cdp-left" style="line-height: 40px;">&nbsp;to</div>
             <div class="cdp-left">
               <div class="cdp-inline cdp-tooltip-premium-spc-2 <?php echo (($isMulti != '')?' cdp-tooltip-premium-spc-3':' cdp-tooltip-premium-spc-4'); ?>">
-                <select class="cdp-input-dynamic cdp-modal-select cdp-modal-select-2 cdp-ow-border cdp-modal-input-site cdp-select cdp-m-l-9-d" name="tooltip-which-site-second" <?php echo $isMulti; ?>>
+                <select class="cdp-input-dynamic cdp-modal-select cdp-modal-select-2 cdp-ow-border cdp-modal-input-site cdp-select cdp-m-l-9-d" name="tooltip-which-site-second-modal" <?php echo $isMulti; ?>>
                   <option value="-1"><?php _e('this site', 'copy-delete-posts'); ?></option>
                   <?php if ($areWePro && function_exists('cdpp_get_sites')) echo cdpp_get_sites(true); ?>
                 </select>
               </div>
             </div>
           </div>
+          <?php if (is_multisite()) { ?>
+            <div class="cdp-center cdp-multiple-sites-selector">
+              (<?php _e('click here to select multiple sites', 'copy-delete-posts'); ?>)
+            </div>
+            <div class="cdp-center cdp-multi-site-at-once-selector" style="display: none;">
+              <select multiple>
+                <option value="-1" selected><?php _e('this site', 'copy-delete-posts'); ?></option>
+                <?php if ($areWePro && function_exists('cdpp_get_sites')) echo cdpp_get_sites(true); ?>
+              </select>
+            </div>
+          <?php } ?>
         </div>
       </div>
 
@@ -230,7 +241,7 @@ function cdp_modal($screen = '', $profiles = array()) {
 
       <div class="cdp-center cdp-p-25-h">
         <button class="cdp-button cdp-copy-modal-button cdp-f-s-15 cdp-f-w-regular" data-cdp-btn="copy-custom" style="height:44px; width:211px;padding:0 20px;line-height: 44px;"><?php _e('Copy it!', 'copy-delete-posts'); ?></button>
-        <?php if (isset($globals) && array_key_exists('afterCopy', $globals) && $globals['afterCopy'] == '3'): ?>
+        <?php if (isset($globals) && is_array($globals) && array_key_exists('afterCopy', $globals) && $globals['afterCopy'] == '3'): ?>
         <button class="cdp-button cdp-copy-modal-button cdp-p-right-h cdp-f-s-15 cdp-f-w-regular" data-cdp-btn="copy-custom-link" style="height:44px; width:292px;padding:0 20px;line-height: 44px;margin-left: 15px !important;"><?php _e('Copy and jump to editing', 'copy-delete-posts'); ?></button>
         <?php endif; ?>
       </div>

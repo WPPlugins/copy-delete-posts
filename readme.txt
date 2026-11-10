@@ -1,9 +1,9 @@
 === Duplicate Post ===
 Contributors: CopyDeletePosts, copydelete
-Tags: Duplicate post, Copy posts, Copy pages, Duplicate posts, Duplicate pages, Clone posts, Clone pages, Delete posts, Delete pages, Duplicator, copy post, copy page
+Tags: Duplicate post, Copy posts, Copy pages, Duplicate posts, Duplicate pages
 Requires at least: 4.6
-Tested up to: 5.8.2
-Stable tag: 1.2.4
+Tested up to: 7.1.4
+Stable tag: 1.5.8
 License: GPLv3
 Requires PHP: 5.6
 
@@ -11,7 +11,8 @@ Duplicate post
 
 == Description ==
 
-**Try it out on your free dummy site: Click here => [https://tastewp.com/plugins/copy-delete-posts](https://tastewp.com/plugins/copy-delete-posts?redirect-menu=copy-delete-posts)**.
+**Try it out on your free dummy site: Click here => [https://tastewp.com/plugins/copy-delete-posts](https://demo.tastewp.com/cdp).**
+(this trick works for all plugins in the WP repo - just replace "wordpress" with "tastewp" in the URL)
 
 Massively increase your WordPress productivity!
 
@@ -138,6 +139,35 @@ Other duplicate post plugins mostly only allow you to duplicate post to the same
 = Is this plugin GDPR friendly? =
 Copy Delete Posts WordPress plugin doesn’t store any site visitor information so it is completely GDPR friendly.
 
+= ACF compatibility =
+ACF is fully supported by Copy Delete Post Premium, as ACF is something more than a simple post. The plugin can only cop native posts and pages ( that are aligned with WordPress standards ). ACF does not stick with these standards as they put multiple posts attached to one post ID, which is visible on the list, while others are hidden.
+
+= Where do I report security bugs found in this plugin? =
+
+Please report security bugs found in the source code of the Duplicate Post plugin through the [Patchstack Vulnerability Disclosure  Program](https://patchstack.com/database/vdp/9e5fb67b-0e90-4bcd-bf4f-57eb37da201a). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+
+= Is the plugin also available in my language? =
+So far we have translated the plugin into these languages:
+
+Arabic: [انسخ المنشورات وانسخ الصفحات ونسخ المنشورات المخصصة وحذف التكرارات.](https://ar.wordpress.org/plugins/copy-delete-posts/)
+Chinese (China): [复制帖子、复制页面、复制自定义帖子和删除重复项。](https://cn.wordpress.org/plugins/copy-delete-posts/)
+Croatian: [Kopirajte postove, kopirajte stranice, duplicirajte prilagođene postove i izbrišite duplikate.](https://hr.wordpress.org/plugins/copy-delete-posts/)
+Dutch: [Kopieer berichten, kopieer pagina's, dupliceer aangepaste berichten en verwijder duplicaten.](https://nl.wordpress.org/plugins/copy-delete-posts/)
+English: [Copy pages, copy posts, and delete the duplicate post again in one go](https://wordpress.org/plugins/copy-delete-posts/)
+Finnish: [Kopioi viestejä, kopioi sivuja, monista mukautettuja viestejä ja poista kaksoiskappaleita.](https://fi.wordpress.org/plugins/copy-delete-posts/)
+French (France): [Copiez les publications, copiez les pages, dupliquez les publications personnalisées et supprimez les doublons.](https://fr.wordpress.org/plugins/copy-delete-posts/)
+German: [Kopieren Sie Beiträge, kopieren Sie Seiten, duplizieren Sie benutzerdefinierte Beiträge und löschen Sie Duplikate.](https://de.wordpress.org/plugins/copy-delete-posts/)
+Greek: [Αντιγράψτε αναρτήσεις, αντιγράψτε σελίδες, αντιγράψτε προσαρμοσμένες αναρτήσεις και διαγράψτε διπλότυπα.](https://el.wordpress.org/plugins/copy-delete-posts/)
+Hungarian: [Bejegyzések másolása, oldalak másolása, egyéni bejegyzések másolása és ismétlődések törlése.](https://hu.wordpress.org/plugins/copy-delete-posts/)
+Indonesian: [Salin posting, salin halaman, duplikat posting kustom, dan hapus duplikat.](https://id.wordpress.org/plugins/copy-delete-posts/)
+Italian: [Copia post, copia pagine, duplica post personalizzati ed elimina duplicati.](https://it.wordpress.org/plugins/copy-delete-posts/)
+Persian: [پست ها را کپی کنید، صفحات را کپی کنید، پست های سفارشی را تکرار کنید، و موارد تکراری را حذف کنید.](https://fa.wordpress.org/plugins/copy-delete-posts/)
+Polish: [Kopiuj posty, kopiuj strony, duplikuj posty niestandardowe i usuwaj duplikaty.](https://pl.wordpress.org/plugins/copy-delete-posts/)
+Portuguese (Brazil): [Copie postagens, copie páginas, duplique postagens personalizadas e exclua duplicatas.](https://br.wordpress.org/plugins/copy-delete-posts/)
+Russian: [Копируйте сообщения, копируйте страницы, дублируйте пользовательские сообщения и удаляйте дубликаты.](https://ru.wordpress.org/plugins/copy-delete-posts/)
+Spanish: [Copie publicaciones, copie páginas, duplique publicaciones personalizadas y elimine duplicados.](https://es.wordpress.org/plugins/copy-delete-posts/)
+Turkish: [Gönderi kopyalayın, sayfa kopyalayın, özel tasarlanmış gönderileri çoğaltın, ve kopyaları silin.](https://tr.wordpress.org/plugins/copy-delete-posts/)
+Vietnamese: [Sao chép bài đăng, sao chép trang, sao chép bài đăng tùy chỉnh và xóa bản sao.](https://vi.wordpress.org/plugins/copy-delete-posts/)
 
 == Screenshots ==
 1. Plugin settings page
@@ -151,126 +181,24 @@ Copy Delete Posts WordPress plugin doesn’t store any site visitor information 
 
 == Changelog ==
 
-= 1.2.4 =
-* Added deactivation module
-
-= 1.2.3 =
-* Applied improvements that depends on user performance data
-
-= 1.2.2 =
-* Tested up to WordPress 5.8.2
-* Tested up to PHP 8.1
-* Removed translation notices in the developer console
-* Fixed localize script issues on front-end side
-* Added new performance window after copy
-* Fixed issues with gutenberg copy button
-
-= 1.2.1 =
-* Fixed version mishmash
-
-= 1.2.0 =
-* Alternate CRON for 5.6.1 re-tested
-* Adjusted processing function
-* Tested copying with broken post content
-
-= 1.1.9 =
-* Plugin translation-ready
-* Updated styles
-* Added performance checks for individual servers
-* Added logs for last 50 copy processes
-* Added new notices
-
-= 1.1.8 =
-* Performance adjustements for PHP 8
-* Plugin prepared for translation
-* Improvements for ACF plugin kind
-* Fixed activation/deactivation issues for Pro
-
-= 1.1.7 =
-* Banner fixes
-
-= 1.1.6 =
-* Tested up to WordPress 5.7
-* Fixed few notices in PHP 8
-* Updated review banner
-
-= 1.1.5 =
-* Tested up to WordPress 5.6.2
-* Fixed footer issue in Gutenberg editor
-* Fixed notice in premium version (regarding new option)
-* Added posibility to hide menu under tools
-
-= 1.1.4 =
-* Tested up to WordPress 5.6.1
-* Added support chat
-* Added new premium feature (hide chat)
-* Added support for ACF
-
-= 1.1.3 =
-* Added support for PHP 8 and WordPress 5.6
-* Added Carusel
-
-= 1.1.2 =
-* Tested with newest version of WordPress
-
-= 1.1.1 =
-* Fixed some warnings and notices in PHP 7
-* Added new variable CDP_SHOW_SITE_URLS (for wp-config)
-
-= 1.1.0 =
-* Tested stability up to WordPress 5.5.1
-* Adjusted icon display / position
-
-= 1.0.9 =
-* Tested stability up to WordPress 5.5
-
-= 1.0.8 =
-* Added support for WordPress 4.6
-* Added support for PHP 5.6
-
-= 1.0.7 =
-* [Premium] Automatic Cleanup
-* Updated banner tooltips
-* Added more info to Admin Bar entries
-* Added new type to Admin Bar notifications "Auto Cleanup"
-* Changed logic of filter (More title options -> option "Yes")
-
-= 1.0.6 =
-* [Premium] WooCommerce integration
-* [Premium] Advanced Filters for deletion process
-* WooCommerce edit-screen copy fix
-* Modal overlay display on front-end fix
-* Improved custom posts detection
-* Stability improvements
-
-= 1.0.5 =
-* Auto-refresh list of notifications
-* Fixed issue when notification wasn't updated correctly
-* Improvement search engine (Deletion Section)
-* Scrollbar fix on plugin configuration page
-
-= 1.0.4 =
-* This is Hotfix
-* Fixed issue during activation which shows "Header Error"
-
-= 1.0.3 =
-* Tested with new version of WordPress
-* Fixed visual issue with deletion process
-
-= 1.0.2 =
-* Added new cool GIF inside the intro
-* Added photos to the screenshots library
-* Removed unnecessary stuff in code
-
-= 1.0.1 =
-* Improved deletion process above 800 posts
-* Fixed sorting issues
-* Fixed specified copies options (via tooltip)
-* Fixed tooltip (flashing) issues on smaller screens
-
-= 1.0.0 =
-* Initial release
+= 1.5.8 =
+* Tested up to WordPress 7.1.4
+* [SECURITY] Fixed stored XSS (CVE-2026-120081) in the "duplicate of" notice by escaping the original post title and URL and rendering them as text
+* [SECURITY] Sanitized title prefix/suffix settings on output and before they are added to duplicated post titles
+* [SECURITY] Restricted saving plugin settings and profiles to administrators (`manage_options`)
+* [SECURITY] Copies can no longer get a post status or author the current user isn't allowed to set
+* [SECURITY] Added an `edit_post` capability check before taking over the original post's slug
+* [IMPROVEMENT] Non-administrators now see a notice instead of the Save button on the settings screen
+* [FIX] Fixed "Undefined array key" PHP warnings when copying posts with profiles saved by older plugin versions.
 
 == Upgrade Notice ==
-= 1.2.4 =
-* Added deactivation module
+= 1.5.8 =
+What's new in 1.5.8?
+* Tested up to WordPress 7.1.4
+* [SECURITY] Fixed stored XSS (CVE-2026-120081) in the "duplicate of" notice by escaping the original post title and URL and rendering them as text
+* [SECURITY] Sanitized title prefix/suffix settings on output and before they are added to duplicated post titles
+* [SECURITY] Restricted saving plugin settings and profiles to administrators (`manage_options`)
+* [SECURITY] Copies can no longer get a post status or author the current user isn't allowed to set
+* [SECURITY] Added an `edit_post` capability check before taking over the original post's slug
+* [IMPROVEMENT] Non-administrators now see a notice instead of the Save button on the settings screen
+* [FIX] Fixed "Undefined array key" PHP warnings when copying posts with profiles saved by older plugin versions.
